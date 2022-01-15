@@ -7,42 +7,41 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
-@EqualsAndHashCode(of = "id")
+@EqualsAndHashCode(of = "userId")
 @Builder @AllArgsConstructor @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Account {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long userId;
 
-    @Column(unique = true, name = "EMAIL", length = 50, nullable = false)
-    private String email;
+    @Column(unique = true, length = 50, nullable = false)
+    private String loginEmail;
 
-    @Column(length = 30, nullable = false)
+    @Column(length = 12, nullable = false)
+    private String password;
+
+    @Column(length = 10, nullable = false)
     private String name;
 
-    @Column(length = 30, nullable = false)
-    private String phoneNumber;
+    @Column(length = 16, nullable = true)
+    private String bankId;
 
-    @Column(length = 30, nullable = false)
-    private String bankName;
-
-    @Column(length = 30, nullable = false)
+    @Column(length = 30, nullable = true)
     private String accountNumber;
 
-    private boolean emailVerified;
-
-    @Column(length = 30, nullable = false)
+    @Column(length = 10, nullable = false)
     private String failCount;
 
-    private boolean accountNonExpired;
+    private boolean accountExpired;
 
-    private boolean accountNonLocked;
+    private boolean accountLocked;
 
     private LocalDateTime lastLoginAt;
 
+    @Column(length = 30, nullable = false)
+    private String mainPhoneNumber;
+
     private LocalDateTime joinedAt;
 
-
-
+    private boolean emailVerified;
 }
