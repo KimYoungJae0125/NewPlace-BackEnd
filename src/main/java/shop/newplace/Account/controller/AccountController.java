@@ -21,8 +21,4 @@ public class AccountController {
     public ResponseEntity test() {
         return ResponseEntity.ok("테스트입니다.");
     }
-
-
-
-
 }
