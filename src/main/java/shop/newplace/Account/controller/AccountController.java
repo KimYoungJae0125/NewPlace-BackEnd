@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
+import shop.newplace.Account.model.dto.SignUpForm;
 
 @Slf4j
 @RestController
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AccountController {
 
     @PostMapping("/signup")
-    public ResponseEntity signup() {
+    public ResponseEntity signup(SignUpForm signUpForm) {
         return ResponseEntity.ok("성공!");
     }
 

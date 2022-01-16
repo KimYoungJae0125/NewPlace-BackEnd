@@ -1,8 +1,11 @@
 package shop.newplace.Account.model.entity;
 
 import lombok.*;
+import shop.newplace.Bank.model.dto.Bank;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 
 @Entity
@@ -23,8 +26,8 @@ public class Account {
     @Column(length = 10, nullable = false)
     private String name;
 
-    @Column(length = 16, nullable = true)
-    private String bankId;
+    @Column(nullable = true)
+    private Bank bankId;
 
     @Column(length = 30, nullable = true)
     private String accountNumber;
@@ -44,4 +47,20 @@ public class Account {
     private LocalDateTime joinedAt;
 
     private boolean emailVerified;
+
+    @Builder
+    public Account(String loginEmail, String password, String name, Bank bankId, String accountNumber, String failCount, boolean accountExpired, boolean accountLocked, LocalDateTime lastLoginAt, String mainPhoneNumber, LocalDateTime joinedAt, boolean emailVerified){
+        this.loginEmail = loginEmail;
+        this.password = password;
+        this.name = name;
+        this.bankId = bankId;
+        this.accountNumber = accountNumber;
+        this.failCount = failCount;
+        this.accountExpired = accountExpired;
+        this.accountLocked = accountLocked;
+        this.lastLoginAt = lastLoginAt;
+        this.mainPhoneNumber = mainPhoneNumber;
+        this.joinedAt = joinedAt;
+        this.emailVerified = emailVerified;
+    }
 }

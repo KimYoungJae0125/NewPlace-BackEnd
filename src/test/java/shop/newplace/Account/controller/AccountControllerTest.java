@@ -24,7 +24,7 @@ class AccountControllerTest {
     void signup() throws Exception {
 
         mockMvc.perform(post("/signup"))
-            .andExpect(status().isOk())
+            .andExpect(status().isOk()) 
             .andDo(print());
     }
 
@@ -36,7 +36,5 @@ class AccountControllerTest {
                 .andExpect(status().isOk())
                 .andDo(print());
     }
-
-
 
 }

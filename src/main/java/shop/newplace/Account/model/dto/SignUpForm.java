@@ -2,20 +2,49 @@ package shop.newplace.Account.model.dto;
 
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
+import shop.newplace.Bank.model.dto.Bank;
 
+import javax.persistence.Column;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
+import java.time.LocalDateTime;
 
 @Data
 public class SignUpForm {
-
-    @NotBlank
-    @Email
+    @Email(message = "Email 형식이 아닙니다.")
+    @NotBlank(message = "Email을 입력해주세요.")
     private String email;
 
     @NotBlank
-    @Length(min = 8, max = 50)
-    @Pattern(regexp = "^[ㄱ-ㅎ가-힣a-z0-9-_!@#$%^&*()]{3,20}$")
+    @Length(min = 8, max = 12)
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,12}$", message = "최소 8 자 및 최대 12 자인 하나 이상의 대문자, 하나의 소문자, 하나의 숫자 및 하나의 특수 문자를 포함해서 입력해주세요")
     private String password;
+
+    @NotBlank(message = "이름을 입력해주세요")
+    @Length(max = 10, message = "이름의 최대 길이는 10글자 입니다.")
+    private String name;
+
+    @NotBlank(message = "은행을 선택해주세요.")
+    @Enumerated(EnumType.STRING)
+    private Bank bankId;
+
+    private String accountNumber;
+
+    private String failCount; // 로그인 실패 횟수
+
+    private boolean accountExpired;
+
+    private boolean accountLocked;
+
+    private LocalDateTime lastLoginAt;
+
+    @Column(length = 30, nullable = false)
+    private String mainPhoneNumber;
+
+    private LocalDateTime joinedAt;
+
+    private boolean emailVerified;
 }
