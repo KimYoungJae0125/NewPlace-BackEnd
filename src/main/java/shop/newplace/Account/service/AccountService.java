@@ -8,8 +8,6 @@ import shop.newplace.Account.model.dto.response.SignupResponseDto;
 import shop.newplace.Account.model.entity.Account;
 import shop.newplace.Account.repository.AccountRepository;
 
-import java.util.Optional;
-
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -24,10 +22,10 @@ public class AccountService {
         accountRepository.save(account);
         return SignupResponseDto.builder()
                 .userId(account.getUserId())
-                .loginEmail(account.getLoginEmail())
+                .email(account.getEmail())
                 .password(account.getPassword())
                 .name(account.getName())
-                .bankId(account.getBankId())
+//                .bankId(account.getBankId())
                 .accountNumber(account.getAccountNumber())
                 .failCount(account.getFailCount())
                 .accountExpired(account.isAccountExpired())

@@ -23,15 +23,15 @@ import java.time.LocalDateTime;
 @Builder
 public class SignUpRequestDto {
     @Id
-    private Long userId;
+    private Long id;
 
     @Email(message = "Email 형식이 아닙니다.")
     @NotBlank(message = "Email을 입력해주세요.")
     private String email;
 
     @NotBlank
-    @Length(min = 8, max = 12)
-    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,12}$", message = "최소 8 자 및 최대 12 자인 하나 이상의 대문자, 하나의 소문자, 하나의 숫자 및 하나의 특수 문자를 포함해서 입력해주세요")
+    //@Length(min = 8, max = 12)
+    //@Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,12}$", message = "최소 8 자 및 최대 12 자인 하나 이상의 대문자, 하나의 소문자, 하나의 숫자 및 하나의 특수 문자를 포함해서 입력해주세요")
     private String password;
 
     @NotBlank(message = "이름을 입력해주세요")
@@ -40,7 +40,7 @@ public class SignUpRequestDto {
 
     @NotBlank(message = "은행을 선택해주세요.")
     @Enumerated(EnumType.STRING)
-    private Bank bankId;
+    private String bankId;
 
     private String accountNumber;
 
@@ -61,11 +61,11 @@ public class SignUpRequestDto {
 
     public Account toEntity(){
         return Account.builder()
-                .userId(userId)
-                .loginEmail(email)
+                .userId(id)
+                .email(email)
                 .password(password)
                 .name(name)
-                .bankId(bankId)
+//                .bankId(bankId)
                 .accountNumber(accountNumber)
                 .failCount(failCount)
                 .accountExpired(accountExpired)

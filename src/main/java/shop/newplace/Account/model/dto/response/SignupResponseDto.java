@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class SignupResponseDto {
     private Long userId;
-    private String loginEmail;
+    private String email;
     private String password;
     private String name;
     private Bank bankId;

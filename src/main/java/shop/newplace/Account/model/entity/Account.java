@@ -18,7 +18,7 @@ public class Account {
     private Long userId;
 
     @Column(unique = true, length = 50, nullable = false)
-    private String loginEmail;
+    private String email;
 
     @Column(length = 12, nullable = false)
     private String password;
@@ -32,7 +32,7 @@ public class Account {
     @Column(length = 30, nullable = true)
     private String accountNumber;
 
-    @Column(length = 10, nullable = false)
+    @Column(length = 10)
     private String failCount;
 
     private boolean accountExpired;
