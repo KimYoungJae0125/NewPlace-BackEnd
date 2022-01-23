@@ -1,19 +1,30 @@
-package shop.newplace.Account.model.dto;
+package shop.newplace.Account.model.dto.request;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
+import shop.newplace.Account.model.entity.Account;
 import shop.newplace.Bank.model.dto.Bank;
 
 import javax.persistence.Column;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.Id;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDateTime;
 
 @Data
-public class SignUpForm {
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class SignUpRequestDto {
+    @Id
+    private Long userId;
+
     @Email(message = "Email 형식이 아닙니다.")
     @NotBlank(message = "Email을 입력해주세요.")
     private String email;
@@ -47,4 +58,22 @@ public class SignUpForm {
     private LocalDateTime joinedAt;
 
     private boolean emailVerified;
+
+    public Account toEntity(){
+        return Account.builder()
+                .userId(userId)
+                .loginEmail(email)
+                .password(password)
+                .name(name)
+                .bankId(bankId)
+                .accountNumber(accountNumber)
+                .failCount(failCount)
+                .accountExpired(accountExpired)
+                .accountLocked(accountLocked)
+                .lastLoginAt(lastLoginAt)
+                .mainPhoneNumber(mainPhoneNumber)
+                .joinedAt(joinedAt)
+                .emailVerified(emailVerified)
+                .build();
+    }
 }

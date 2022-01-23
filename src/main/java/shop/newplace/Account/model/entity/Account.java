@@ -46,5 +46,6 @@ public class Account {
 
     private LocalDateTime joinedAt;
 
+    @Column
     private boolean emailVerified;
 }
