@@ -47,20 +47,4 @@ public class Account {
     private LocalDateTime joinedAt;
 
     private boolean emailVerified;
-
-    @Builder
-    public Account(String loginEmail, String password, String name, Bank bankId, String accountNumber, String failCount, boolean accountExpired, boolean accountLocked, LocalDateTime lastLoginAt, String mainPhoneNumber, LocalDateTime joinedAt, boolean emailVerified){
-        this.loginEmail = loginEmail;
-        this.password = password;
-        this.name = name;
-        this.bankId = bankId;
-        this.accountNumber = accountNumber;
-        this.failCount = failCount;
-        this.accountExpired = accountExpired;
-        this.accountLocked = accountLocked;
-        this.lastLoginAt = lastLoginAt;
-        this.mainPhoneNumber = mainPhoneNumber;
-        this.joinedAt = joinedAt;
-        this.emailVerified = emailVerified;
-    }
 }

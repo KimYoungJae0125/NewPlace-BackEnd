@@ -29,14 +29,4 @@ public class Profile {
 
     @Column(length = 11)
     private String phoneNumber;
-
-    @Builder
-    public Profile(String nickname, String email, String introduction, Bank bankId, String accountNumber, String phoneNumber){
-        this.nickname = nickname;
-        this.email = email;
-        this.introduction = introduction;
-        this.bankId = bankId;
-        this.accountNumber = accountNumber;
-        this.phoneNumber = phoneNumber;
-    }
 }
