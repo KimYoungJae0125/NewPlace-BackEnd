@@ -10,6 +10,11 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.security.core.GrantedAuthority;
@@ -28,7 +33,7 @@ import shop.newplace.common.entity.BaseEntity;
 
 @Entity
 @Getter
-@EqualsAndHashCode(of = "userId")
+@EqualsAndHashCode(of = "USER_ID")
 @Builder @AllArgsConstructor @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
 @DynamicUpdate
@@ -36,17 +41,24 @@ public class Users extends BaseEntity implements UserDetails {
 	
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userId;
+    @Column(name = "USER_ID")
+    private Long id;
+    
+    @OneToMany
+	@JoinTable(name = "USERS_PROFILE"
+	 , joinColumns = @JoinColumn(name = "USER_ID")
+	 , inverseJoinColumns = @JoinColumn(name = "PROFILE_ID"))
+    private List<Profiles> profiles = new ArrayList<Profiles>();
 
     @Column(unique = true, name = "LOGIN_EMAIL", length = 50, nullable = false)
     private String loginEmail;
-
+    
     private boolean emailVerified;
 
     @Column(length = 1000, nullable = false)
     private String password;
 
-    @Column(length = 20, nullable = false)
+    @Column(length = 30, nullable = false)
     private String name;
     
     @Column(length = 30)
@@ -60,7 +72,7 @@ public class Users extends BaseEntity implements UserDetails {
     
     private LocalDateTime lastLoginTime;
     
-    @Column(length = 11, nullable = false)
+    @Column(length = 30, nullable = false)
     private String mainPhoneNumber;
     
     private Boolean accountNonExpired;
@@ -68,6 +80,7 @@ public class Users extends BaseEntity implements UserDetails {
     private Boolean accountNonLocked;
     
     private String authId;
+    
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -77,7 +90,7 @@ public class Users extends BaseEntity implements UserDetails {
     		roles.add(new SimpleGrantedAuthority(role));
     	}
     	
-    	// TODO Auto-generated method stub
+    	// TODO 권한을 어떻게 넣을지
     	return roles;
     }
     
@@ -114,7 +127,6 @@ public class Users extends BaseEntity implements UserDetails {
     	// TODO Auto-generated method stub
     	return true;
     }
-
 
 
 }

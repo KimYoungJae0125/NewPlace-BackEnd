@@ -1,15 +1,18 @@
 package shop.newplace.Users.service;
 
-import org.springframework.security.core.userdetails.UserDetailsService;
-
-import shop.newplace.Users.model.dto.LogInForm;
+import shop.newplace.Users.model.dto.JwtForm;
+import shop.newplace.Users.model.dto.ProfileSignUpForm;
+import shop.newplace.Users.model.dto.SignInForm;
 import shop.newplace.Users.model.dto.SignUpForm;
+import shop.newplace.Users.model.entity.Profiles;
+import shop.newplace.Users.model.entity.Users;
 
-public interface UsersService extends UserDetailsService {
+public interface UsersService {
 	
-	public int signUp(SignUpForm signUpForm);
+	public Users signUp(SignUpForm signUpForm) throws Exception;
 
-	public String login(LogInForm logInForm);
+	public JwtForm signIn(SignInForm logInForm) throws Exception;
 
+	public Profiles profileSignUp(ProfileSignUpForm profileSignUpForm) throws Exception;
 
 }

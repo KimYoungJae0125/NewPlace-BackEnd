@@ -5,117 +5,170 @@ import java.util.Optional;
 
 import javax.transaction.Transactional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import shop.newplace.Users.model.dto.LogInForm;
+import shop.newplace.Users.model.dto.JwtForm;
+import shop.newplace.Users.model.dto.ProfileSignUpForm;
+import shop.newplace.Users.model.dto.SignInForm;
 import shop.newplace.Users.model.dto.SignUpForm;
+import shop.newplace.Users.model.entity.Profiles;
 import shop.newplace.Users.model.entity.Users;
+import shop.newplace.Users.model.repository.ProfilesRepository;
 import shop.newplace.Users.model.repository.UsersRepository;
+import shop.newplace.Users.token.JwtTokenProvider;
 import shop.newplace.common.role.Role;
+import shop.newplace.common.util.CipherUtil;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class UsersServiceImplement implements UsersService {
 	
-	Logger logger = LoggerFactory.getLogger(UsersServiceImplement.class);
+	private final UsersRepository usersRepository;
+
+	private final ProfilesRepository profilesRepository;
 	
-	@Autowired
-	UsersRepository usersRepository;
+	private final PasswordEncoder passwordEncoder;
 	
-	@Autowired
-	private PasswordEncoder passwordEncoder;
+	private final AuthenticationManager authenticationManager;
 	
-	@Autowired
-	private AuthenticationManager authenticationManager;
+	private final JwtTokenProvider jwtTokenProvider;
 	
-	@Override
-	public Users loadUserByUsername(String loginEmail) throws UsernameNotFoundException {
-		 Users usersInfo = usersRepository.findByLoginEmail(loginEmail)
-							  .orElseThrow(() -> new UsernameNotFoundException(loginEmail + "은 등록되지 않은 이메일입니다."));
-	
-		 Users usersParam = Users.builder()
-				 				 .userId(usersInfo.getUserId())
-								 .name(usersInfo.getName())
-								 .loginEmail(usersInfo.getLoginEmail())
-								 .password(usersInfo.getPassword())
-								 .mainPhoneNumber(usersInfo.getMainPhoneNumber())
-								 .accountNonExpired(true)
-								 .accountNonLocked(true)
-								 .bankId(usersInfo.getBankId())
-								 .accountNumber(usersInfo.getAccountNumber())
-								 .failCount("0")
-								 .lastLoginTime(LocalDateTime.now())
-								 .authId(usersInfo.getAuthId())
-								 .build();
-		 
-		 usersRepository.save(usersParam);
-		 
-		 return usersParam;
-	}
-	
+	private final CipherUtil.Email cipherEmail;
+	private final CipherUtil.Name cipherName;
+	private final CipherUtil.Phone cipherPhone;
+	private final CipherUtil.BankId cipherBankId;
+	private final CipherUtil.AccountNumber cipherAccountNumber;
 	
 	@Override
 	@Transactional
-	public int signUp(SignUpForm signUpForm) {
+	public Users signUp(SignUpForm signUpForm) throws Exception {
 		Optional<Users> userLoginEmail = usersRepository.findByLoginEmail(signUpForm.getLoginEmail());
-										
-		logger.info("userLoginEmail : " + userLoginEmail);
-		logger.info("encoder before : " + signUpForm.getPassword());
-		String encodedPassword = passwordEncoder.encode(signUpForm.getPassword());
+		log.info("userLoginEmail : " + userLoginEmail);
+		log.info("encoder before : " + signUpForm.getPassword());
+		String name				 = cipherName.encrypt(signUpForm.getName());
+		String loginEmail 		 = cipherEmail.encrypt(signUpForm.getLoginEmail());
+		String mainPhoneNumber 	 = cipherPhone.encrypt(signUpForm.getMainPhoneNumber());
+		String encodedPassword 	 = passwordEncoder.encode(signUpForm.getPassword());
+		String bankId 			 = cipherBankId.encrypt(signUpForm.getBankId());
+		String accountNumber  	 = cipherAccountNumber.encrypt(signUpForm.getAccountNumber());
 		Users usersParam = Users.builder()
-									.name(signUpForm.getName())
-									.loginEmail(signUpForm.getLoginEmail())
-									.password(encodedPassword)
-									.mainPhoneNumber(signUpForm.getMainPhoneNumber())
-									.accountNonExpired(true)
-									.accountNonLocked(true)
-									.bankId(signUpForm.getBankId())
-									.accountNumber(signUpForm.getAccountNumber())
-									.failCount("0")
-									.lastLoginTime(null)
-									.authId(Role.USER.getRoleValue())
-									.build();
-		logger.info("encoder after: " + encodedPassword);
+								.name(name)
+								.loginEmail(loginEmail)
+								.password(encodedPassword)
+								.mainPhoneNumber(mainPhoneNumber)
+								.accountNonExpired(true)
+								.accountNonLocked(true)
+								.bankId(bankId)
+								.accountNumber(accountNumber)
+								.failCount("0")
+								.lastLoginTime(null)
+								.authId(Role.USER.getRoleValue())
+								.build();
+		log.info("encoder after: " + encodedPassword);
 		Users result = usersRepository.save(usersParam);
 		
-		logger.info("==============================");
-		logger.info(result.toString());
-		logger.info("==============================");
+		log.info("==============================");
+		log.info(result.toString());
+		log.info("==============================");
 		
 //		accountEmail.orElseThrow(() -> new UsernameNotFoundException("not found : " + accountEmail));
 		
-		return 0;
+		return result;
 	}
 	
 	@Override
-	public String login(LogInForm logInForm) {
-		Authentication authentication = authenticationManager.authenticate(
-						new UsernamePasswordAuthenticationToken(logInForm.getLoginEmail()
-															  , logInForm.getPassword()));
+	public JwtForm signIn(SignInForm logInForm) throws Exception {
 		
-		SecurityContextHolder.getContext().setAuthentication(authentication);
+		Users usersInfo = usersRepository.findByLoginEmail(cipherEmail.encrypt(logInForm.getLoginEmail()))
+												   .orElseThrow(() -> new UsernameNotFoundException(logInForm.getLoginEmail() + "해당 사용자가 존재하지 않습니다"));
+
+		Users joinUsersInfo = usersRepository.findAllByLoginEmail(cipherEmail.encrypt(logInForm.getLoginEmail()))
+				.orElseThrow();
+
+		String name 			= cipherName.decrypt(usersInfo.getName());
+		String loginEmail 		= cipherEmail.decrypt(usersInfo.getLoginEmail());
+		String mainPhoneNumber 	= cipherPhone.decrypt(usersInfo.getMainPhoneNumber());
+		String bankId 			= cipherBankId.decrypt(usersInfo.getBankId());
+		String accountNumber 	= cipherAccountNumber.decrypt(usersInfo.getAccountNumber());
 		
-		Users principal = (Users) authentication.getPrincipal();
+		//modelMapper
+		Users usersParam = Users.builder()
+						.id(usersInfo.getId())
+						.name(usersInfo.getName())
+						.loginEmail(usersInfo.getLoginEmail())
+						.password(usersInfo.getPassword())
+						.mainPhoneNumber(usersInfo.getMainPhoneNumber())
+						.accountNonExpired(true)
+						.accountNonLocked(true)
+						.bankId(usersInfo.getBankId())
+						.accountNumber(usersInfo.getAccountNumber())
+						.failCount("0")
+						.lastLoginTime(LocalDateTime.now())
+						.authId(usersInfo.getAuthId())
+						.build();
 		
-		LogInForm logInFormParam = LogInForm.builder()
-								.loginEmail(logInForm.getLoginEmail())
-								.password(passwordEncoder.encode(logInForm.getPassword()))
-								.build();
+		usersRepository.save(usersParam);
 		
-		return principal.getUsername();
+		Users users = Users.builder()
+						   .name(name)
+						   .loginEmail(loginEmail)
+						   .mainPhoneNumber(mainPhoneNumber)
+						   .bankId(bankId)
+						   .accountNumber(accountNumber)
+						   .build();
 		
+		String token = jwtTokenProvider.createToken(loginEmail, usersInfo.getAuthorities());
+		String resCd = "0000";
+		String resMsg = "로그인 성공";
+				
+		JwtForm jwtForm = JwtForm.builder()
+		  						 .token(token)
+								 .resCd(resCd)
+								 .resMsg(resMsg)
+								 .build();
+		
+		return jwtForm;
 	}
 	
+	@Override
+	@Transactional
+	public Profiles profileSignUp(ProfileSignUpForm profileSignUpForm) throws Exception {
+		
+		Long userId			  	 = profileSignUpForm.getUserId();
+		String nickName			 = profileSignUpForm.getNickName();
+		String introduction		 = profileSignUpForm.getIntroduction();
+		String email 	 		 = cipherEmail.encrypt(Optional.ofNullable(profileSignUpForm.getEmail()).orElse(""));
+		String phoneNumber 	 	 = cipherPhone.encrypt(Optional.ofNullable(profileSignUpForm.getPhoneNumber()).orElse(""));
+		String bankId 			 = cipherBankId.encrypt(Optional.ofNullable(profileSignUpForm.getBankId()).orElse(""));
+		String accountNumber  	 = cipherAccountNumber.encrypt(Optional.ofNullable(profileSignUpForm.getAccountNumber()).orElse(""));
+		Users users = usersRepository.findById(userId).get();
+		
+		
+		Profiles profilesParam = Profiles.builder()
+										 .users(users)
+										 .nickName(nickName)
+										 .email(email)
+										 .phoneNumber(phoneNumber)
+										 .bankId(bankId)
+										 .accountNumber(accountNumber)
+										 .introduction(introduction)
+										 .authId(Role.USER.getRoleValue())
+										 .build();
+		Profiles result = profilesRepository.save(profilesParam);
+		
+		log.info("==============================");
+		log.info(result.toString());
+		log.info("==============================");
+		
+		
+		return result;
+	}
 	
 
 }

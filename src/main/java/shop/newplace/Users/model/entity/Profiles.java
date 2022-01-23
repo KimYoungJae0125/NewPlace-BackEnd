@@ -1,17 +1,17 @@
 package shop.newplace.Users.model.entity;
 
-import java.util.Collection;
+import java.io.Serializable;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
-import org.springframework.data.mapping.AccessOptions.GetOptions.GetNulls;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.hibernate.annotations.DynamicUpdate;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -22,23 +22,25 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import shop.newplace.common.entity.BaseEntity;
 
-//@Entity
-//@Getter
-//@EqualsAndHashCode(of = "profileId")
-//@Builder @AllArgsConstructor @NoArgsConstructor(access = AccessLevel.PROTECTED)
-//@ToString
-public class Profiles extends BaseEntity implements UserDetails {
+@Entity
+@Getter
+@EqualsAndHashCode(of = "PROFILE_ID")
+@Builder @AllArgsConstructor @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@ToString
+@DynamicUpdate
+public class Profiles extends BaseEntity implements Serializable {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long profileId;
-	
-	@Id
-	@OneToMany
-	private Long UserId;
+	@Column(name = "PROFILE_ID")
+	private Long id;
+
+	@ManyToOne
+	@JoinColumn(name = "USER_ID")
+	private Users users;
 	
 	@Column(length = 10, nullable = false)
-	private String NickName;
+	private String nickName;
 	
 	@Column(length = 50)
 	private String email;
@@ -55,50 +57,7 @@ public class Profiles extends BaseEntity implements UserDetails {
 	@Column(length = 11)
 	private String phoneNumber;
 	
-	@Column(length = 3)
+	@Column(length = 10)
 	private String authId;
-
-	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getPassword() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getUsername() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public boolean isAccountNonExpired() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean isAccountNonLocked() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean isCredentialsNonExpired() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean isEnabled() {
-		// TODO Auto-generated method stub
-		return false;
-	}
 	
-
 }

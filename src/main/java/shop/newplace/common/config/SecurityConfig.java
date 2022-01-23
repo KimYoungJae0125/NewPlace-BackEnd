@@ -1,6 +1,5 @@
 package shop.newplace.common.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,26 +10,30 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.context.SecurityContextPersistenceFilter;
 
-import shop.newplace.Users.service.UsersService;
+import lombok.RequiredArgsConstructor;
+import shop.newplace.Users.service.CustomUserDetailService;
+import shop.newplace.Users.token.CustomAuthenticationEntryPoint;
+import shop.newplace.Users.token.JwtAuthenticationFilter;
+import shop.newplace.Users.token.JwtBeforeFilter;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-
-
-	@Autowired
-	private UsersService usersService;
+	private final CustomUserDetailService customUserDetailService;
 	
-	@Autowired
-	private CustomAuthenticationProvider authProvider;
+	private final CustomAuthenticationProvider authProvider;
 	
 	private final String[] MVC_MATCHERS_PATTERNS = {
 													"/"
-										 		  , "users/*"
+												  , "/users"
+										 		  , "users/**"
 										 			};
 	
     @Override
@@ -42,20 +45,26 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-    	//Post 테스트용 실 운영에서는 제거해야함
-    	http.csrf().disable();
-        http.authorizeRequests()
-                .mvcMatchers(HttpMethod.GET, MVC_MATCHERS_PATTERNS).permitAll()
-                .mvcMatchers(HttpMethod.POST, MVC_MATCHERS_PATTERNS).permitAll()
-                .anyRequest().authenticated()
+        http.httpBasic().disable()	//security 기본 로그인페이지 사용 안 함
+        	.csrf().disable()		//Rest API 사용으로 인해 csrf 사용 안 함
+        	.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)	//JWT인증 사용할것이므로 세션을 사용 함
         	.and()
-        		.formLogin()
-        			.loginPage("/users/login")
-        			.usernameParameter("loginEmail")
-        			.passwordParameter("password")
-        			.defaultSuccessUrl("/users/loginSuccess")
-        			.failureUrl("/users/loginFailure")
+            	.exceptionHandling().authenticationEntryPoint(new CustomAuthenticationEntryPoint())
+            .and()
+            	.addFilterBefore(new JwtBeforeFilter(), SecurityContextPersistenceFilter.class)
+            	.addFilter(new JwtAuthenticationFilter(authenticationManager()))
+            	.authorizeRequests()
+            	.mvcMatchers(HttpMethod.GET, MVC_MATCHERS_PATTERNS).permitAll()
+            	.mvcMatchers(HttpMethod.POST, MVC_MATCHERS_PATTERNS).permitAll()
+            	.anyRequest().authenticated()
         	.and()
+//        		.formLogin()
+//        			.loginPage("/users/login")
+//        			.usernameParameter("loginEmail")
+//        			.passwordParameter("password")
+//        			.defaultSuccessUrl("/users/loginSuccess")
+//        			.failureUrl("/users/loginFailure")
+//        	.and()
         		.logout()
         			.logoutSuccessUrl("/")
         			.invalidateHttpSession(true);
@@ -63,7 +72,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-    	auth.userDetailsService(usersService)
+    	auth.userDetailsService(customUserDetailService)
     		.passwordEncoder(getPasswordEncoder())
     		.and()
     		.authenticationProvider(authProvider);

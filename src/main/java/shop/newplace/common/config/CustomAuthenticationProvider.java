@@ -1,7 +1,5 @@
 package shop.newplace.common.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.CredentialsExpiredException;
@@ -10,18 +8,18 @@ import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import lombok.RequiredArgsConstructor;
 import shop.newplace.Users.model.entity.Users;
-import shop.newplace.Users.service.UsersService;
+import shop.newplace.Users.service.CustomUserDetailService;
 
 @Component
+@RequiredArgsConstructor
 public class CustomAuthenticationProvider implements AuthenticationProvider {
 
-	@Autowired
-	private UsersService usersService;
+	private final CustomUserDetailService customUserDetailService;
 	
 	private PasswordEncoder passwordEncoder;
 
@@ -31,7 +29,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 		String loginEmail = authentication.getName();
 		String userPassword = (String) authentication.getCredentials();
 		
-		Users users = (Users) usersService.loadUserByUsername(loginEmail);
+		Users users = (Users) customUserDetailService.loadUserByUsername(loginEmail);
 		
 		if(users == null || !loginEmail.equals(users.getLoginEmail())
 						 || !passwordEncoder.matches(userPassword, users.getPassword())) {

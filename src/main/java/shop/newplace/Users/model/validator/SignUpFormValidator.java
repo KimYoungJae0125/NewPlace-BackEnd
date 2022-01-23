@@ -8,17 +8,19 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import shop.newplace.Users.model.dto.SignUpForm;
 import shop.newplace.Users.model.repository.UsersRepository;
+import shop.newplace.common.util.CipherUtil;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class SignUpFormValidator implements Validator {
 	
-	Logger logger = LoggerFactory.getLogger(SignUpFormValidator.class);
+	private final UsersRepository userRepository;
 
-	@Autowired
-	private UsersRepository userRepository;
+	private final CipherUtil.Email cipherEmail;
 	
 	@Override
 		public boolean supports(Class<?> clazz) {
@@ -29,7 +31,14 @@ public class SignUpFormValidator implements Validator {
 	public void validate(Object target, Errors errors) {
 		SignUpForm signUpForm = (SignUpForm)target;
 		
-		if(userRepository.existsByLoginEmail(signUpForm.getLoginEmail())) {
+		String loginEmail = "";
+		try {
+			loginEmail = cipherEmail.encrypt(signUpForm.getLoginEmail());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		if(userRepository.existsByLoginEmail(loginEmail)) {
 			errors.rejectValue("loginEmail", "invalid.loginEmail",
 					new Object[] {signUpForm.getLoginEmail()}, "이미 사용중인 이메일입니다.");
 		}
