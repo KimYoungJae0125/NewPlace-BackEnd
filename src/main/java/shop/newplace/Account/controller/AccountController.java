@@ -24,8 +24,6 @@ public class AccountController {
 
     @PostMapping("/signup")
     public ResponseEntity signup(@RequestBody SignUpRequestDto signUpRequestDto) {
-        //return ResponseEntity.created(URI.create("/users/" + signUpRequestDto.getUserId())).body(accountService.insertAccount(signUpRequestDto));
-        System.out.println("지점1");
         return ResponseEntity.status(HttpStatus.OK).body(accountService.insertAccount(signUpRequestDto));
     }
 

@@ -1,9 +1,6 @@
 package shop.newplace.Account.model.dto.request;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.validator.constraints.Length;
 import shop.newplace.Account.model.entity.Account;
 import shop.newplace.Bank.model.dto.Bank;
@@ -17,7 +14,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDateTime;
 
-@Data
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -75,5 +72,9 @@ public class SignUpRequestDto {
                 .joinedAt(joinedAt)
                 .emailVerified(emailVerified)
                 .build();
+    }
+
+    public void setEncodedPassword(String password){
+        this.password = password;
     }
 }

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import shop.newplace.Account.model.dto.request.SignUpRequestDto;
 import shop.newplace.Account.model.entity.Account;
@@ -33,15 +34,23 @@ class AccountControllerTest {
     @Autowired
     ObjectMapper objectMapper;
 
-    @DisplayName("컨트롤러를 테스트해보아요")
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @DisplayName("회원가입 테스트")
     @Test
     void signup() throws Exception {
         // given
+        String email = "saysthabout@gmail.com";
+        String rawPassword = "1234";
+        String name = "홍길동";
+        String mainPhoneNumber = "01012341234";
+
         SignUpRequestDto signUpRequestDto = SignUpRequestDto.builder()
-                .email("saysthabout@gmail.com")
-                .password("1234")
-                .name("홍길동")
-                .mainPhoneNumber("01012341234")
+                .email(email)
+                .password(rawPassword)
+                .name(name)
+                .mainPhoneNumber(mainPhoneNumber)
                 .build();
 
         // when
@@ -50,10 +59,16 @@ class AccountControllerTest {
                         .content(objectMapper.writeValueAsString(signUpRequestDto))
                         .with(csrf()))
                 .andExpect(status().isOk());
+        Account account = accountRepository.findByName("홍길동");
 
         // then
-        Account saveAccount = accountRepository.findByName("홍길동");
-        assertNotNull(saveAccount);
+        assertAll(
+                () -> assertNotEquals(rawPassword, account.getPassword()),
+                () -> assertTrue(passwordEncoder.matches(rawPassword, account.getPassword())),
+                () -> assertEquals(email, account.getEmail()),
+                () -> assertEquals(name, account.getName()),
+                () -> assertEquals(mainPhoneNumber, account.getMainPhoneNumber())
+        );
     }
 
     @DisplayName("컨트롤러 테스트")

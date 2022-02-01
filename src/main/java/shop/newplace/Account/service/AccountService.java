@@ -1,6 +1,7 @@
 package shop.newplace.Account.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.newplace.Account.model.dto.request.SignUpRequestDto;
@@ -14,10 +15,12 @@ import shop.newplace.Account.repository.AccountRepository;
 public class AccountService {
 
     private final AccountRepository accountRepository;
+    private final PasswordEncoder passwordEncoder;
 
     //회원가입
     @Transactional
     public SignupResponseDto insertAccount(SignUpRequestDto signUpRequestDto){
+        signUpRequestDto.setEncodedPassword(passwordEncoder.encode(signUpRequestDto.getPassword()));
         Account account = signUpRequestDto.toEntity();
         accountRepository.save(account);
         return SignupResponseDto.builder()
