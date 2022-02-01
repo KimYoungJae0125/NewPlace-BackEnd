@@ -37,17 +37,4 @@ public class AccountService {
                 .joinedAt(account.getJoinedAt())
                 .build();
     }
-    
-    // 회원가입
-//    public SignupResponseDto insertAccount(SignUpRequestDto signUpRequestDto){
-//
-//        Optional<Account> byId = accountRepository.findById(11L);
-//
-//        byId.orElseThrow(new 권한익셉션).getUserId();
-//
-//        return SignupResponse.builder
-//                .id
-//                .email
-//                .build
-//    }
 }

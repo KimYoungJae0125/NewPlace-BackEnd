@@ -1,7 +1,6 @@
 package shop.newplace.Account.model.entity;
 
 import lombok.*;
-import shop.newplace.Account.model.dto.ProfileId;
 import shop.newplace.Bank.model.dto.Bank;
 
 import javax.persistence.*;
@@ -11,8 +10,8 @@ import javax.persistence.*;
 @Builder @AllArgsConstructor @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Profile {
 
-    @EmbeddedId
-    private ProfileId profileId;
+    @Id
+    private Long profileId;
 
     @Column(length = 6, nullable = true)
     private String nickname;
