@@ -55,12 +55,8 @@ public class UsersController {
 
     @PostMapping
     public ResponseEntity createSignUp(@Valid @RequestBody SignUpForm signUpForm) {
-
-    	Users users = usersService.signUp(signUpForm);
-
-    	ResponseMessage body = ResponseMessage.OK(HttpStatus.CREATED.value(), HttpStatus.CREATED.getReasonPhrase(), "회원가입에 성공하였습니다.");
-    	
-        return ResponseEntity.ok().body(body);
+    	usersService.signUp(signUpForm);
+        return ResponseEntity.ok().body(ResponseMessage.OK(HttpStatus.CREATED.value(), HttpStatus.CREATED.getReasonPhrase(), "회원가입에 성공하였습니다."));
     }
 
     @PostMapping("/login")

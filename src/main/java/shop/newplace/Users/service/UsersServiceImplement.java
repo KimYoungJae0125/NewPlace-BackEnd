@@ -28,7 +28,7 @@ import shop.newplace.common.util.CipherUtil;
 @Service
 @RequiredArgsConstructor
 public class UsersServiceImplement implements UsersService {
-	
+
 	private final UsersRepository usersRepository;
 
 	private final ProfilesRepository profilesRepository;
@@ -43,52 +43,67 @@ public class UsersServiceImplement implements UsersService {
 	
 	@Override
 	@Transactional
-	public Users signUp(SignUpForm signUpForm) {
-		Optional<Users> userLoginEmail = usersRepository.findByLoginEmail(signUpForm.getLoginEmail());
-		log.info("userLoginEmail : " + userLoginEmail);
-		log.info("encoder before : " + signUpForm.getPassword());
-		String name				 = CipherUtil.Name.encrypt(signUpForm.getName());
-		String loginEmail 		 = CipherUtil.Email.encrypt(signUpForm.getLoginEmail());
-		String mainPhoneNumber 	 = CipherUtil.Phone.encrypt(signUpForm.getMainPhoneNumber());
-		String encodedPassword 	 = passwordEncoder.encode(signUpForm.getPassword());
-		String bankId 			 = CipherUtil.BankId.encrypt(signUpForm.getBankId());
-		String accountNumber  	 = CipherUtil.AccountNumber.encrypt(signUpForm.getAccountNumber());
-		Users usersParam = Users.builder()
-								.name(name)
-								.loginEmail(loginEmail)
-								.password(encodedPassword)
-								.mainPhoneNumber(mainPhoneNumber)
-								.accountNonExpired(true)
-								.accountNonLocked(true)
-								.bankId(bankId)
-								.accountNumber(accountNumber)
-								.failCount(0)
-								.lastLoginTime(null)
-								.authId(Role.USER.getRoleValue())
-								.build();
+	public void signUp(SignUpForm signUpForm) {
+		signUpForm
+			.setName(CipherUtil.Name.encrypt(signUpForm.getName()))
+			.setLoginEmail(CipherUtil.Email.encrypt(signUpForm.getLoginEmail()))
+			.setMainPhoneNumber(CipherUtil.Phone.encrypt(signUpForm.getMainPhoneNumber()))
+			.setPassword(passwordEncoder.encode(signUpForm.getPassword()))
+			.setBankId(CipherUtil.BankId.encrypt(signUpForm.getBankId()))
+			.setAccountNumber(CipherUtil.AccountNumber.encrypt(signUpForm.getAccountNumber()));
+		usersRepository.save(modelMapper.map(signUpForm, Users.class));
+
+//		Optional<Users> userLoginEmail = usersRepository.findByLoginEmail(signUpForm.getLoginEmail());
+
+
+
+//		log.info("userLoginEmail : " + userLoginEmail);
+//		log.info("encoder before : " + signUpForm.getPassword());
+//		String name				 = CipherUtil.Name.encrypt(signUpForm.getName());
+//		String loginEmail 		 = CipherUtil.Email.encrypt(signUpForm.getLoginEmail());
+//		String mainPhoneNumber 	 = CipherUtil.Phone.encrypt(signUpForm.getMainPhoneNumber());
+//		String encodedPassword 	 = passwordEncoder.encode(signUpForm.getPassword());
+//		String bankId 			 = CipherUtil.BankId.encrypt(signUpForm.getBankId());
+//		String accountNumber  	 = CipherUtil.AccountNumber.encrypt(signUpForm.getAccountNumber());
+
+//		Users usersParam = Users.builder()
+//								.name(name)
+//								.loginEmail(loginEmail)
+//								.password(encodedPassword)
+//								.mainPhoneNumber(mainPhoneNumber)
+//								.accountNonExpired(true)
+//								.accountNonLocked(true)
+//								.bankId(bankId)
+//								.accountNumber(accountNumber)
+//								.failCount(0)
+//								.lastLoginTime(null)
+//								.authId(Role.USER.getRoleValue())
+//								.build();
+
+
 		
-/*		
+/*
 		ModelMapper modelMapper = new ModelMapper();
 		
 		modelMapper.typeMap(Users.class, userLoginEmail.getClass());
 */	
-		log.info("encoder after: " + encodedPassword);
-		Users result = usersRepository.save(usersParam);
-		
-		log.info("==============================");
-		log.info(result.toString());
-		log.info("==============================");
-		
-//		accountEmail.orElseThrow(() -> new UsernameNotFoundException("not found : " + accountEmail));
-		
-		return result;
+//		log.info("encoder after: " + encodedPassword);
+
+//
+//		log.info("==============================");
+//		log.info(result.toString());
+//		log.info("==============================");
+//
+////		accountEmail.orElseThrow(() -> new UsernameNotFoundException("not found : " + accountEmail));
+//
+//		return result;
 	}
 	
 	@Override
 	@Transactional
 	public JwtForm signIn(SignInForm logInForm) {
-		
 		Users usersInfo = usersRepository.findByLoginEmail(CipherUtil.Email.encrypt(logInForm.getLoginEmail())).get();
+		usersInfo.successLogin();
 
 //		String name 			= CipherUtil.Name.decrypt(usersInfo.getName());
 		String loginEmail 		= CipherUtil.Email.decrypt(usersInfo.getLoginEmail());

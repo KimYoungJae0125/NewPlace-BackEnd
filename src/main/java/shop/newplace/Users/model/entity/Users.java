@@ -66,16 +66,16 @@ public class Users extends BaseEntity implements UserDetails {
     private String accountNumber;
 
     @Column(length = 1, nullable = false)
-    private int failCount;
+    private int failCount = 0;
     
     private LocalDateTime lastLoginTime;
     
     @Column(length = 30, nullable = false)
     private String mainPhoneNumber;
     
-    private Boolean accountNonExpired;
+    private Boolean accountNonExpired = true;
     
-    private Boolean accountNonLocked;
+    private Boolean accountNonLocked = true;
     
     private String authId;
     
@@ -124,6 +124,20 @@ public class Users extends BaseEntity implements UserDetails {
     public boolean isEnabled() {
     	// TODO Auto-generated method stub
     	return true;
+    }
+
+
+    public void successLogin() {
+        setLastLogin();
+        resetFailCount();
+    }
+
+    private void setLastLogin() {
+        this.lastLoginTime = LocalDateTime.now();
+    }
+
+    private void resetFailCount() {
+        this.failCount = 0;
     }
 
 

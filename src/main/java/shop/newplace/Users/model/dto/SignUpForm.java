@@ -4,6 +4,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
+import lombok.experimental.Accessors;
 import org.hibernate.validator.constraints.Length;
 
 import lombok.AllArgsConstructor;
@@ -15,6 +16,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor	//Builder와 NoArgsConstructor를 위해 필요함
 @NoArgsConstructor	//json parsing을 위해.. 알아보자
+@Accessors(chain = true)
 public class SignUpForm {
 	
     @NotBlank(message = "이메일은 필수 입력 값입니다.")
@@ -41,5 +43,7 @@ public class SignUpForm {
     @NotBlank(message = "전화번호는 필수 입력 값입니다.")
     @Pattern(regexp = "^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$", message = "전화번호 형식에 맞지 않습니다.")
     private String mainPhoneNumber;
+
+    private String role;
     
 }

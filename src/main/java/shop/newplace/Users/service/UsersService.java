@@ -8,7 +8,7 @@ import shop.newplace.common.advice.exception.ValidFailureException;
 
 public interface UsersService {
 	
-	public Users signUp(SignUpForm signUpForm);
+	void signUp(SignUpForm signUpForm);
 
 	public JwtForm signIn(SignInForm logInForm);
 
