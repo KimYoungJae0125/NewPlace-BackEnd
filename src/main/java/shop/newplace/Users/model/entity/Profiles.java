@@ -1,10 +1,8 @@
 package shop.newplace.Users.model.entity;
 
-import java.io.Serializable;
-import java.util.List;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -24,18 +22,18 @@ import shop.newplace.common.entity.BaseEntity;
 
 @Entity
 @Getter
-@EqualsAndHashCode(of = "PROFILE_ID")
+@EqualsAndHashCode(of = "id")
 @Builder @AllArgsConstructor @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@ToString
+@ToString(exclude = "users")
 @DynamicUpdate
-public class Profiles extends BaseEntity implements Serializable {
+public class Profiles extends BaseEntity {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "PROFILE_ID")
 	private Long id;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "USER_ID")
 	private Users users;
 	

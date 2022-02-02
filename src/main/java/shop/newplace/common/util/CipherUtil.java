@@ -1,29 +1,25 @@
 package shop.newplace.common.util;
 
-import org.springframework.stereotype.Component;
+import java.util.Optional;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-@Component
-@RequiredArgsConstructor
 @Slf4j
 public class CipherUtil {
 	
-	private final AESSecureUtil aesSecureUtil;
-	
-	@Component
-	private class Cipher{
-		private String encrypt(String planeText, int subStrIndex) throws Exception {
+	private static class Cipher{
+		private static String encrypt(String planeText, int subStrIndex) {
 			StringBuilder sb = new StringBuilder();
 
 			if("".equals(planeText)) {
 				sb.append("");
 			} else {
 				String planeTextBefore = planeText.substring(0, subStrIndex);
-				String cipherTextAfter = aesSecureUtil.encrypt(
-						planeText.substring(subStrIndex, planeText.length())
-						);
+				String cipherTextAfter = Optional.ofNullable(
+												AESSecureUtil.encrypt(
+														planeText.substring(subStrIndex, planeText.length())
+														)
+												).orElseThrow();
 				sb.append(planeTextBefore);
 				sb.append(cipherTextAfter);
 			}
@@ -34,7 +30,7 @@ public class CipherUtil {
 			return sb.toString();
 		}
 		
-		private String decrypt(String cipherText, int subStrIndex) throws Exception {
+		private static String decrypt(String cipherText, int subStrIndex)  {
 			
 			StringBuilder sb = new StringBuilder();
 
@@ -42,9 +38,11 @@ public class CipherUtil {
 				sb.append("");
 			} else {
 				String cipherTextBefore = cipherText.substring(0, subStrIndex);
-				String planeTextAfter = aesSecureUtil.decrypt(
-						cipherText.substring(subStrIndex, cipherText.length())													
-						);
+				String planeTextAfter = Optional.ofNullable(
+											AESSecureUtil.decrypt(
+												cipherText.substring(subStrIndex, cipherText.length())													
+												)
+											).orElseThrow();
 				sb.append(cipherTextBefore);
 				sb.append(planeTextAfter);
 			}
@@ -56,88 +54,73 @@ public class CipherUtil {
 		
 	}
 	
-	@Component
-	@RequiredArgsConstructor
-	public class Email {
-		private final Cipher cipherUtil;
-		private final int SUB_STR_INDEX = 4;
+	public static class Email {
+		private final static int SUB_STR_INDEX = 4;
 		
-		public String encrypt(String planeText) throws Exception {
+		public static String encrypt(String planeText) {
 			
-			return cipherUtil.encrypt(planeText, SUB_STR_INDEX);
+			return Cipher.encrypt(planeText, SUB_STR_INDEX);
 		}
 
-		public String decrypt(String cipherText) throws Exception {
+		public static String decrypt(String cipherText) {
 
-			return cipherUtil.decrypt(cipherText, SUB_STR_INDEX);
+			return Cipher.decrypt(cipherText, SUB_STR_INDEX);
 		}
 	}
 
-	@Component
-	@RequiredArgsConstructor
-	public class Phone {
-		private final Cipher cipherUtil;
-		private final int SUB_STR_INDEX = 2;
+	public static class Phone {
+		private final static int SUB_STR_INDEX = 2;
 		
-		public String encrypt(String planeText) throws Exception  {
+		public static String encrypt(String planeText) {
 			
-			return cipherUtil.encrypt(planeText, SUB_STR_INDEX);
+			return Cipher.encrypt(planeText, SUB_STR_INDEX);
 		}
 		
-		public String decrypt(String cipherText) throws Exception  {
+		public static String decrypt(String cipherText) {
 			
-			return cipherUtil.decrypt(cipherText, SUB_STR_INDEX);
+			return Cipher.decrypt(cipherText, SUB_STR_INDEX);
 		}
 	}
 
-	@Component
-	@RequiredArgsConstructor
-	public class Name {
-		private final Cipher cipherUtil;
-		private final int SUB_STR_INDEX = 1;
+	public static class Name {
+		private final static int SUB_STR_INDEX = 1;
 
-		public String encrypt(String planeText) throws Exception  {
+		public static String encrypt(String planeText) {
 			
-			return cipherUtil.encrypt(planeText, SUB_STR_INDEX);
+			return Cipher.encrypt(planeText, SUB_STR_INDEX);
 		}
 		
-		public String decrypt(String cipherText) throws Exception  {
+		public static String decrypt(String cipherText) {
 			
-			return cipherUtil.decrypt(cipherText, SUB_STR_INDEX);
+			return Cipher.decrypt(cipherText, SUB_STR_INDEX);
 		}
 	}
 
-	@Component
-	@RequiredArgsConstructor
-	public class BankId {
-		private final Cipher cipherUtil;
-		private final int SUB_STR_INDEX = 1;
+	public static class BankId {
+		private final static int SUB_STR_INDEX = 1;
 
-		public String encrypt(String planeText) throws Exception  {
+		public static String encrypt(String planeText) {
 
-			return cipherUtil.encrypt(planeText, SUB_STR_INDEX);
+			return Cipher.encrypt(planeText, SUB_STR_INDEX);
 		}
 		
-		public String decrypt(String cipherText) throws Exception  {
+		public static String decrypt(String cipherText) {
 
-			return cipherUtil.decrypt(cipherText, SUB_STR_INDEX);
+			return Cipher.decrypt(cipherText, SUB_STR_INDEX);
 		}
 	}
 
-	@Component
-	@RequiredArgsConstructor
-	public class AccountNumber {
-		private final Cipher cipherUtil;
-		private final int SUB_STR_INDEX = 3;
+	public static class AccountNumber {
+		private final static int SUB_STR_INDEX = 3;
 
-		public String encrypt(String planeText) throws Exception  {
+		public static String encrypt(String planeText)  {
 			
-			return cipherUtil.encrypt(planeText, SUB_STR_INDEX);
+			return Cipher.encrypt(planeText, SUB_STR_INDEX);
 		}
 		
-		public String decrypt(String cipherText) throws Exception  {
+		public static String decrypt(String cipherText) {
 			
-			return cipherUtil.decrypt(cipherText, SUB_STR_INDEX);
+			return Cipher.decrypt(cipherText, SUB_STR_INDEX);
 		}
 	}
 }

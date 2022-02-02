@@ -32,6 +32,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	private final String[] MVC_MATCHERS_PATTERNS = {
 													"/"
+												  , "/swagger-ui/**"
+												  , "/swagger-resources/**"
+												  , "/v3/api-docs"
 												  , "/users"
 										 		  , "users/**"
 										 			};

@@ -22,8 +22,12 @@ public class JwtBeforeFilter implements Filter {
 		HttpServletRequest req = (HttpServletRequest) request;
 		HttpServletResponse res = (HttpServletResponse) response;
 		System.out.println(req.getRequestURI());
-		if("POST".equals(req.getMethod())) {
-			if(!req.getRequestURI().contains("/users")) {
+		String reqPathName = req.getRequestURI();
+		if(reqPathName.contains("swagger") || reqPathName.contains("api-docs") ) {
+			chain.doFilter(req, res);
+			System.out.println("swaggerTest");
+		} else if ("POST".equals(req.getMethod())) {
+			if(!reqPathName.contains("/users")) {
 				String headerAuth = req.getHeader("Authorization");
 				log.info("Jwt 확인 : " + headerAuth);
 				if("cos".equals(headerAuth)) {
@@ -33,7 +37,7 @@ public class JwtBeforeFilter implements Filter {
 				log.info("Filter pass");
 				chain.doFilter(req, res);
 			}
-			
+				
 		}
 		
 		

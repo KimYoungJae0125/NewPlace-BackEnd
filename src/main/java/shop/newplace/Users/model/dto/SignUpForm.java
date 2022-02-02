@@ -6,15 +6,17 @@ import javax.validation.constraints.Pattern;
 
 import org.hibernate.validator.constraints.Length;
 
-import com.sun.istack.NotNull;
-
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Builder
+@AllArgsConstructor	//Builder와 NoArgsConstructor를 위해 필요함
+@NoArgsConstructor	//json parsing을 위해.. 알아보자
 public class SignUpForm {
-
+	
     @NotBlank(message = "이메일은 필수 입력 값입니다.")
     @Email(message = "이메일 형식에 맞지 않습니다.")
     private String loginEmail;

@@ -7,14 +7,12 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.security.core.GrantedAuthority;
@@ -27,15 +25,14 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.ToString;
 import shop.newplace.common.entity.BaseEntity;
 
 @Entity
 @Getter
-@EqualsAndHashCode(of = "USER_ID")
+@EqualsAndHashCode(of = "id")
 @Builder @AllArgsConstructor @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@ToString
+@ToString(exclude = "profiles")
 @DynamicUpdate
 public class Users extends BaseEntity implements UserDetails {
 	
@@ -44,13 +41,14 @@ public class Users extends BaseEntity implements UserDetails {
     @Column(name = "USER_ID")
     private Long id;
     
-    @OneToMany
-	@JoinTable(name = "USERS_PROFILE"
-	 , joinColumns = @JoinColumn(name = "USER_ID")
-	 , inverseJoinColumns = @JoinColumn(name = "PROFILE_ID"))
+    @OneToMany(mappedBy = "users")
+//	@JoinTable(name = "USERS_PROFILE"
+//	 , joinColumns = @JoinColumn(name = "USER_ID")
+//	 , inverseJoinColumns = @JoinColumn(name = "PROFILE_ID"))
+//    @JoinColumn(name = "USER_ID")
     private List<Profiles> profiles = new ArrayList<Profiles>();
 
-    @Column(unique = true, name = "LOGIN_EMAIL", length = 50, nullable = false)
+    @Column(unique = true, name = "LOGIN_EMAIL", length = 500, nullable = false)
     private String loginEmail;
     
     private boolean emailVerified;
@@ -67,8 +65,8 @@ public class Users extends BaseEntity implements UserDetails {
     @Column(length = 30)
     private String accountNumber;
 
-    @Column(length = 30, nullable = false)
-    private String failCount;
+    @Column(length = 1, nullable = false)
+    private int failCount;
     
     private LocalDateTime lastLoginTime;
     
