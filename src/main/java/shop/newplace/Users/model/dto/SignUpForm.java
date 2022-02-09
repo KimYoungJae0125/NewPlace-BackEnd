@@ -1,16 +1,19 @@
 package shop.newplace.Users.model.dto;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
-import lombok.experimental.Accessors;
 import org.hibernate.validator.constraints.Length;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 
 @Data
 @Builder
@@ -44,6 +47,14 @@ public class SignUpForm {
     @Pattern(regexp = "^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$", message = "전화번호 형식에 맞지 않습니다.")
     private String mainPhoneNumber;
 
-    private String role;
+    private int authId;
+    
+    @Builder.Default
+    private List<Integer> roles = new ArrayList<>();
+    
+    public SignUpForm setRoles(int authId) {
+    	roles.add(authId);
+    	return this;
+    }
     
 }

@@ -4,6 +4,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.ArrayList;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,7 +19,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import shop.newplace.Users.model.dto.SignInForm;
+import shop.newplace.Users.model.dto.LogInForm;
 import shop.newplace.Users.model.entity.Users;
 import shop.newplace.Users.model.repository.UsersRepository;
 import shop.newplace.common.role.Role;
@@ -67,7 +69,7 @@ class SignInTest {
     						.accountNumber(accountNumber)
     						.failCount(0)
     						.mainPhoneNumber(mainPhoneNumber)
-    						.authId(Role.USER.getRoleValue())
+    						.authId(Role.USER.getValue())
     						.build();
 
     	Users result = usersRepository.save(users);
@@ -84,7 +86,7 @@ class SignInTest {
     	String loginEmail = "abcdefg@naver.com";
     	String password = "abcdefg!@#1";
 
-    	SignInForm signInForm = SignInForm.builder()
+    	LogInForm signInForm = LogInForm.builder()
     									  .loginEmail(loginEmail)
     									  .password(password)
     									  .build();

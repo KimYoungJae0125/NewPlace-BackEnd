@@ -10,9 +10,11 @@ import shop.newplace.Users.model.entity.Profiles;
 @Builder
 public class JwtForm {
 
-
 	private List<Profiles> profilesList;
 	
-    private String token;
+    private String accesToken;
+    
+    private String refreshToken;
+    
     
 }

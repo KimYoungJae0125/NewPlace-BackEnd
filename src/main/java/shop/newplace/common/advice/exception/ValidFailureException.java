@@ -9,23 +9,10 @@ import lombok.Getter;
 public class ValidFailureException extends RuntimeException {
 
 	private BindingResult bindingResult;
-
-	public ValidFailureException(String msg, Throwable t) {
-		super(msg, t);
-	}
 	
-	public ValidFailureException(String msg) {
-		super(msg);
-	}
-
 	public ValidFailureException(String msg, BindingResult bindingResultParam) {
 		super(msg);
 		this.bindingResult = bindingResultParam;
 	}
 	
-	public ValidFailureException() {
-		super();
-	}
-	
-
 }

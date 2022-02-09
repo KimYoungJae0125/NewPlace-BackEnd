@@ -15,11 +15,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import shop.newplace.Users.model.dto.JwtForm;
 import shop.newplace.Users.model.dto.ProfileSignUpForm;
-import shop.newplace.Users.model.dto.SignInForm;
+import shop.newplace.Users.model.dto.LogInForm;
 import shop.newplace.Users.model.dto.SignUpForm;
 import shop.newplace.Users.model.entity.Profiles;
 import shop.newplace.Users.model.entity.Users;
@@ -33,7 +34,6 @@ import shop.newplace.common.response.ResponseMessage;
 @RestController
 @RequiredArgsConstructor // final인 얘들한테 생성자 주입(AutoWired 효과)
 @RequestMapping("/users")
-@Api
 public class UsersController {
 	
 	private final UsersService usersService;
@@ -53,20 +53,18 @@ public class UsersController {
 		webDataBinder.addValidators(signInFormValidator);
 	}
 
+	@ApiOperation(value = "회원가입", notes = "새로운 사용자의 정보를 등록합니다.")
     @PostMapping
     public ResponseEntity createSignUp(@Valid @RequestBody SignUpForm signUpForm) {
     	usersService.signUp(signUpForm);
         return ResponseEntity.ok().body(ResponseMessage.OK(HttpStatus.CREATED.value(), HttpStatus.CREATED.getReasonPhrase(), "회원가입에 성공하였습니다."));
     }
 
+	@ApiOperation(value = "로그인", notes = "로그인합니다.")
     @PostMapping("/login")
-    public ResponseEntity goCreateLoginForm(@Valid @RequestBody SignInForm signInForm) {
-
+    public ResponseEntity createLogin(@Valid @RequestBody LogInForm signInForm) {
     	JwtForm jwtForm = usersService.signIn(signInForm);
-    	
-    	ResponseMessage body = ResponseMessage.OK(HttpStatus.CREATED.value(), HttpStatus.CREATED.getReasonPhrase(), "로그인 성공하였습니다.", jwtForm);
-
-    	return ResponseEntity.ok().body(body);
+    	return ResponseEntity.ok().body(ResponseMessage.OK(HttpStatus.CREATED.value(), HttpStatus.CREATED.getReasonPhrase(), "로그인 성공하였습니다.", jwtForm));
     }
     
 }

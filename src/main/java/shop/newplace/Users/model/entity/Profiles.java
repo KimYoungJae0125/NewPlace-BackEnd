@@ -1,5 +1,7 @@
 package shop.newplace.Users.model.entity;
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -56,6 +58,6 @@ public class Profiles extends BaseEntity {
 	private String phoneNumber;
 	
 	@Column(length = 10)
-	private String authId;
+	private int authId;
 	
 }

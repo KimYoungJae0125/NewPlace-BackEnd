@@ -4,17 +4,14 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import shop.newplace.common.advice.exception.ValidFailureException;
 
 @Data
 @Builder @AllArgsConstructor @NoArgsConstructor
@@ -62,6 +59,17 @@ public class ResponseMessage<T> {
 							  .description(description)
 							  .errors(ErrorFiled.of(bindingResult))
 							  .build();
+	}
+
+	public static <T> ResponseMessage<T> LOGIN_FAILURE_EXCEPTION_MESSAGE(int statusCode, String responseMessage, String description, List<ErrorFiled> errorFileds){
+		
+		return ResponseMessage.<T>builder()
+				.transactionTime(LocalDateTime.now())
+				.statusCode(statusCode)
+				.responseMessage(responseMessage)
+				.description(description)
+				.errors(errorFileds)
+				.build();
 	}
 
 	public static <T> ResponseMessage<T> NOT_VALID_ERROR(int statusCode, String responseMessage, T data, BindingResult bindingResult){

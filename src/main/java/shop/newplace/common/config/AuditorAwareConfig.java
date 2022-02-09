@@ -2,18 +2,24 @@ package shop.newplace.common.config;
 
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
-import shop.newplace.Users.model.entity.Users;
+import lombok.RequiredArgsConstructor;
+import shop.newplace.Users.token.JwtTokenProvider;
 
 @EnableJpaAuditing
+@RequiredArgsConstructor
 @Configuration
 public class AuditorAwareConfig {
 
-	private Users users;
+	private final HttpServletRequest request;
+	
+	private final JwtTokenProvider jwtTokenProvider;
 	
 	@Bean
 	public AuditorAware<String> auditorAware(){
@@ -21,7 +27,11 @@ public class AuditorAwareConfig {
 			
 			@Override
 			public Optional<String> getCurrentAuditor() {
-				String loginEmail = "admin";
+				String token = jwtTokenProvider.resolveToken(request);
+				String loginEmail = "adimn";
+				if(token != null && jwtTokenProvider.validateToken(token)) {
+					loginEmail = jwtTokenProvider.getLoginEmailByToken(token);
+				}
 				return Optional.of(loginEmail);
 			}
 			

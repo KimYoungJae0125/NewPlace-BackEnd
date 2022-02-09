@@ -1,6 +1,10 @@
 package shop.newplace.common.advice;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -8,8 +12,15 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import shop.newplace.Users.controller.ProfilesController;
 import shop.newplace.Users.controller.UsersController;
+import shop.newplace.common.advice.exception.DisabledUsersException;
+import shop.newplace.common.advice.exception.ExpiredPasswordException;
+import shop.newplace.common.advice.exception.ExpiredUsersException;
+import shop.newplace.common.advice.exception.LockedUsersException;
+import shop.newplace.common.advice.exception.NotFoundUsersException;
+import shop.newplace.common.advice.exception.NotMatchPasswordException;
 import shop.newplace.common.advice.exception.ValidFailureException;
 import shop.newplace.common.response.ResponseMessage;
+import shop.newplace.common.response.ResponseMessage.ErrorFiled;
 
 @RestControllerAdvice(basePackageClasses = {UsersController.class, ProfilesController.class})
 public class UsersExceptionAdvice {
@@ -17,20 +28,89 @@ public class UsersExceptionAdvice {
 	@ExceptionHandler(ValidFailureException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	protected ResponseMessage signUpRValidFailureHandler(ValidFailureException e) {
-
 		e.printStackTrace();
-		
-		return ResponseMessage.VALID_FAILURE_EXCEPTION_MESSAGE(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.getReasonPhrase(), e.getMessage(), e.getBindingResult());
+		return validError(e.getMessage(), e.getBindingResult());
 	}
 	
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	protected ResponseMessage signUpValidFailureExceptionHandler(MethodArgumentNotValidException e) {
-
 		e.printStackTrace();
-
-        return ResponseMessage.VALID_FAILURE_EXCEPTION_MESSAGE(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.getReasonPhrase(), e.getMessage(), e.getBindingResult());
+        return validError(e.getMessage(), e.getBindingResult());
+	}
+	
+	private ResponseMessage validError(String exceptionMessage, BindingResult bindingResult) {
+		return ResponseMessage.VALID_FAILURE_EXCEPTION_MESSAGE(
+				HttpStatus.BAD_REQUEST.value()
+				, HttpStatus.BAD_REQUEST.getReasonPhrase()
+				, exceptionMessage
+				, bindingResult
+				);
+	}
+	
+	@ExceptionHandler(NotFoundUsersException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	protected ResponseMessage notFoundUsersExceptionHandler(NotFoundUsersException e) {
+		e.printStackTrace();		
+		return loginError(e.getMessage(), e.getLoginEmail());
 	}
 
+	@ExceptionHandler(DisabledUsersException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	protected ResponseMessage disabledUsersExceptionHandler(DisabledUsersException e) {
+		e.printStackTrace();		
+		return loginError(e.getMessage(), e.getLoginEmail());
+	}
+
+	@ExceptionHandler(LockedUsersException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	protected ResponseMessage lockedUsersExceptionHandler(LockedUsersException e) {
+		e.printStackTrace();		
+		return loginError(e.getMessage(), e.getLoginEmail());
+	}
+
+	@ExceptionHandler(ExpiredUsersException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	protected ResponseMessage expiredUsersExceptionHandler(ExpiredUsersException e) {
+		e.printStackTrace();		
+		return loginError(e.getMessage(), e.getLoginEmail());
+	}
+	
+	private ResponseMessage loginError(String exceptionMessage, String loginEmail) {
+		return ResponseMessage.LOGIN_FAILURE_EXCEPTION_MESSAGE(
+				HttpStatus.BAD_REQUEST.value()
+				, HttpStatus.BAD_REQUEST.getReasonPhrase()
+				, exceptionMessage
+				, errorFileds(new ErrorFiled("loginEmail", exceptionMessage, loginEmail)));
+	}
+
+	@ExceptionHandler(NotMatchPasswordException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	protected ResponseMessage notMatchPasswordExceptionHandler(NotMatchPasswordException e) {
+		e.printStackTrace();	
+		return passwordError(e.getMessage(), e.getPassword());
+	}
+	
+	@ExceptionHandler(ExpiredPasswordException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	protected ResponseMessage expiredPasswordExceptionHandler(ExpiredPasswordException e) {
+		e.printStackTrace();		
+		return passwordError(e.getMessage(), e.getPassword());
+	}
+	
+
+	private ResponseMessage passwordError(String exceptionMessage, String password) {
+		return ResponseMessage.LOGIN_FAILURE_EXCEPTION_MESSAGE(
+				HttpStatus.BAD_REQUEST.value()
+				, HttpStatus.BAD_REQUEST.getReasonPhrase()
+				, exceptionMessage
+				, errorFileds(new ErrorFiled("password", exceptionMessage, password)));
+	}
+
+	private List<ErrorFiled> errorFileds(ErrorFiled errorFiled){
+		List<ErrorFiled> errorFileds = new ArrayList<ErrorFiled>();
+		errorFileds.add(errorFiled);
+		return errorFileds;
+	}
 
 }
