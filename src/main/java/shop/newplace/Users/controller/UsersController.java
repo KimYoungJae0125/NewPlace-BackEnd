@@ -18,7 +18,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import shop.newplace.Users.model.dto.JwtForm;
+import shop.newplace.Users.model.dto.JwtTokenForm;
 import shop.newplace.Users.model.dto.ProfileSignUpForm;
 import shop.newplace.Users.model.dto.LogInForm;
 import shop.newplace.Users.model.dto.SignUpForm;
@@ -63,7 +63,7 @@ public class UsersController {
 	@ApiOperation(value = "로그인", notes = "로그인합니다.")
     @PostMapping("/login")
     public ResponseEntity createLogin(@Valid @RequestBody LogInForm signInForm) {
-    	JwtForm jwtForm = usersService.signIn(signInForm);
+    	JwtTokenForm jwtForm = usersService.signIn(signInForm);
     	return ResponseEntity.ok().body(ResponseMessage.OK(HttpStatus.CREATED.value(), HttpStatus.CREATED.getReasonPhrase(), "로그인 성공하였습니다.", jwtForm));
     }
     

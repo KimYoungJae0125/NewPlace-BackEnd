@@ -20,10 +20,10 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import lombok.RequiredArgsConstructor;
-import shop.newplace.Users.token.CustomAuthenticationEntryPoint;
 import shop.newplace.Users.token.JwtAuthenticationFilter;
 import shop.newplace.Users.token.JwtBeforeFilter;
 import shop.newplace.Users.token.JwtTokenProvider;
+import shop.newplace.common.security.CustomAuthenticationEntryPoint;
 import shop.newplace.common.security.CustomUserDetailsService;
 
 @Configuration

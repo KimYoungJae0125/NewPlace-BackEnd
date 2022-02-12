@@ -33,7 +33,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
          *
          * JWT 토큰을 만들어서 응답해준다.
          */
-		return super.attemptAuthentication(request, response);
+		return authenticationManger.authenticate(super.attemptAuthentication(request, response));
 	}
 
 }

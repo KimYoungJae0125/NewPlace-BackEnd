@@ -1,4 +1,4 @@
-package shop.newplace.Users.token;
+package shop.newplace.common.security;
 
 import java.io.IOException;
 

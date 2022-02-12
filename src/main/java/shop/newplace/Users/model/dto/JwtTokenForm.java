@@ -8,8 +8,10 @@ import shop.newplace.Users.model.entity.Profiles;
 
 @Data
 @Builder
-public class JwtForm {
+public class JwtTokenForm {
 
+	private Long id;
+	
 	private List<Profiles> profilesList;
 	
     private String accesToken;
