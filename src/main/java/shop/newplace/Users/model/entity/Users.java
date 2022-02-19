@@ -27,6 +27,7 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Singular;
 import lombok.ToString;
 import shop.newplace.common.entity.BaseEntity;
 import shop.newplace.common.role.Role;
@@ -90,10 +91,13 @@ public class Users extends BaseEntity implements UserDetails {
     
     private int authId;
     
-    @Builder.Default
-    @Transient
-    private List<Integer> roles = new ArrayList<>();
+//    @Builder.Default
+//    @Transient
+//    private List<Integer> roles = new ArrayList<>();
     
+    @Singular
+    @Transient
+    private List<Integer> roles;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

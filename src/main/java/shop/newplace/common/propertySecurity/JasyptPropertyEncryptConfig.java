@@ -18,7 +18,7 @@ public class JasyptPropertyEncryptConfig {
 	private String encrpytKey;
 	
 	final static String SECRET_KEY = "NPLACE_SECRETKEY";
-	final static String ALGORITHM = "PBEWithMD5ANndDES";
+	final static String ALGORITHM = "PBEWithMD5AndDES";
 	
 	@Bean("jasyptStringEncryptor")
 	public StringEncryptor stringEncrpytor() {

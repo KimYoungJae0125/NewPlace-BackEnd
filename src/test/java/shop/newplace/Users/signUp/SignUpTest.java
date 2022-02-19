@@ -18,11 +18,14 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import shop.newplace.Users.model.dto.SignUpForm;
 import shop.newplace.Users.model.entity.Users;
 import shop.newplace.Users.model.repository.UsersRepository;
+import shop.newplace.common.role.Role;
 import shop.newplace.common.util.CipherUtil;
 
 @SpringBootTest(properties = "classpath:application-test.yml")
@@ -43,16 +46,18 @@ class SignUpTest {
 //	@Autowired
 //	private WebApplicationContext context;
 
-	String loginEmail = "abcdefg@naver.com";
+	String loginEmail = "uni0125@nplace.dooray.com";
 	String name = "테스터";
 	String password = "abcdefg!@1";
 	String mainPhoneNumber = "01012345678";
 	String bankId = "01";
 	String accountNumber = "12345678";
+	int authId = Role.USER.getValue();
 	
 	
     @BeforeEach
     void setup() {
+    	this.objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
 //    	this.mockMvc = MockMvcBuilders
 //    				   .webAppContextSetup(this.context)
 ////    				   .addFilter(new CharacterEncodingFilter("UTF-8", true))
@@ -66,19 +71,21 @@ class SignUpTest {
     @Test
 //    @Disabled
     void signupTest() throws Exception {
-    	SignUpForm signupForm = SignUpForm.builder()
-    									.name(name)
-    									.loginEmail(loginEmail)
-    									.password(password)
-    									.passwordVerified(password)
-    									.mainPhoneNumber(mainPhoneNumber)
-    									.bankId(bankId)
-    									.accountNumber(accountNumber)
-    									.build();
+    	System.out.println("signUpTest");
+    	
+    	SignUpForm signUpForm = new SignUpForm();
+    	signUpForm.setName(name)
+    			  .setLoginEmail(loginEmail)
+    			  .setPassword(password)
+    			  .setPasswordVerified(password)
+    			  .setMainPhoneNumber(mainPhoneNumber)
+    			  .setBankId(bankId)
+    			  .setAccountNumber(accountNumber)
+    			  .setAuthId(authId);
     	
     	mockMvc.perform(post("/users")
 			    			.contentType(MediaType.APPLICATION_JSON)
-			    			.content(objectMapper.writeValueAsString(signupForm))
+			    			.content(objectMapper.writeValueAsString(signUpForm))
     						)
     					.andExpect(status().isOk())
     					.andDo(print());
@@ -88,7 +95,6 @@ class SignUpTest {
     	Users users = usersList.get(0);
     	assertThat(CipherUtil.Email.decrypt(users.getLoginEmail())).isEqualTo(loginEmail);
     	assertThat(CipherUtil.Name.decrypt(users.getName())).isEqualTo(name);
-    	assertThat(CipherUtil.Name.decrypt(users.getName())).isEqualTo(password);
     	
     	System.out.println("usersList : " + usersList);
     	
@@ -96,8 +102,9 @@ class SignUpTest {
     
     @DisplayName("JSON아닌 형식으로 파라미터 보내기")
     @Test
-//    @Disabled
+    @Disabled
     void signupFailureTest() throws Exception {
+    	System.out.println("signUpFailureTest");
     	
     	mockMvc.perform(post("/users")
     						.param("name", name)
@@ -106,6 +113,7 @@ class SignUpTest {
     						.param("mainPhoneNumber ", mainPhoneNumber)
     						.param("bankId", bankId)
     						.param("accountNumber", accountNumber)
+    						.param("authId", String.valueOf(authId))
     			)
     	.andExpect(status().isBadRequest());
 //    					.andDo(print());
@@ -113,22 +121,23 @@ class SignUpTest {
     
     @DisplayName("회원가입 Valid EmailFailure 테스트")
     @Test
-//    @Disabled
+    @Disabled
     void signupValidEmailFailureTest() throws Exception {
+    	System.out.println("signUpValidEmailFailureTest");
     	
-    	SignUpForm signupForm = SignUpForm.builder()
-    			.name(name)
-    			.loginEmail("abcdefg")
-    			.password(password)
-    			.passwordVerified(password)
-    			.mainPhoneNumber(mainPhoneNumber)
-    			.bankId(bankId)
-    			.accountNumber(accountNumber)
-    			.build();
+    	SignUpForm signUpForm = new SignUpForm();
+    	signUpForm.setName(name)
+    			  .setLoginEmail("abcdefg")
+    			  .setPassword(password)
+    			  .setPasswordVerified(password)
+    			  .setMainPhoneNumber(mainPhoneNumber)
+    			  .setBankId(bankId)
+    			  .setAccountNumber(accountNumber)
+    			  .setAuthId(authId);
     	
     	mockMvc.perform(post("/users")
     			.contentType(MediaType.APPLICATION_JSON)
-    			.content(objectMapper.writeValueAsString(signupForm))
+    			.content(objectMapper.writeValueAsString(signUpForm))
     			)
     	.andExpect(status().isBadRequest());
     	
@@ -136,44 +145,46 @@ class SignUpTest {
     
     @DisplayName("회원가입 Password ValidFailure 테스트")
     @Test
-//    @Disabled
+    @Disabled
     void signupValidPasswordFailureTest() throws Exception {
+    	System.out.println("signUpValidPasswordFailureTest");
     	
-    	SignUpForm signupForm = SignUpForm.builder()
-    			.name(name)
-    			.loginEmail(loginEmail)
-    			.password("abcdefg")
-    			.passwordVerified("abcdefg")
-    			.mainPhoneNumber(mainPhoneNumber)
-    			.bankId(bankId)
-    			.accountNumber(accountNumber)
-    			.build();
+    	SignUpForm signUpForm = new SignUpForm();
+    	signUpForm.setName(name)
+    			  .setLoginEmail(loginEmail)
+    			  .setPassword("abcdefg")
+    			  .setPasswordVerified("abcdefg")
+    			  .setMainPhoneNumber(mainPhoneNumber)
+    			  .setBankId(bankId)
+    			  .setAccountNumber(accountNumber)
+    			  .setAuthId(authId);   	
     	
     	mockMvc.perform(post("/users")
     			.contentType(MediaType.APPLICATION_JSON)
-    			.content(objectMapper.writeValueAsString(signupForm))
+    			.content(objectMapper.writeValueAsString(signUpForm))
     			)
     	.andExpect(status().isBadRequest());
     }
 
     @DisplayName("회원가입 PasswordVerified ValidFailure 테스트")
     @Test
-//    @Disabled
+    @Disabled
     void signupValidPasswordVerifiedFailureTest() throws Exception {
+    	System.out.println("signUpValidPasswordVerifiedFailureTest");
     	
-    	SignUpForm signupForm = SignUpForm.builder()
-    			.name(name)
-    			.loginEmail(loginEmail)
-    			.password(password)
-    			.passwordVerified("abcdefg")
-    			.mainPhoneNumber(mainPhoneNumber)
-    			.bankId(bankId)
-    			.accountNumber(accountNumber)
-    			.build();
+    	SignUpForm signUpForm = new SignUpForm();
+    	signUpForm.setName(name)
+    			  .setLoginEmail(loginEmail)
+    			  .setPassword(password)
+    			  .setPasswordVerified("abcdefg")
+    			  .setMainPhoneNumber(mainPhoneNumber)
+    			  .setBankId(bankId)
+    			  .setAccountNumber(accountNumber)
+    			  .setAuthId(authId);   	    	
     	
     	mockMvc.perform(post("/users")
     			.contentType(MediaType.APPLICATION_JSON)
-    			.content(objectMapper.writeValueAsString(signupForm))
+    			.content(objectMapper.writeValueAsString(signUpForm))
     			)
     	.andExpect(status().isBadRequest());
     	
@@ -181,22 +192,23 @@ class SignUpTest {
 
     @DisplayName("회원가입 Phone ValidFailure 테스트")
     @Test
-//    @Disabled
+    @Disabled
     void signupValidPhoneFailureTest() throws Exception {
+    	System.out.println("signUpValidPhoneFailureTest");
     	
-    	SignUpForm signupForm = SignUpForm.builder()
-    			.name(name)
-    			.loginEmail(loginEmail)
-    			.password(password)
-    			.passwordVerified(password)
-    			.mainPhoneNumber("01601010")
-    			.bankId(bankId)
-    			.accountNumber(accountNumber)
-    			.build();
+    	SignUpForm signUpForm = new SignUpForm();
+    	signUpForm.setName(name)
+    			  .setLoginEmail(loginEmail)
+    			  .setPassword(password)
+    			  .setPasswordVerified(password)
+    			  .setMainPhoneNumber("01601010")
+    			  .setBankId(bankId)
+    			  .setAccountNumber(accountNumber)
+    			  .setAuthId(authId);   	    	
     	
     	mockMvc.perform(post("/users")
     			.contentType(MediaType.APPLICATION_JSON)
-    			.content(objectMapper.writeValueAsString(signupForm))
+    			.content(objectMapper.writeValueAsString(signUpForm))
     			)
     	.andExpect(status().isBadRequest());
     	
@@ -204,22 +216,23 @@ class SignUpTest {
 
     @DisplayName("회원가입 NULL ValidFailure 테스트")
     @Test
-//    @Disabled
+    @Disabled
     void signupValidNullFailureTest() throws Exception {
+    	System.out.println("signUpValidNullFailureTest");
     	
-    	SignUpForm signupForm = SignUpForm.builder()
-    			.name(null)
-    			.loginEmail(null)
-    			.password(null)
-    			.passwordVerified(null)
-    			.mainPhoneNumber(null)
-    			.bankId(null)
-    			.accountNumber(null)
-    			.build();
+    	SignUpForm signUpForm = new SignUpForm();
+    	signUpForm.setName(null)
+    			  .setLoginEmail(null)
+    			  .setPassword(null)
+    			  .setPasswordVerified(null)
+    			  .setMainPhoneNumber(null)
+    			  .setBankId(null)
+    			  .setAccountNumber(null)
+    			  .setAuthId(authId);   	
     	
     	mockMvc.perform(post("/users")
     			.contentType(MediaType.APPLICATION_JSON)
-    			.content(objectMapper.writeValueAsString(signupForm))
+    			.content(objectMapper.writeValueAsString(signUpForm))
     			)
     	.andExpect(status().isBadRequest());
     	
@@ -227,20 +240,21 @@ class SignUpTest {
     
     @DisplayName("회원가입 중복 이메일 테스트")
     @Test
-//    @Disabled
+    @Disabled
     void emailReduplicationSignUpTest() throws Exception {
+    	System.out.println("emailReduplicationSignUpTest");
     	
-    	SignUpForm signupForm = SignUpForm.builder()
-    			.name(name)
-    			.loginEmail(loginEmail)
-    			.password(password)
-    			.passwordVerified(password)
-    			.mainPhoneNumber(mainPhoneNumber)
-    			.bankId(bankId)
-    			.accountNumber(accountNumber)
-    			.build();
+    	SignUpForm signUpForm = new SignUpForm();
+    	signUpForm.setName(name)
+    			  .setLoginEmail(loginEmail)
+    			  .setPassword(password)
+    			  .setPasswordVerified(password)
+    			  .setMainPhoneNumber(mainPhoneNumber)
+    			  .setBankId(bankId)
+    			  .setAccountNumber(accountNumber)
+    			  .setAuthId(authId);   	
     	
-    	String content = objectMapper.writeValueAsString(signupForm);
+    	String content = objectMapper.writeValueAsString(signUpForm);
 
     	mockMvc.perform(post("/users")
     			.contentType(MediaType.APPLICATION_JSON)

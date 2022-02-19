@@ -9,10 +9,13 @@ import javax.validation.constraints.Pattern;
 
 import org.hibernate.validator.constraints.Length;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.Singular;
 import lombok.experimental.Accessors;
 
 @Data
@@ -49,11 +52,17 @@ public class SignUpForm {
 
     private int authId;
     
+    @JsonIgnore
     @Builder.Default
-    private List<Integer> roles = new ArrayList<>();
+    private List<Integer> roles = new ArrayList<Integer>();
     
     public SignUpForm setRoles(int authId) {
     	roles.add(authId);
+    	return this;
+    }
+    
+    public SignUpForm setRoles(List<Integer> roles) {
+    	this.roles = roles;
     	return this;
     }
     

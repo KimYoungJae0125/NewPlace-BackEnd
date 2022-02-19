@@ -5,8 +5,6 @@ import java.util.List;
 import javax.transaction.Transactional;
 
 import org.modelmapper.ModelMapper;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +20,8 @@ import shop.newplace.Users.model.repository.JwtRefreshTokenRedisRepository;
 import shop.newplace.Users.model.repository.ProfilesRepository;
 import shop.newplace.Users.model.repository.UsersRepository;
 import shop.newplace.Users.token.JwtTokenProvider;
-import shop.newplace.common.role.Role;
+import shop.newplace.common.mail.SpringBootMail;
+import shop.newplace.common.mail.service.EmailAuthenticationService;
 import shop.newplace.common.util.CipherUtil;
 
 @Slf4j
@@ -42,8 +41,11 @@ public class UsersService {
 	
 	private final JwtRefreshTokenRedisRepository jwtRefreshTokenRedisRepository;
 	
+	private final EmailAuthenticationService emailAuthenticationService;
+	
 	@Transactional
 	public void signUp(SignUpForm signUpForm) {
+		System.out.println("setting before : " + signUpForm);
 		signUpForm
 			.setName(CipherUtil.Name.encrypt(signUpForm.getName()))
 			.setLoginEmail(CipherUtil.Email.encrypt(signUpForm.getLoginEmail()))
@@ -51,8 +53,10 @@ public class UsersService {
 			.setPassword(passwordEncoder.encode(signUpForm.getPassword()))
 			.setBankId(CipherUtil.BankId.encrypt(signUpForm.getBankId()))
 			.setAccountNumber(CipherUtil.AccountNumber.encrypt(signUpForm.getAccountNumber()))
-			.setRoles(Role.USER.getValue());
-		usersRepository.save(modelMapper.map(signUpForm, Users.class));
+			.setRoles(signUpForm.getAuthId());
+		System.out.println("setting after : " + signUpForm);
+		Users users = usersRepository.save(modelMapper.map(signUpForm, Users.class));
+		emailAuthenticationService.sendEmailAuthentication(users.getId(), signUpForm.getLoginEmail());
 	}
 	
 	@Transactional

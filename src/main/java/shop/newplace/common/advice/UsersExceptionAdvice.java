@@ -28,14 +28,14 @@ public class UsersExceptionAdvice {
 	@ExceptionHandler(ValidFailureException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	protected ResponseMessage signUpRValidFailureHandler(ValidFailureException e) {
-		e.printStackTrace();
+		//e.printStackTrace();
 		return validError(e.getMessage(), e.getBindingResult());
 	}
 	
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	protected ResponseMessage signUpValidFailureExceptionHandler(MethodArgumentNotValidException e) {
-		e.printStackTrace();
+		//e.printStackTrace();
         return validError(e.getMessage(), e.getBindingResult());
 	}
 	
@@ -51,28 +51,28 @@ public class UsersExceptionAdvice {
 	@ExceptionHandler(NotFoundUsersException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	protected ResponseMessage notFoundUsersExceptionHandler(NotFoundUsersException e) {
-		e.printStackTrace();		
+		//e.printStackTrace();		
 		return loginError(e.getMessage(), e.getLoginEmail());
 	}
 
 	@ExceptionHandler(DisabledUsersException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	protected ResponseMessage disabledUsersExceptionHandler(DisabledUsersException e) {
-		e.printStackTrace();		
+		//e.printStackTrace();		
 		return loginError(e.getMessage(), e.getLoginEmail());
 	}
 
 	@ExceptionHandler(LockedUsersException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	protected ResponseMessage lockedUsersExceptionHandler(LockedUsersException e) {
-		e.printStackTrace();		
+		//e.printStackTrace();		
 		return loginError(e.getMessage(), e.getLoginEmail());
 	}
 
 	@ExceptionHandler(ExpiredUsersException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	protected ResponseMessage expiredUsersExceptionHandler(ExpiredUsersException e) {
-		e.printStackTrace();		
+		//e.printStackTrace();		
 		return loginError(e.getMessage(), e.getLoginEmail());
 	}
 	
@@ -87,14 +87,14 @@ public class UsersExceptionAdvice {
 	@ExceptionHandler(NotMatchPasswordException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	protected ResponseMessage notMatchPasswordExceptionHandler(NotMatchPasswordException e) {
-		e.printStackTrace();	
+		//e.printStackTrace();	
 		return passwordError(e.getMessage(), e.getPassword());
 	}
 	
 	@ExceptionHandler(ExpiredPasswordException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	protected ResponseMessage expiredPasswordExceptionHandler(ExpiredPasswordException e) {
-		e.printStackTrace();		
+		//e.printStackTrace();		
 		return passwordError(e.getMessage(), e.getPassword());
 	}
 	
