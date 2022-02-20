@@ -27,7 +27,7 @@ public class AuditorAwareConfig {
 			
 			@Override
 			public Optional<String> getCurrentAuditor() {
-				String token = jwtTokenProvider.resolveToken(request);
+				String token = jwtTokenProvider.resolveAccessToken(request);
 				String loginEmail = "adimn";
 				if(token != null && jwtTokenProvider.validateToken(token)) {
 					loginEmail = jwtTokenProvider.getLoginEmailByToken(token);

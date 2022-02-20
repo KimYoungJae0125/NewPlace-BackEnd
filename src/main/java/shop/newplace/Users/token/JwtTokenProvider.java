@@ -6,6 +6,7 @@ import java.util.Date;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,6 +21,8 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import shop.newplace.Users.model.entity.Users;
+import shop.newplace.Users.token.model.repository.JwtRefreshTokenRedisRepository;
+import shop.newplace.common.redis.service.RedisService;
 import shop.newplace.common.security.CustomUserDetailsService;
 
 @Slf4j
@@ -34,6 +37,11 @@ public class JwtTokenProvider {
 	private long refreshTokenValidMilisecond = 100L * 60 * 60 * 24 * 7; //일주일 토큰 유효
 	
 	private final CustomUserDetailsService customUserDetailsService;
+	
+	private final RedisService redisService;
+	private final JwtRefreshTokenRedisRepository jwtRefreshTokenRedisRepository;
+	
+	private String type = "bearer ";
 	
 
 	@PostConstruct
@@ -65,8 +73,8 @@ public class JwtTokenProvider {
 		return createToken(loginEmail, roles, accesTokenValidMilisecond);
 	}
 
-	public String createRefreshToken(String userId, Collection<? extends GrantedAuthority> roles) {
-		return createToken(userId, roles, refreshTokenValidMilisecond);
+	public String createRefreshToken(String loginEmail, Collection<? extends GrantedAuthority> roles) {
+		return createToken(loginEmail, roles, refreshTokenValidMilisecond);
 	}
 	
 	public String getLoginEmailByToken(String token) {
@@ -75,8 +83,32 @@ public class JwtTokenProvider {
 				.getSubject();
 	}
 	
-	public String resolveToken(HttpServletRequest request) {
-		return request.getHeader("Authorization");
+	public String resolveAccessToken(HttpServletRequest request) {
+		return resolveToken(request.getHeader("Authorization"));
+	}
+
+	public String resolveRefreshToken(HttpServletRequest request) {
+		return resolveToken(request.getHeader("refreshToken"));
+	}
+	
+	private String resolveToken(String token) {
+		if(token != null) {
+			return token.substring(7);
+		} 
+		return null;
+	}
+	
+	public void setHeaderAccessToken(HttpServletResponse response, String accessToken) {
+		response.setHeader("authorization", type + accessToken);
+	}
+
+	public void setHeaderRefreshToken(HttpServletResponse response, String refreshToken) {
+		response.setHeader("refreshToken", type + refreshToken);
+	}
+	
+	public boolean existsRefreshTokenByLoginEmail(String loginEmail) {
+		return redisService.getValues(loginEmail) != null;
+//		return jwtRefreshTokenRedisRepository.existsByRefreshToken(refreshToken);
 	}
 	
 	public boolean validateToken(String token) {

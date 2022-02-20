@@ -5,6 +5,7 @@ import java.util.Map;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -48,11 +49,12 @@ public class SpringBootMail {
 //		javaMailSender.send(simpleMessage);
 //	}
 	@Async
-	public void sendMail(String reciverEmail, String mailSubject, String mailText) {
+	@Transactional
+	public void sendMail(String reciverEmail, String mailSubject, String emailAuthenticationUrl) {
 		MimeMessage mimeMessage = javaMailSender.createMimeMessage();
 		Map<String, Object> thymeleafVariableMap = new HashMap<String, Object>();
 		thymeleafVariableMap.put("mailHeaderImage", mailHeaderImage);
-		thymeleafVariableMap.put("code", mailText);
+		thymeleafVariableMap.put("emailAuthenticationUrl", emailAuthenticationUrl);
 		thymeleafVariableMap.put("mailFooterImage", mailFooterImage);
 		
 		try {

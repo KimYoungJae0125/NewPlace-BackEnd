@@ -20,7 +20,7 @@ public class TymeleafConfig {
 //		templateEngine.addTemplateResolver(springResourceTemplateResolver());
 //		return templateEngine;
 //	}
-
+//
 	@Bean
 	@Primary
 	public SpringTemplateEngine thymeleafTemplateEngine() {
@@ -34,14 +34,14 @@ public class TymeleafConfig {
 	public ITemplateResolver templateResolver() {
 //		SpringResourceTemplateResolver springResourceTemplateResolver = new SpringResourceTemplateResolver();
 //		springResourceTemplateResolver.setOrder(1);
-		ClassLoaderTemplateResolver teamplteResolver = new ClassLoaderTemplateResolver();
-		teamplteResolver.setPrefix("/templates/");
-		teamplteResolver.setSuffix(".html");
-		teamplteResolver.setTemplateMode(TemplateMode.HTML);
-		teamplteResolver.setCharacterEncoding("UTF-8");
-		teamplteResolver.setCacheable(false);
+		ClassLoaderTemplateResolver templteResolver = new ClassLoaderTemplateResolver();
+		templteResolver.setPrefix("/templates/");
+		templteResolver.setSuffix(".html");
+		templteResolver.setTemplateMode(TemplateMode.HTML);
+		templteResolver.setCharacterEncoding("UTF-8");
+		templteResolver.setCacheable(false);
 		
-		return teamplteResolver;
+		return templteResolver;
 	}
 	
 	public ResourceBundleMessageSource emailMessageSource() {

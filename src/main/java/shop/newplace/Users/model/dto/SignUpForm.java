@@ -1,7 +1,8 @@
 package shop.newplace.Users.model.dto;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -15,7 +16,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Singular;
 import lombok.experimental.Accessors;
 
 @Data
@@ -54,14 +54,14 @@ public class SignUpForm {
     
     @JsonIgnore
     @Builder.Default
-    private List<Integer> roles = new ArrayList<Integer>();
+    private Set<Integer> roles = new HashSet<Integer>();
     
     public SignUpForm setRoles(int authId) {
     	roles.add(authId);
     	return this;
     }
     
-    public SignUpForm setRoles(List<Integer> roles) {
+    public SignUpForm setRoles(Set<Integer> roles) {
     	this.roles = roles;
     	return this;
     }

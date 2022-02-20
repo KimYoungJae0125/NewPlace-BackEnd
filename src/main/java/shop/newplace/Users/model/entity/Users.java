@@ -3,7 +3,9 @@ package shop.newplace.Users.model.entity;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.persistence.Column;
@@ -16,7 +18,6 @@ import javax.persistence.PrePersist;
 import javax.persistence.Transient;
 
 import org.hibernate.annotations.DynamicUpdate;
-import org.springframework.data.redis.core.RedisHash;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -27,7 +28,6 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Singular;
 import lombok.ToString;
 import shop.newplace.common.entity.BaseEntity;
 import shop.newplace.common.role.Role;
@@ -95,16 +95,16 @@ public class Users extends BaseEntity implements UserDetails {
 //    @Transient
 //    private List<Integer> roles = new ArrayList<>();
     
-    @Singular
+    @Builder.Default
     @Transient
-    private List<Integer> roles;
+    private Set<Integer> roles = new HashSet<Integer>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
     	// TODO 권한을 어떻게 넣을지
     	return roles.stream()
     			.map(code -> new SimpleGrantedAuthority(Role.getNameByValue(code)))
-    			.collect(Collectors.toList());
+    			.collect(Collectors.toSet());
     }
     
     @Override
@@ -152,6 +152,7 @@ public class Users extends BaseEntity implements UserDetails {
 
     public void successLogin() {
         setLastLogin();
+        addRole();
         resetFailCount();
         unlockAccount();
         unlockAccountExpired();
@@ -164,6 +165,11 @@ public class Users extends BaseEntity implements UserDetails {
     		lockAccount();
     	}
     }
+    
+    private void addRole() {
+    	this.roles.add(this.authId);
+    }
+    
     
     private void addFailCount() {
     	this.failCount = this.failCount + 1;

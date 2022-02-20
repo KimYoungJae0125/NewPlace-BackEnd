@@ -25,13 +25,13 @@ import shop.newplace.common.response.ResponseMessage;
 public class ProfilesController {
 	
 	private final ProfilesService profilesService;
-	private final ProfileSignUpFormValidator profileSignInFormValidator;
+	private final ProfileSignUpFormValidator profileSignUpFormValidator;
 	
     ///users/1/profiles
     @PostMapping
     public ResponseEntity goCreateProfile(@PathVariable(name = "userId") Long userId, @Valid @RequestBody ProfileSignUpForm profileSignUpForm, BindingResult bindingResult) {
     	profileSignUpForm.setUserId(userId);
-    	profileSignInFormValidator.validate(profileSignUpForm, bindingResult);
+    	profileSignUpFormValidator.validate(profileSignUpForm, bindingResult);
     	Profiles profiles = profilesService.profileSignUp(profileSignUpForm);
     	ResponseMessage body = ResponseMessage.OK(201, "프로필 생성", "프로필 생성 성공", profiles);
 		return ResponseEntity.ok().body(body);

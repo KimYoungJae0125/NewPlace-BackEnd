@@ -47,14 +47,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 											, "/swagger-ui/**"
 											, "/swagger-resources/**"
 											, "/v3/api-docs/**"
+											, "/emailAuthentication/**"
 											};
 	
     @Override
     public void configure(WebSecurity web) throws Exception {
+    	//PathRequest.toStaticResources().atCommonLocations() = static 리소스들의 기본위치를 모두 가져와 스프링 시큐리티에서 제외
         web.ignoring()
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations())
-                .antMatchers(ANT_MATCHERS)
-                .antMatchers("/images/**");
+                .antMatchers(ANT_MATCHERS);
     }
 
     @Override

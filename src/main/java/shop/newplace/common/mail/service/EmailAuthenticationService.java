@@ -1,7 +1,11 @@
 package shop.newplace.common.mail.service;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
+import javax.transaction.Transactional;
+
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -19,24 +23,37 @@ public class EmailAuthenticationService {
 
 	private static final long EMAIL_TOKEN_EXPIRATION_TIME_VALUE = 5L;
 	
+	@Transactional
 	public void sendEmailAuthentication(Long userId, String reciverEmail) {
 		EmailAuthenticationToken emailAuthenticationToken = createEmailAuthenticationToken(userId);
-		emailRepository.findById(userId);
-		emailRepository.save(emailAuthenticationToken);
+		EmailAuthenticationToken findToken = emailRepository.save(emailAuthenticationToken);
 		StringBuilder emailAuthenticationUrl = new StringBuilder();
-		emailAuthenticationUrl.append("http://localhost:8080/emailAuthentication?token=");
-		emailAuthenticationUrl.append(userId);
+		emailAuthenticationUrl.append("http://localhost:8080/emailAuthentication/");
+		emailAuthenticationUrl.append(findToken.getId());
 		springBootMail.sendMail(CipherUtil.Email.decrypt(reciverEmail), "회원가입 이메일 인증", emailAuthenticationUrl.toString());
 	}
 
 	
-	public EmailAuthenticationToken createEmailAuthenticationToken(Long userId) {
+	private EmailAuthenticationToken createEmailAuthenticationToken(Long userId) {
 		return EmailAuthenticationToken.builder()
 					 	 .expirationDate(LocalDateTime.now().plusMinutes(EMAIL_TOKEN_EXPIRATION_TIME_VALUE)) 
 						 .userId(userId)
 						 .expired(false)
 						 .build();
 	}
+
+
+	public void emailAuthentication(Long tokenId) {
+		Optional<EmailAuthenticationToken> findEmailToken = Optional.ofNullable(emailRepository.findByIdAndExpirationDateAfterAndExpired(tokenId, LocalDateTime.now(), false)
+																.orElseThrow(() -> new UsernameNotFoundException("테스트 익셉션 다른걸로 바꿔야함")));
+		EmailAuthenticationToken emailAuthenticationToken = findEmailToken.get();
+		emailAuthenticationToken.useToken();
+		emailRepository.save(emailAuthenticationToken);
+		
+		
+	}
+	
+	
 	
 
 }
