@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="ko">
 <body>
     <div align="center" style="font-size: 15px">
-        <img th:src="@{images/logoHeader.png}" width="400" alt=""/>
-        <span>왜 ㅇ나나와 ㅠㅠ</span>
+        <img th:src = "${mailHeaderImage}">
         <br><br>
-        <span style="border: 1px solid; padding: 8px;font-size: 20px;" th:text="${code}"></span>
+        <a th:href="${emailAuthenticationUrl}"><button style="border: 1px solid;padding: 8px;font-size: 20px;">인증하자</button></a>
+        <br>
         <img th:src = "${mailFooterImage}">
     </div>
 </body>
