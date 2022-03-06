@@ -10,16 +10,16 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public enum Role {
-	  USER(1, "ROLE_USER")
-	, PARTNER(2, "ROLE_PARTNER")
-	, ADMIN(3, "ROLE_ADMIN");
+	  USER("1", "ROLE_USER")
+	, PARTNER("2", "ROLE_PARTNER")
+	, ADMIN("3", "ROLE_ADMIN");
 
-	private int value;
+	private String value;
 	private String name;
 	
-	public static Role findByValue(int value) {
+	public static Role findByValue(String value) {
 		return Arrays.stream(Role.values())
-				.filter(role -> role.value == value)
+				.filter(role -> role.value.equals(value))
 				.findAny()
 				.orElse(null);
 	}
@@ -31,12 +31,12 @@ public enum Role {
 				.orElse(null);
 	}
 	
-	public static int getValueByName(String name) {
+	public static String getValueByName(String name) {
 		Role role = findByName(name);
 		return role == null ? null : role.value;
 	}
 
-	public static String getNameByValue(int value) {
+	public static String getNameByValue(String value) {
 		Role role = findByValue(value);
 		return role == null ? null : role.name;
 	}
