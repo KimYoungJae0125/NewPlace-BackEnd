@@ -9,6 +9,9 @@ public class CipherUtil {
 	
 	private static class Cipher{
 		private static String encrypt(String planeText, int subStrIndex) {
+			if(planeText == null) {
+				return null;
+			}
 			StringBuilder sb = new StringBuilder();
 
 			if("".equals(planeText)) {
@@ -31,7 +34,9 @@ public class CipherUtil {
 		}
 		
 		private static String decrypt(String cipherText, int subStrIndex)  {
-			
+			if(cipherText == null) {
+				return null;
+			}
 			StringBuilder sb = new StringBuilder();
 
 			if("".equals(cipherText)) {
