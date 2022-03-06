@@ -3,25 +3,32 @@ package shop.newplace.common.mail.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
-import shop.newplace.common.mail.service.EmailAuthenticationService;
+import shop.newplace.Users.model.dto.UsersDto;
+import shop.newplace.common.mail.service.EmailService;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/emailAuthentication")
-public class EmailAuthenticationController {
+@RequestMapping("/email")
+public class EmailController {
 	
-	private final EmailAuthenticationService emailAuthenticationService;
+	private final EmailService emailService;
 	
-	@GetMapping("/{tokenId}")
-	public ResponseEntity test(@PathVariable(name = "tokenId") Long tokenId) {
-		emailAuthenticationService.emailAuthentication(tokenId);
-		
-		
+	@GetMapping("/authentication/{tokenId}")
+	public ResponseEntity emailAuthentication(@PathVariable(name = "tokenId") Long tokenId) {
+		emailService.emailAuthentication(tokenId);
 		return ResponseEntity.ok().body("이메일 인증");
+	}
+	
+	@PostMapping("/temporaryPassword")
+	public ResponseEntity temporaryPassword(@RequestBody UsersDto.Info usersInfo) {
+		emailService.sendTemporaryPassword(usersInfo.getLoginEmail());
+		return null;
 	}
 
 }

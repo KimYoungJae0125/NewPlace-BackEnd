@@ -1,12 +1,30 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="ko">
 <body>
-    <div align="center" style="font-size: 15px">
-        <img th:src = "${mailHeaderImage}">
-        <br><br>
-        <a th:href="${emailAuthenticationUrl}"><button style="border: 1px solid;padding: 8px;font-size: 20px;">인증하자</button></a>
+    <div align="center">
+    	<header>
+	        <img src = "cid:logoHeader.png" style="width: 200px; height: 100px;">
+    	</header>
+        <h1 style="font-weight: bold;">이메일 인증</h1>
+        <p style="color: gray;"><span th:text = "${userName}+회원님"></span> 반갑습니다!</p>
+        <p style="color: gray;">NewPlace 회원가입을 위한 이메일 인증을 하시길 바랍니다.</p>
+        <p style="color: gray;">만약 회원님이 가입한 사실이 없으실 경우, 인증을 하지 마십시오.</p>
         <br>
-        <img th:src = "${mailFooterImage}">
+		<a th:href="${emailAuthenticationUrl}"
+		 style="
+		 	border-radius: 10px;
+			background-color: hsl(349deg 44% 51%); 
+			color: white; 
+			padding: 10px 30px; 
+			font-size: 17px;
+			text-decoration: none;
+			">이메일 확인</a>
+        <br><br><br>
+        <hr>
+        <footer>
+			<span>대략 사이트 설명?</span>        
+        </footer>
+<!--         <img th:src = "${mailFooterImage}"> -->
     </div>
 </body>
 </html>
