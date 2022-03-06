@@ -20,10 +20,12 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import lombok.RequiredArgsConstructor;
+import shop.newplace.Users.model.repository.UsersRepository;
 import shop.newplace.Users.token.JwtAuthenticationFilter;
 import shop.newplace.Users.token.JwtBeforeFilter;
 import shop.newplace.Users.token.JwtTokenProvider;
 import shop.newplace.common.security.CustomAuthenticationEntryPoint;
+import shop.newplace.common.security.CustomAuthenticationProvider;
 import shop.newplace.common.security.CustomUserDetailsService;
 
 @Configuration
@@ -34,6 +36,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	private final CustomUserDetailsService customUserDetailsService;
 	
 	private final JwtTokenProvider jwtTokenProvider;
+	
+	private final UsersRepository usersRepository;
 	
 	private final String[] MVC_MATCHERS_PATTERNS = {
 													"/"
@@ -47,7 +51,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 											, "/swagger-ui/**"
 											, "/swagger-resources/**"
 											, "/v3/api-docs/**"
-											, "/emailAuthentication/**"
+											, "/email/**"
 											};
 	
     @Override
@@ -104,7 +108,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
     @Bean
     public AuthenticationProvider authenticationProvider() {
-    	return new CustomAuthenticationProvider(customUserDetailsService, getPasswordEncoder());
+    	return new CustomAuthenticationProvider(customUserDetailsService, getPasswordEncoder(), usersRepository);
     }
     
     @Bean
