@@ -7,6 +7,7 @@ import java.util.Date;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,9 +21,8 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import shop.newplace.Users.model.entity.Users;
-import shop.newplace.Users.token.model.repository.JwtRefreshTokenRedisRepository;
 import shop.newplace.common.redis.service.RedisService;
+import shop.newplace.common.security.CustomUserDetails;
 import shop.newplace.common.security.CustomUserDetailsService;
 
 @Slf4j
@@ -39,7 +39,6 @@ public class JwtTokenProvider {
 	private final CustomUserDetailsService customUserDetailsService;
 	
 	private final RedisService redisService;
-	private final JwtRefreshTokenRedisRepository jwtRefreshTokenRedisRepository;
 	
 	private String type = "bearer ";
 	
@@ -49,8 +48,9 @@ public class JwtTokenProvider {
 		SECRET_KEY = Base64.getEncoder().encodeToString(SECRET_KEY.getBytes());
 	}
 	
-	private String createToken(String loginEmail, Collection<? extends GrantedAuthority> roles, long tokenValidMilisecond) {
-		Claims claims = Jwts.claims().setSubject(loginEmail);
+	private String createToken(String userId, String loginEmail, Collection<? extends GrantedAuthority> roles, long tokenValidMilisecond) {
+		Claims claims = Jwts.claims().setSubject(userId);
+		claims.put("loginEmail", loginEmail);
 		claims.put("roles", roles);
 		Date now = new Date();
 		
@@ -64,36 +64,53 @@ public class JwtTokenProvider {
 					.compact();
 	}
 	
+	@Transactional
 	public Authentication getAuthentication(String token) {
-		Users users = customUserDetailsService.loadUserByUsername(getLoginEmailByToken(token));
-		return new UsernamePasswordAuthenticationToken(users, "", users.getAuthorities());
+		CustomUserDetails securityUsers = customUserDetailsService.loadUserByUsername(getLoginEmailByToken(token));
+		return new UsernamePasswordAuthenticationToken(securityUsers.getUsers(), "", securityUsers.getAuthorities());
 	}
 	
-	public String createAccessToken(String loginEmail, Collection<? extends GrantedAuthority> roles) {
-		return createToken(loginEmail, roles, accesTokenValidMilisecond);
+	public String createAccessToken(String userId, String loginEmail, Collection<? extends GrantedAuthority> roles) {
+		return createToken(userId, loginEmail, roles, accesTokenValidMilisecond);
 	}
 
-	public String createRefreshToken(String loginEmail, Collection<? extends GrantedAuthority> roles) {
-		return createToken(loginEmail, roles, refreshTokenValidMilisecond);
+	public String createRefreshToken(String userId, Collection<? extends GrantedAuthority> roles) {
+		return createToken(userId, null, null, refreshTokenValidMilisecond);
 	}
 	
-	public String getLoginEmailByToken(String token) {
+	public String getUserIdByToken(String token) {
 		return parserJwts(token)
 				.getBody()
 				.getSubject();
 	}
+
+	public String getLoginEmailByToken(String token) {
+		return parserJwts(token)
+				.getBody()
+				.get("loginEmail")
+				.toString();
+	}
 	
 	public String resolveAccessToken(HttpServletRequest request) {
-		return resolveToken(request.getHeader("Authorization"));
+		return resolveToken(request.getHeader("authorization"));
 	}
 
 	public String resolveRefreshToken(HttpServletRequest request) {
+		// TODO Header에 refreshToken을 건네지 않고 레디스에만 관리하는건 어떨까요? - 영재
 		return resolveToken(request.getHeader("refreshToken"));
+	}
+
+	public String resolveRefreshToken(Long userId) {
+		// TODO Header에 refreshToken을 건네지 않고 레디스에만 관리하는건 어떨까요? - 영재
+		return redisService.getValues(userId);
 	}
 	
 	private String resolveToken(String token) {
 		if(token != null) {
-			return token.substring(7);
+			if(token.substring(0, 7).equals(type)) {
+				token = token.substring(7);
+			}
+			return token;
 		} 
 		return null;
 	}
@@ -106,8 +123,8 @@ public class JwtTokenProvider {
 		response.setHeader("refreshToken", type + refreshToken);
 	}
 	
-	public boolean existsRefreshTokenByLoginEmail(String loginEmail) {
-		return redisService.getValues(loginEmail) != null;
+	public boolean existsRefreshTokenByUserId(Long userId) {
+		return redisService.getValues(userId) != null;
 //		return jwtRefreshTokenRedisRepository.existsByRefreshToken(refreshToken);
 	}
 	

@@ -25,17 +25,18 @@ public class JwtBeforeFilter extends OncePerRequestFilter {
 		System.out.println(request.getRequestURI());
 		if(!request.getRequestURI().contains("/users")) {
 			String accessToken = jwtTokenProvider.resolveAccessToken(request);
-			String refreshToken = jwtTokenProvider.resolveRefreshToken(request);
+//			String refreshToken = jwtTokenProvider.resolveRefreshToken(request);
 			if(accessToken != null && jwtTokenProvider.validateToken(accessToken)) {
 				//AccessToken 유효
 				this.setAuthentication(accessToken);
 			}
+			String userId = jwtTokenProvider.getUserIdByToken(accessToken);
+			String refreshToken = jwtTokenProvider.resolveRefreshToken(Long.valueOf(userId));
 			if(!jwtTokenProvider.validateToken(accessToken) && refreshToken != null) {
-				String loginEmail = jwtTokenProvider.getLoginEmailByToken(refreshToken);
 				//AccessToken은 만료 RefreshToken은 존재
-				if(jwtTokenProvider.validateToken(refreshToken) && jwtTokenProvider.existsRefreshTokenByLoginEmail(loginEmail)) {
+				if(jwtTokenProvider.validateToken(refreshToken) && jwtTokenProvider.existsRefreshTokenByUserId(Long.valueOf(userId))) {
 					//유효한 RefreshToken && RefreshToken이 저장되어 있는가
-					String newAccessToken = jwtTokenProvider.createAccessToken(loginEmail, jwtTokenProvider.getAuthentication(refreshToken).getAuthorities());
+					String newAccessToken = jwtTokenProvider.createAccessToken(userId, jwtTokenProvider.getLoginEmailByToken(refreshToken), jwtTokenProvider.getAuthentication(refreshToken).getAuthorities());
 					jwtTokenProvider.setHeaderAccessToken(response, newAccessToken);
 					this.setAuthentication(newAccessToken);
 				}
