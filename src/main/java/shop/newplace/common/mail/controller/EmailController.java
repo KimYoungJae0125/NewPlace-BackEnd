@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
-import shop.newplace.Users.model.dto.UsersDto;
+import shop.newplace.users.model.dto.UsersDto;
 import shop.newplace.common.mail.service.EmailService;
 
 @RestController

@@ -7,8 +7,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
-import shop.newplace.Users.model.entity.Users;
-import shop.newplace.Users.model.repository.UsersRepository;
+import shop.newplace.users.model.entity.Users;
+import shop.newplace.users.model.repository.UsersRepository;
 import shop.newplace.common.advice.exception.NotFoundUsersException;
 import shop.newplace.common.util.CipherUtil;
 import shop.newplace.common.util.DateUtil;

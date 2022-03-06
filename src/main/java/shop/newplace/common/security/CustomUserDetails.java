@@ -1,11 +1,8 @@
 package shop.newplace.common.security;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import javax.persistence.Transient;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -17,8 +14,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import shop.newplace.Users.model.entity.Users;
-import shop.newplace.common.role.Role;
+import shop.newplace.users.model.entity.Users;
+import shop.newplace.common.constant.Role;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

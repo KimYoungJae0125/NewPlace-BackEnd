@@ -9,8 +9,8 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import shop.newplace.Users.model.entity.Users;
-import shop.newplace.Users.model.repository.UsersRepository;
+import shop.newplace.users.model.entity.Users;
+import shop.newplace.users.model.repository.UsersRepository;
 import shop.newplace.common.advice.exception.DisabledUsersException;
 import shop.newplace.common.advice.exception.ExpiredPasswordException;
 import shop.newplace.common.advice.exception.ExpiredUsersException;

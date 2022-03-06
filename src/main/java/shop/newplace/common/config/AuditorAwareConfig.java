@@ -10,7 +10,7 @@ import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 import lombok.RequiredArgsConstructor;
-import shop.newplace.Users.token.JwtTokenProvider;
+import shop.newplace.users.token.JwtTokenProvider;
 
 @EnableJpaAuditing
 @RequiredArgsConstructor

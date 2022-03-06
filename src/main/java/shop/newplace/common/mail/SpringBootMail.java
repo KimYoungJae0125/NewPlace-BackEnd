@@ -6,7 +6,6 @@ import java.util.Map;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
-import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -19,8 +18,7 @@ import org.thymeleaf.context.Context;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 
 import lombok.RequiredArgsConstructor;
-import shop.newplace.Users.model.entity.Users;
-import shop.newplace.common.mail.model.entity.EmailAuthenticationToken;
+import shop.newplace.users.model.entity.Users;
 import shop.newplace.common.util.CipherUtil;
 
 @RequiredArgsConstructor

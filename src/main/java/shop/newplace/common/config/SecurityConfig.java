@@ -14,18 +14,16 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.context.SecurityContextPersistenceFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import lombok.RequiredArgsConstructor;
-import shop.newplace.Users.model.repository.UsersRepository;
-import shop.newplace.Users.token.JwtAuthenticationFilter;
-import shop.newplace.Users.token.JwtBeforeFilter;
-import shop.newplace.Users.token.JwtTokenProvider;
+import shop.newplace.users.model.repository.UsersRepository;
+import shop.newplace.users.token.JwtAuthenticationFilter;
+import shop.newplace.users.token.JwtBeforeFilter;
+import shop.newplace.users.token.JwtTokenProvider;
 import shop.newplace.common.security.CustomAuthenticationEntryPoint;
 import shop.newplace.common.security.CustomAuthenticationProvider;
 import shop.newplace.common.security.CustomUserDetailsService;

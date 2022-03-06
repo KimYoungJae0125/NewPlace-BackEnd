@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import shop.newplace.Users.controller.ProfilesController;
-import shop.newplace.Users.controller.UsersController;
+import shop.newplace.users.controller.ProfilesController;
+import shop.newplace.users.controller.UsersController;
 import shop.newplace.common.advice.exception.DisabledUsersException;
 import shop.newplace.common.advice.exception.ExpiredPasswordException;
 import shop.newplace.common.advice.exception.ExpiredUsersException;
