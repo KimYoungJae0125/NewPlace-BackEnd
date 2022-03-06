@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
-import shop.newplace.account.model.entity.Account;
 
 import javax.persistence.Column;
 import javax.persistence.EnumType;
@@ -57,23 +56,23 @@ public class SignUpRequestDto {
 
     private boolean emailVerified;
 
-    public Account toEntity(){
-        return Account.builder()
-                .userId(id)
-                .email(email)
-                .password(password)
-                .name(name)
-//                .bankId(bankId)
-                .accountNumber(accountNumber)
-                .failCount(failCount)
-                .accountExpired(accountExpired)
-                .accountLocked(accountLocked)
-                .lastLoginAt(lastLoginAt)
-                .mainPhoneNumber(mainPhoneNumber)
-                .joinedAt(joinedAt)
-                .emailVerified(emailVerified)
-                .build();
-    }
+//    public Account toEntity(){
+//        return Account.builder()
+//                .userId(id)
+//                .email(email)
+//                .password(password)
+//                .name(name)
+////                .bankId(bankId)
+//                .accountNumber(accountNumber)
+//                .failCount(failCount)
+//                .accountExpired(accountExpired)
+//                .accountLocked(accountLocked)
+//                .lastLoginAt(lastLoginAt)
+//                .mainPhoneNumber(mainPhoneNumber)
+//                .joinedAt(joinedAt)
+//                .emailVerified(emailVerified)
+//                .build();
+//    }
 
     public void setEncodedPassword(String password){
         this.password = password;
