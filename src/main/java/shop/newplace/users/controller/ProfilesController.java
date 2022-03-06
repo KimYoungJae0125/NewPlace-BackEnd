@@ -29,7 +29,7 @@ public class ProfilesController {
 	
     ///users/1/profiles
     @PostMapping
-    public ResponseEntity goCreateProfile(@PathVariable(name = "userId") Long userId, @Valid @RequestBody ProfilesDto.SignUp profileSignUpForm, BindingResult bindingResult) {
+    public ResponseEntity goCreateProfile(@PathVariable(name = "userId") Long userId, @Valid @RequestBody ProfilesDto.RequestSignUp profileSignUpForm, BindingResult bindingResult) {
     	profileSignUpForm.setUserId(userId);
     	profileSignUpFormValidator.validate(profileSignUpForm, bindingResult);
     	profilesService.profileSignUp(profileSignUpForm);

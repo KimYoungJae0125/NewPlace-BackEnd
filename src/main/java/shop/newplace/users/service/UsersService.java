@@ -42,7 +42,7 @@ public class UsersService {
 	private final ProfilesService profilesService;
 	
 	@Transactional
-	public void signUp(UsersDto.SignUp usersSignUpForm) {
+	public void signUp(UsersDto.RequestSignUp usersSignUpForm) {
 		usersSignUpForm
 			.setName(CipherUtil.Name.encrypt(usersSignUpForm.getName()))
 			.setLoginEmail(CipherUtil.Email.encrypt(usersSignUpForm.getLoginEmail()))
@@ -52,7 +52,7 @@ public class UsersService {
 			.setAccountNumber(CipherUtil.AccountNumber.encrypt(usersSignUpForm.getAccountNumber()));
 		Users users = usersRepository.save(modelMapper.map(usersSignUpForm, Users.class));
 		emailAuthenticationService.sendEmailAuthentication(users, usersSignUpForm.getLoginEmail());
-		ProfilesDto.SignUp profiles = ProfilesDto.SignUp.builder()
+		ProfilesDto.RequestSignUp profiles = ProfilesDto.RequestSignUp.builder()
 														.userId(users.getId())
 														.users(users)
 														.nickName("프로필")
@@ -80,15 +80,13 @@ public class UsersService {
 																  .expirationTime(100L * 60 * 60 * 24 * 7)
 																  .build();
 		redisService.setValues(jwtRefreshToken);
-//		jwtRefreshTokenRedisRepository.save(new JwtRefreshToken(usersInfo.getId(), refreshToken));
-		
 		return jwtAceessToken;
 	}
 
-	public UsersDto.Info getUserInfo(Long userId) {
+	public UsersDto.ResponseInfo getUserInfo(Long userId) {
 		Users usersInfo = usersRepository.findById(userId)
 							   .orElseThrow(() -> new NotFoundUsersException("해당 유저는 존재하지 않습니다", "userId : " + userId) );
-		return UsersDto.Info.builder()
+		return UsersDto.ResponseInfo.builder()
 							.userId(usersInfo.getId())
 							.loginEmail(CipherUtil.Email.decrypt(usersInfo.getLoginEmail()))
 							.name(CipherUtil.Name.decrypt(usersInfo.getName()))

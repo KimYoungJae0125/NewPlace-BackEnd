@@ -16,7 +16,7 @@ public class ProfilesDto {
 	
 	@Getter
 	@Builder @AllArgsConstructor @NoArgsConstructor
-	public static class Info{
+	public static class ResponseInfo{
 		private String email;
 		private String nickName;
 		private String introduction;
@@ -30,7 +30,7 @@ public class ProfilesDto {
 	@Setter
 	@Builder @AllArgsConstructor @NoArgsConstructor
 	@Accessors(chain = true)
-	public static class SignUp{
+	public static class RequestSignUp{
 		private Long userId;
 		
 		private Users users;

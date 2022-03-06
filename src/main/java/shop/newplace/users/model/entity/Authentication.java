@@ -15,6 +15,7 @@ public class Authentication {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long authenticationId;
 
+    //program = 구글 로그인인지 네이버 로그인인지?
     @Column
     private Long program;
 

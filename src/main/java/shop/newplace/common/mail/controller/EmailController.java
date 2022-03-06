@@ -26,7 +26,7 @@ public class EmailController {
 	}
 	
 	@PostMapping("/temporaryPassword")
-	public ResponseEntity temporaryPassword(@RequestBody UsersDto.Info usersInfo) {
+	public ResponseEntity temporaryPassword(@RequestBody UsersDto.ResponseInfo usersInfo) {
 		emailService.sendTemporaryPassword(usersInfo.getLoginEmail());
 		return null;
 	}

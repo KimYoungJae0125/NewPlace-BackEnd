@@ -75,7 +75,7 @@ public class TokenTest {
     	String mainPhoneNumber = "01012345678";
     	String bankId = "01";
     	String accountNumber = "12345678";
-    	UsersDto.SignUp userSignUp = UsersDto.SignUp.builder()
+    	UsersDto.RequestSignUp userSignUp = UsersDto.RequestSignUp.builder()
     									.loginEmail(loginEmail)
     									.name(name)
     									.password(password)

@@ -38,10 +38,10 @@ public class UsersController {
 	//알아보기
 	@InitBinder
 	public void signUpFormValidator(WebDataBinder webDataBinder) {
-		if(webDataBinder.getTarget() instanceof UsersDto.SignUp) {
+		if(webDataBinder.getTarget() instanceof UsersDto.RequestSignUp) {
 			webDataBinder.addValidators(signUpValidator);
 		}
-		if(webDataBinder.getTarget() instanceof UsersDto.LogIn) {
+		if(webDataBinder.getTarget() instanceof UsersDto.RequestLogIn) {
 			webDataBinder.addValidators(logInValidator);
 		}
 	}
@@ -55,14 +55,14 @@ public class UsersController {
 
 	@ApiOperation(value = "회원가입", notes = "새로운 사용자의 정보를 등록합니다.")
     @PostMapping
-    public ResponseEntity createSignUp(@Valid @RequestBody UsersDto.SignUp signUpForm) {
+    public ResponseEntity createSignUp(@Valid @RequestBody UsersDto.RequestSignUp signUpForm) {
     	usersService.signUp(signUpForm);
         return ResponseEntity.ok().body(ResponseMessage.OK(HttpStatus.CREATED.value(), HttpStatus.CREATED.getReasonPhrase(), "회원가입에 성공하였습니다."));
     }
 
 	@ApiOperation(value = "로그인", notes = "로그인합니다.")
     @PostMapping("/login")
-    public ResponseEntity goLogin(@Valid @RequestBody UsersDto.LogIn logInForm, HttpServletResponse response) {
+    public ResponseEntity goLogin(@Valid @RequestBody UsersDto.RequestLogIn logInForm, HttpServletResponse response) {
 		Authentication authentication = logInValidator.authentication(logInForm);
     	return ResponseEntity.ok().body(ResponseMessage.OK(HttpStatus.CREATED.value(), HttpStatus.CREATED.getReasonPhrase(), "로그인 성공하였습니다.", usersService.logIn(authentication, response)));
     }

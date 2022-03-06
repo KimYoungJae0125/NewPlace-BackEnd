@@ -96,8 +96,8 @@ public class Users extends BaseEntity {
 
     //로그인 성공
     public void successLogin() {
+    	resetFailCount();
         setLastLogin();
-        resetFailCount();
     }
     
     //로그인 실패

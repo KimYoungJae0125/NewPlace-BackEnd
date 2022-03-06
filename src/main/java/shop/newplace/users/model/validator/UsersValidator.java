@@ -26,12 +26,12 @@ public class UsersValidator {
 		
 		@Override
 		public boolean supports(Class<?> clazz) {
-			return clazz.isAssignableFrom(UsersDto.SignUp.class);
+			return clazz.isAssignableFrom(UsersDto.RequestSignUp.class);
 		}
 		
 		@Override
 		public void validate(Object target, Errors errors) {
-			UsersDto.SignUp usersSignUpForm = (UsersDto.SignUp)target;
+			UsersDto.RequestSignUp usersSignUpForm = (UsersDto.RequestSignUp)target;
 			log.info("initBinder TEST");
 			String loginEmail = CipherUtil.Email.encrypt(usersSignUpForm.getLoginEmail());
 			if(userRepository.existsByLoginEmail(loginEmail)) {
@@ -57,7 +57,7 @@ public class UsersValidator {
 		
 		@Override
 		public boolean supports(Class<?> clazz) {
-			return clazz.isAssignableFrom(UsersDto.LogIn.class);
+			return clazz.isAssignableFrom(UsersDto.RequestLogIn.class);
 		}
 		
 		@Override
@@ -70,7 +70,7 @@ public class UsersValidator {
 //			customAuthenticationProvider.authenticate(new UsernamePasswordAuthenticationToken(loginForm.getLoginEmail(), loginForm.getPassword()));
 		}
 		
-		public Authentication authentication(UsersDto.LogIn logInForm) {
+		public Authentication authentication(UsersDto.RequestLogIn logInForm) {
 			return customAuthenticationProvider.authenticate(new UsernamePasswordAuthenticationToken(logInForm.getLoginEmail(), logInForm.getPassword()));
 		}
 

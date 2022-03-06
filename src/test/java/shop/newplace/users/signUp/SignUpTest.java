@@ -55,7 +55,7 @@ class SignUpTest {
 	String accountNumber = "12345678";
 	String authId = Role.USER.getValue();
 	
-	UsersDto.SignUp signUpForm;
+	UsersDto.RequestSignUp signUpForm;
 	
     @BeforeEach
     void setup() {
@@ -66,7 +66,7 @@ class SignUpTest {
 //    				   .alwaysDo(print())
 //    				   .build();
     	System.out.println("========================================테스트 시작========================================");
-    	signUpForm = UsersDto.SignUp.builder()
+    	signUpForm = UsersDto.RequestSignUp.builder()
 									.name(name)
 									.loginEmail(loginEmail)
 									.password(password)

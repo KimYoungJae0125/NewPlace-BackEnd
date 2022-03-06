@@ -17,7 +17,7 @@ public class UsersDto {
 	
 	@Getter
 	@Builder @AllArgsConstructor @NoArgsConstructor
-	public static class Info {
+	public static class ResponseInfo {
 		private Long userId;
 		private String loginEmail;
 		private String name;
@@ -32,7 +32,7 @@ public class UsersDto {
 	@AllArgsConstructor	//Builder와 NoArgsConstructor를 위해 필요함
 	@NoArgsConstructor	//json parsing을 위해.. 알아보자
 	@Accessors(chain = true)
-	public static class SignUp {
+	public static class RequestSignUp {
 		    @NotBlank(message = "이메일은 필수 입력 값입니다.")
 		    @Email(message = "이메일 형식에 맞지 않습니다.")
 		    private String loginEmail;
@@ -75,7 +75,7 @@ public class UsersDto {
 	
 	@Getter
 	@Builder @AllArgsConstructor @NoArgsConstructor
-	public static class LogIn {
+	public static class RequestLogIn {
 
 	    @NotBlank(message = "이메일은 필수 입력 값입니다.")
 	    @Email(message = "이메일 형식에 맞지 않습니다.")

@@ -77,7 +77,7 @@ class LogInTest {
     	String loginEmail = "abcdefg@naver.com";
     	String password = "abcdefg!@#1";
 
-    	UsersDto.LogIn signInForm = UsersDto.LogIn.builder()
+    	UsersDto.RequestLogIn signInForm = UsersDto.RequestLogIn.builder()
     									  .loginEmail(loginEmail)
     									  .password(password)
     									  .build();

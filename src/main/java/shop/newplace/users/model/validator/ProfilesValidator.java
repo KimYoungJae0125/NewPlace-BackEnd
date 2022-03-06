@@ -25,12 +25,12 @@ public class ProfilesValidator {
 
 		@Override
 			public boolean supports(Class<?> clazz) {
-				return clazz.isAssignableFrom(ProfilesDto.SignUp.class);
+				return clazz.isAssignableFrom(ProfilesDto.RequestSignUp.class);
 			}
 		
 		@Override
 		public void validate(Object target, Errors errors) {
-			ProfilesDto.SignUp profileSignUpForm = (ProfilesDto.SignUp) target;
+			ProfilesDto.RequestSignUp profileSignUpForm = (ProfilesDto.RequestSignUp) target;
 			Long userId = profileSignUpForm.getUserId();
 			
 			if(!usersRepository.existsById(userId)) {

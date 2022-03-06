@@ -27,7 +27,7 @@ public class ProfilesService {
 	private final ModelMapper modelMapper;
 
 	@Transactional
-	public Profiles profileSignUp(ProfilesDto.SignUp profileSignUpForm) {
+	public Profiles profileSignUp(ProfilesDto.RequestSignUp profileSignUpForm) {
 		Users users = usersRepository.findById(profileSignUpForm.getUserId()).get();
 		profileSignUpForm
 			.setUsers(users)

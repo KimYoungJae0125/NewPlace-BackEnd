@@ -12,12 +12,8 @@ import shop.newplace.users.model.entity.Users;
 @Repository
 public interface ProfilesRepository  extends JpaRepository<Profiles, Long> {
 	Optional<Profiles> findById(Long id);
-
 	List<Profiles> findAllById(Long id);
-
 	List<Profiles> findAllByUsers(Users usersId);
-
 	long countByUsers(Users users);
-	
 	long countByUsersId(Long id);
 }
