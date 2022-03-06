@@ -2,7 +2,6 @@ package shop.newplace.common.mail.model.entity;
 
 import java.time.LocalDateTime;
 
-import javax.annotation.Generated;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,16 +12,13 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@Builder @AllArgsConstructor @NoArgsConstructor(access = AccessLevel.PROTECTED)
-
-
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class EmailAuthenticationToken {
 	
 	@Id
@@ -30,7 +26,7 @@ public class EmailAuthenticationToken {
 	private Long id;
 	
 	@Column
-	private LocalDateTime expirationDate;
+	private LocalDateTime expirationDateTime;
 	
 	@Column
 	private boolean expired;
@@ -45,6 +41,13 @@ public class EmailAuthenticationToken {
 	@LastModifiedDate
 	@Column
 	private LocalDateTime lastModifiedDate;
+	
+	@Builder
+	public EmailAuthenticationToken(LocalDateTime expirationDateTime, boolean expired, Long userId) {
+		this.expirationDateTime = expirationDateTime;
+		this.expired = expired;
+		this.userId = userId;
+	}
 	
 	public void useToken() {
 		this.expired = true;

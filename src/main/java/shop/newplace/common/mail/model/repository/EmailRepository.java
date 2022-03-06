@@ -9,7 +9,9 @@ import shop.newplace.common.mail.model.entity.EmailAuthenticationToken;
 
 public interface EmailRepository extends JpaRepository<EmailAuthenticationToken, Long> {
 
-	Optional<EmailAuthenticationToken> findByIdAndExpirationDateAfterAndExpired(Long id,LocalDateTime now, boolean expired);
+	Optional<EmailAuthenticationToken> findByUserId(Long userId);
+	
+	Optional<EmailAuthenticationToken> findByIdAndExpirationDateTimeAfterAndExpired(Long id,LocalDateTime now, boolean expired);
 	
 	
 }
