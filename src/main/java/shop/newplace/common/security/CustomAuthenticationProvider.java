@@ -1,4 +1,4 @@
-package shop.newplace.common.config;
+package shop.newplace.common.security;
 
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -10,12 +10,12 @@ import org.springframework.stereotype.Component;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import shop.newplace.Users.model.entity.Users;
+import shop.newplace.Users.model.repository.UsersRepository;
 import shop.newplace.common.advice.exception.DisabledUsersException;
 import shop.newplace.common.advice.exception.ExpiredPasswordException;
 import shop.newplace.common.advice.exception.ExpiredUsersException;
 import shop.newplace.common.advice.exception.LockedUsersException;
 import shop.newplace.common.advice.exception.NotMatchPasswordException;
-import shop.newplace.common.security.CustomUserDetailsService;
 
 @Component
 @RequiredArgsConstructor
@@ -25,6 +25,8 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 	private final CustomUserDetailsService customUserDetailsService;
 
 	private final PasswordEncoder passwordEncoder;
+	
+	private final UsersRepository usersRepository;
 
 	@Override
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
@@ -35,26 +37,29 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 		log.info("loginEmail : " + loginEmail);
 		log.info("userPassword : " + userPassword);
 		
-		Users users = customUserDetailsService.loadUserByUsername(loginEmail);
+		CustomUserDetails users = customUserDetailsService.loadUserByUsername(loginEmail);
 		
-		if(!passwordEncoder.matches(userPassword, users.getPassword())) {
-			throw new NotMatchPasswordException("비밀번호가 일치하지 않습니다", userPassword);
-		} 
-		if (!users.isCredentialsNonExpired()) {
-			throw new ExpiredPasswordException("비밀번호가 만료되었습니다.", userPassword);
-		}
-		if (!users.isAccountNonExpired()) {
-			throw new ExpiredUsersException("계정이 만료되었습니다.", loginEmail);
-		}
-		if (!users.isAccountNonLocked()) {
-			throw new LockedUsersException("잠긴 계정입니다.", loginEmail);
-		} 
 		if (!users.isEnabled()) {
 			throw new DisabledUsersException("사용 불가능한 계정입니다.", loginEmail);
 		} 
+		if (!users.isAccountNonLocked()) {
+			throw new LockedUsersException("잠긴 계정입니다.", loginEmail);
+		} 
+		if(!passwordEncoder.matches(userPassword, users.getPassword())) {
+			Users failLoginUsers = users.getUsers();
+			failLoginUsers.failLogin();
+			usersRepository.save(failLoginUsers);
+			throw new NotMatchPasswordException("비밀번호가 일치하지 않습니다", userPassword);
+		} 
+		if (!users.isAccountNonExpired()) {
+			throw new ExpiredUsersException("계정이 만료되었습니다.", loginEmail);
+		}
+		if (!users.isCredentialsNonExpired()) {
+			throw new ExpiredPasswordException("비밀번호가 만료되었습니다.", userPassword);
+		}
 		
 		return new UsernamePasswordAuthenticationToken(
-				users, userPassword, users.getAuthorities());
+				users, "", users.getAuthorities());
 	}
 	
 	@Override
