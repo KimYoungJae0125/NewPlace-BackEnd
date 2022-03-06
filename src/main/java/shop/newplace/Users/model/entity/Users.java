@@ -2,11 +2,8 @@ package shop.newplace.Users.model.entity;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,30 +12,27 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
-import javax.persistence.Transient;
 
 import org.hibernate.annotations.DynamicUpdate;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import shop.newplace.common.entity.BaseEntity;
-import shop.newplace.common.role.Role;
+import shop.newplace.common.util.DateUtil;
 
 @Entity
 @Getter
 @EqualsAndHashCode(of = "id")
-@Builder @AllArgsConstructor @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString(exclude = "profiles")
 @DynamicUpdate
-public class Users extends BaseEntity implements UserDetails {
+public class Users extends BaseEntity {
 	
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -50,13 +44,12 @@ public class Users extends BaseEntity implements UserDetails {
 //	 , joinColumns = @JoinColumn(name = "USER_ID")
 //	 , inverseJoinColumns = @JoinColumn(name = "PROFILE_ID"))
 //    @JoinColumn(name = "USER_ID")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private List<Profiles> profiles = new ArrayList<Profiles>();
 
     @Column(unique = true, name = "LOGIN_EMAIL", length = 500, nullable = false)
     private String loginEmail;
     
-    private boolean emailVerified;
-
     @Column(length = 1000, nullable = false)
     private String password;
 
@@ -69,151 +62,82 @@ public class Users extends BaseEntity implements UserDetails {
     @Column(length = 30)
     private String accountNumber;
 
+    @Column(length = 30, nullable = false)
+    private String mainPhoneNumber;
+
     @Column(length = 1, nullable = false)
     private int failCount;
     
+    @Column
+    private boolean emailVerified;
+  
+    @Column
+    private LocalDateTime passwordExpiredTime;
+    
+    @Column
     private LocalDateTime lastLoginTime;
     
-    @Column(length = 30, nullable = false)
-    private String mainPhoneNumber;
-    
-    @Getter(AccessLevel.NONE)
-    private Boolean accountNonExpired;
-    
-    @Getter(AccessLevel.NONE)
-    private Boolean accountNonLocked;
-
-    @Getter(AccessLevel.NONE)
-    private Boolean credentialsNonExpired;
-    
-    @Getter(AccessLevel.NONE)
-    private Boolean enabled;
-    
-    private int authId;
-    
-//    @Builder.Default
-//    @Transient
-//    private List<Integer> roles = new ArrayList<>();
-    
-    @Builder.Default
-    @Transient
-    private Set<Integer> roles = new HashSet<Integer>();
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-    	// TODO 권한을 어떻게 넣을지
-    	return roles.stream()
-    			.map(code -> new SimpleGrantedAuthority(Role.getNameByValue(code)))
-    			.collect(Collectors.toSet());
-    }
-    
-    @Override
-    public String getUsername() {
-    	// TODO Auto-generated method stub
-    	return loginEmail;
-    }
-    
-    //계정 만료 여부
-    @Override
-    public boolean isAccountNonExpired() {
-    	// TODO Auto-generated method stub
-    	return this.accountNonExpired;
-    }
-    
-    //계정 잠금 여부
-    @Override
-    public boolean isAccountNonLocked() {
-    	// TODO Auto-generated method stub
-    	return this.accountNonLocked;
-    }
-    
-    //패스워드 만료 여부
-    @Override
-    public boolean isCredentialsNonExpired() {
-    	// TODO Auto-generated method stub
-    	return this.credentialsNonExpired;
-    }
-    
-    //계정 사용 가능 여부
-    @Override
-    public boolean isEnabled() {
-    	// TODO Auto-generated method stub
-    	return this.enabled;
+    @Builder
+    //@AllArgsConstructor를 안 쓰는 이유 : id같은 경우 autoIncrement 되는 컬럼은 생성자에 넣지 않는게 좋다고 하여 필요한 컬럼만 생성자로 만든 후 Builder 패턴을 적용시킨다.
+    public Users(String loginEmail, String password, String name, String bankId, String accountNumber, String mainPhoneNumber) {
+    	this.loginEmail = loginEmail;
+    	this.password = password;
+    	this.name = name;
+    	this.bankId = bankId;
+    	this.accountNumber = accountNumber;
+    	this.mainPhoneNumber = mainPhoneNumber;
     }
     
     @PrePersist
     public void preSignUp() {
     	resetFailCount();
-    	unlockAccount();
-    	unlockAccountExpired();
-    	unlockCredentials();
-    	EnableAccount();
+    	setPasswordExpiredTime();
+    	setLastLogin();
     }
 
+    //로그인 성공
     public void successLogin() {
         setLastLogin();
-        addRole();
         resetFailCount();
-        unlockAccount();
-        unlockAccountExpired();
-        unlockCredentials();
     }
     
+    //로그인 실패
     public void failLogin() {
     	addFailCount();
-    	if(this.failCount > 5) {
-    		lockAccount();
-    	}
     }
     
-    private void addRole() {
-    	this.roles.add(this.authId);
+    //이메일 인증 완료
+    public void emailAuthentication() {
+    	finishEmailAuthentication();
     }
     
+    //패스워드 만료시 연장 버튼 클릭하면 나옴
+    public void passwordExtensionOfExpiryPeriod() {
+    	setPasswordExpiredTime();
+    }
+    
+    public void changePassword(String password) {
+    	this.password = password;
+    }
+    
+    private void finishEmailAuthentication() {
+    	this.emailVerified = true;
+    }
+    
+    private void setPasswordExpiredTime() {
+    	this.passwordExpiredTime = DateUtil.todayPlusMonths(3);
+    }
     
     private void addFailCount() {
-    	this.failCount = this.failCount + 1;
+    	this.failCount += 1;
     }
 
     private void setLastLogin() {
-        this.lastLoginTime = LocalDateTime.now();
+        this.lastLoginTime = DateUtil.getToday();
     }
 
     private void resetFailCount() {
         this.failCount = 0;
-    }
-
-    private void unlockAccount() {
-    	this.accountNonLocked = true;
-    }
-    
-    private void lockAccount() {
-    	this.accountNonLocked = false;
-    }
-    
-    private void unlockAccountExpired() {
-    	this.accountNonExpired = true;
-    }
-
-    private void lockAccountExpired() {
-    	this.accountNonExpired = false;
-    }
-
-
-    private void unlockCredentials() {
-    	this.credentialsNonExpired = true;
-    }
-    
-    private void lockCredentials() {
-    	this.credentialsNonExpired = false;
-    }
-    
-    private void EnableAccount() {
-    	this.enabled = true;
-    }
-    
-    private void disableAccount() {
-    	this.enabled = false;
     }
 
 }

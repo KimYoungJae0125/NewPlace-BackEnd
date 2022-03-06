@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import shop.newplace.Users.model.dto.ProfileSignUpForm;
+import shop.newplace.Users.model.dto.ProfilesDto;
 import shop.newplace.Users.model.entity.Profiles;
-import shop.newplace.Users.model.validator.ProfileSignUpFormValidator;
+import shop.newplace.Users.model.validator.ProfilesValidator;
 import shop.newplace.Users.service.ProfilesService;
 import shop.newplace.common.response.ResponseMessage;
 
@@ -25,14 +25,16 @@ import shop.newplace.common.response.ResponseMessage;
 public class ProfilesController {
 	
 	private final ProfilesService profilesService;
-	private final ProfileSignUpFormValidator profileSignUpFormValidator;
+	private final ProfilesValidator.SignUp profileSignUpFormValidator;
 	
     ///users/1/profiles
     @PostMapping
-    public ResponseEntity goCreateProfile(@PathVariable(name = "userId") Long userId, @Valid @RequestBody ProfileSignUpForm profileSignUpForm, BindingResult bindingResult) {
+    public ResponseEntity goCreateProfile(@PathVariable(name = "userId") Long userId, @Valid @RequestBody ProfilesDto.SignUp profileSignUpForm, BindingResult bindingResult) {
     	profileSignUpForm.setUserId(userId);
     	profileSignUpFormValidator.validate(profileSignUpForm, bindingResult);
-    	Profiles profiles = profilesService.profileSignUp(profileSignUpForm);
+    	profilesService.profileSignUp(profileSignUpForm);
+    	Profiles profiles = null;
+//    	Profiles profiles = profilesService.profileSignUp(profileSignUpForm);
     	ResponseMessage body = ResponseMessage.OK(201, "프로필 생성", "프로필 생성 성공", profiles);
 		return ResponseEntity.ok().body(body);
     }

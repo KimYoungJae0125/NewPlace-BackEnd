@@ -5,8 +5,11 @@ import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,12 +18,10 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import shop.newplace.Users.model.dto.LogInForm;
-import shop.newplace.Users.model.dto.SignUpForm;
-import shop.newplace.Users.model.validator.LogInFormValidator;
-import shop.newplace.Users.model.validator.SignUpFormValidator;
+import shop.newplace.Users.model.dto.UsersDto;
+import shop.newplace.Users.model.validator.UsersValidator;
 import shop.newplace.Users.service.UsersService;
-import shop.newplace.Users.token.model.dto.JwtTokenForm;
+import shop.newplace.Users.token.model.dto.JwtDto;
 import shop.newplace.common.response.ResponseMessage;
 
 @Slf4j // 기본 log 찍을 수 있는 객체
@@ -31,33 +32,45 @@ public class UsersController {
 	
 	private final UsersService usersService;
 
-	private final SignUpFormValidator signUpFormValidator;
+	private final UsersValidator.SignUp signUpValidator;
 	
-	private final LogInFormValidator logInFormValidator;
+	private final UsersValidator.LogIn logInValidator;
 	
 	//알아보기
-	@InitBinder("signUpForm")
+	@InitBinder
 	public void signUpFormValidator(WebDataBinder webDataBinder) {
-		webDataBinder.addValidators(signUpFormValidator);
+		if(webDataBinder.getTarget() instanceof UsersDto.SignUp) {
+			webDataBinder.addValidators(signUpValidator);
+		}
+		if(webDataBinder.getTarget() instanceof UsersDto.LogIn) {
+			webDataBinder.addValidators(logInValidator);
+		}
 	}
 
-	@InitBinder("logInForm")
-	public void logInFormValidator(WebDataBinder webDataBinder) {
-		webDataBinder.addValidators(logInFormValidator);
-	}
+//	@InitBinder("logInForm")
+//	public void logInFormValidator(WebDataBinder webDataBinder) {
+//		System.out.println("로그인 작동?");
+//		webDataBinder.addValidators(logInFormValidator);
+//		System.out.println("로그인 작동?");
+//	}
 
 	@ApiOperation(value = "회원가입", notes = "새로운 사용자의 정보를 등록합니다.")
     @PostMapping
-    public ResponseEntity createSignUp(@Valid @RequestBody SignUpForm signUpForm) {
+    public ResponseEntity createSignUp(@Valid @RequestBody UsersDto.SignUp signUpForm) {
     	usersService.signUp(signUpForm);
         return ResponseEntity.ok().body(ResponseMessage.OK(HttpStatus.CREATED.value(), HttpStatus.CREATED.getReasonPhrase(), "회원가입에 성공하였습니다."));
     }
 
 	@ApiOperation(value = "로그인", notes = "로그인합니다.")
     @PostMapping("/login")
-    public ResponseEntity goLogin(@Valid @RequestBody LogInForm logInForm, HttpServletResponse response) {
-    	JwtTokenForm jwtForm = usersService.logIn(logInForm, response);
-    	return ResponseEntity.ok().body(ResponseMessage.OK(HttpStatus.CREATED.value(), HttpStatus.CREATED.getReasonPhrase(), "로그인 성공하였습니다.", jwtForm));
+    public ResponseEntity goLogin(@Valid @RequestBody UsersDto.LogIn logInForm, HttpServletResponse response) {
+		Authentication authentication = logInValidator.authentication(logInForm);
+    	return ResponseEntity.ok().body(ResponseMessage.OK(HttpStatus.CREATED.value(), HttpStatus.CREATED.getReasonPhrase(), "로그인 성공하였습니다.", usersService.logIn(authentication, response)));
     }
+	
+	@GetMapping("/{userId}")
+	public ResponseEntity viewUsersById(@PathVariable(name = "userId") Long userId) {
+		return ResponseEntity.ok().body(ResponseMessage.OK(HttpStatus.CREATED.value(), HttpStatus.CREATED.getReasonPhrase(), "회원정보 조회에 성공하였습니다.", usersService.getUserInfo(userId)));
+	}
     
 }

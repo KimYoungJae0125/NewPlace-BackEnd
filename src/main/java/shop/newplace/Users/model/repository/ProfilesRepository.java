@@ -18,4 +18,6 @@ public interface ProfilesRepository  extends JpaRepository<Profiles, Long> {
 	List<Profiles> findAllByUsers(Users usersId);
 
 	long countByUsers(Users users);
+	
+	long countByUsersId(Long id);
 }

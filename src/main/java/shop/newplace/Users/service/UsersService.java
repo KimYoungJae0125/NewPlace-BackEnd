@@ -1,27 +1,25 @@
 package shop.newplace.Users.service;
 
-import java.util.List;
-
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import shop.newplace.Users.model.dto.LogInForm;
-import shop.newplace.Users.model.dto.SignUpForm;
-import shop.newplace.Users.model.entity.Profiles;
+import shop.newplace.Users.model.dto.ProfilesDto;
+import shop.newplace.Users.model.dto.UsersDto;
 import shop.newplace.Users.model.entity.Users;
-import shop.newplace.Users.model.repository.ProfilesRepository;
 import shop.newplace.Users.model.repository.UsersRepository;
 import shop.newplace.Users.token.JwtTokenProvider;
-import shop.newplace.Users.token.model.dto.JwtTokenForm;
-import shop.newplace.Users.token.model.entity.JwtRefreshToken;
-import shop.newplace.common.mail.service.EmailAuthenticationService;
+import shop.newplace.Users.token.model.dto.JwtDto;
+import shop.newplace.common.advice.exception.NotFoundUsersException;
+import shop.newplace.common.mail.service.EmailService;
 import shop.newplace.common.redis.service.RedisService;
+import shop.newplace.common.security.CustomUserDetails;
 import shop.newplace.common.util.CipherUtil;
 
 @Slf4j
@@ -31,8 +29,6 @@ public class UsersService {
 
 	private final UsersRepository usersRepository;
 
-	private final ProfilesRepository profilesRepository;
-	
 	private final PasswordEncoder passwordEncoder;
 	
 	private final ModelMapper modelMapper;
@@ -41,53 +37,65 @@ public class UsersService {
 	
 	private final RedisService redisService;
 	
-	private final EmailAuthenticationService emailAuthenticationService;
+	private final EmailService emailAuthenticationService;
+	
+	private final ProfilesService profilesService;
 	
 	@Transactional
-	public void signUp(SignUpForm signUpForm) {
-		System.out.println("setting before : " + signUpForm);
-		signUpForm
-			.setName(CipherUtil.Name.encrypt(signUpForm.getName()))
-			.setLoginEmail(CipherUtil.Email.encrypt(signUpForm.getLoginEmail()))
-			.setMainPhoneNumber(CipherUtil.Phone.encrypt(signUpForm.getMainPhoneNumber()))
-			.setPassword(passwordEncoder.encode(signUpForm.getPassword()))
-			.setBankId(CipherUtil.BankId.encrypt(signUpForm.getBankId()))
-			.setAccountNumber(CipherUtil.AccountNumber.encrypt(signUpForm.getAccountNumber()))
-			.setRoles(signUpForm.getAuthId());
-		System.out.println("setting after : " + signUpForm);
-		Users users = usersRepository.save(modelMapper.map(signUpForm, Users.class));
-		emailAuthenticationService.sendEmailAuthentication(users.getId(), signUpForm.getLoginEmail());
+	public void signUp(UsersDto.SignUp usersSignUpForm) {
+		usersSignUpForm
+			.setName(CipherUtil.Name.encrypt(usersSignUpForm.getName()))
+			.setLoginEmail(CipherUtil.Email.encrypt(usersSignUpForm.getLoginEmail()))
+			.setMainPhoneNumber(CipherUtil.Phone.encrypt(usersSignUpForm.getMainPhoneNumber()))
+			.setPassword(passwordEncoder.encode(usersSignUpForm.getPassword()))
+			.setBankId(CipherUtil.BankId.encrypt(usersSignUpForm.getBankId()))
+			.setAccountNumber(CipherUtil.AccountNumber.encrypt(usersSignUpForm.getAccountNumber()));
+		Users users = usersRepository.save(modelMapper.map(usersSignUpForm, Users.class));
+		emailAuthenticationService.sendEmailAuthentication(users, usersSignUpForm.getLoginEmail());
+		ProfilesDto.SignUp profiles = ProfilesDto.SignUp.builder()
+														.userId(users.getId())
+														.users(users)
+														.nickName("프로필")
+														.build();
+		profilesService.profileSignUp(profiles);
 	}
 	
 	@Transactional
-	public JwtTokenForm logIn(LogInForm logInForm, HttpServletResponse response) {
-		Users usersInfo = usersRepository.findByLoginEmail(CipherUtil.Email.encrypt(logInForm.getLoginEmail())).get();
+	public JwtDto.AccessToken logIn(Authentication authentication, HttpServletResponse response) {
+		CustomUserDetails securityUsers = (CustomUserDetails) authentication.getPrincipal();
+		Users usersInfo = securityUsers.getUsers();
 		usersInfo.successLogin();
-		String loginEmail = CipherUtil.Email.decrypt(usersInfo.getLoginEmail());
 		usersRepository.save(usersInfo);
-		String accessToken = jwtTokenProvider.createAccessToken(loginEmail, usersInfo.getAuthorities());
-		String refreshToken = jwtTokenProvider.createRefreshToken(usersInfo.getId().toString(), usersInfo.getAuthorities());
+		String loginEmail = CipherUtil.Email.decrypt(usersInfo.getLoginEmail());
+		String accessToken = jwtTokenProvider.createAccessToken(usersInfo.getId().toString(), loginEmail, authentication.getAuthorities());
+		String refreshToken = jwtTokenProvider.createRefreshToken(usersInfo.getId().toString(), authentication.getAuthorities());
 		jwtTokenProvider.setHeaderAccessToken(response, accessToken);
 		jwtTokenProvider.setHeaderRefreshToken(response, refreshToken);
-		List<Profiles> profilesList = profilesRepository.findAllByUsers(usersInfo);
-		
-		JwtTokenForm jwtForm = JwtTokenForm.builder()
-								 .profilesList(profilesList)
-		  						 .accesToken(accessToken)
-		  						 .refreshToken(refreshToken)
-								 .build();
-//		redisService.setValues(refreshToken, loginEmail);
-		
-		JwtRefreshToken jwtRefreshToken = JwtRefreshToken.builder()
-										  .loginEmail(loginEmail)
-										  .expirationTime(100L * 60 * 60 * 24 * 7)
-										  .refreshToken(refreshToken)
-										  .build();
-		
+		JwtDto.AccessToken jwtAceessToken = JwtDto.AccessToken.builder()
+												  	  .accesToken(accessToken)
+								  	  				  .build();
+		JwtDto.RefreshToken jwtRefreshToken = JwtDto.RefreshToken.builder()
+																  .id(usersInfo.getId())
+																  .refreshToken(refreshToken)
+																  .expirationTime(100L * 60 * 60 * 24 * 7)
+																  .build();
 		redisService.setValues(jwtRefreshToken);
 //		jwtRefreshTokenRedisRepository.save(new JwtRefreshToken(usersInfo.getId(), refreshToken));
 		
-		return jwtForm;
+		return jwtAceessToken;
+	}
+
+	public UsersDto.Info getUserInfo(Long userId) {
+		Users usersInfo = usersRepository.findById(userId)
+							   .orElseThrow(() -> new NotFoundUsersException("해당 유저는 존재하지 않습니다", "userId : " + userId) );
+		return UsersDto.Info.builder()
+							.userId(usersInfo.getId())
+							.loginEmail(CipherUtil.Email.decrypt(usersInfo.getLoginEmail()))
+							.name(CipherUtil.Name.decrypt(usersInfo.getName()))
+							.bankId(CipherUtil.BankId.decrypt(usersInfo.getBankId()))
+							.accountNumber(CipherUtil.AccountNumber.decrypt(usersInfo.getAccountNumber()))
+							.mainPhoneNumber(CipherUtil.Phone.decrypt(usersInfo.getMainPhoneNumber()))
+							.build();
 	}
 	
 }
