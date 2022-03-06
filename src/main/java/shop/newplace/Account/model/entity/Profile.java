@@ -11,6 +11,7 @@ import javax.persistence.*;
 public class Profile {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long profileId;
 
     @Column(length = 6, nullable = true)
@@ -28,4 +29,7 @@ public class Profile {
 
     @Column(length = 11)
     private String phoneNumber;
+
+    @Column(length = 10)
+    private String authId;
 }
