@@ -1,22 +1,33 @@
 package shop.newplace.Users.token.model.dto;
 
-import java.util.List;
-
+import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import shop.newplace.Users.model.entity.Profiles;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
-@Builder
-public class JwtTokenForm {
+public class JwtDto {
 
-	private Long id;
+	@Getter
+	@Setter
+	@Builder @AllArgsConstructor @NoArgsConstructor
+	public static class AccessToken{
+		private Long id;
+		
+		private String accesToken;
+	}
 	
-	private List<Profiles> profilesList;
+	@Getter
+	@Setter
+	@Builder @AllArgsConstructor @NoArgsConstructor
+	public static class RefreshToken{
+		private Long id;
+
+		private String refreshToken;
+		
+		private Long expirationTime;
+	}
 	
-    private String accesToken;
-    
-    private String refreshToken;
     
     
 }
