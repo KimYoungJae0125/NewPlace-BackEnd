@@ -4,8 +4,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.util.ArrayList;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,10 +17,9 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import shop.newplace.Users.model.dto.LogInForm;
+import shop.newplace.Users.model.dto.UsersDto;
 import shop.newplace.Users.model.entity.Users;
 import shop.newplace.Users.model.repository.UsersRepository;
-import shop.newplace.common.role.Role;
 import shop.newplace.common.util.CipherUtil;
 
 @SpringBootTest(properties = "classpath:application-test.yml")
@@ -46,7 +43,6 @@ class LogInTest {
 	
     @BeforeEach
     public void setup() throws Exception {
-    
     	String loginEmail = "abcdefg@naver.com";
     	String name = "테스터";
     	String password = "abcdefg!@#1";
@@ -67,16 +63,11 @@ class LogInTest {
     						.password(password)
     						.bankId(bankId)
     						.accountNumber(accountNumber)
-    						.failCount(0)
     						.mainPhoneNumber(mainPhoneNumber)
-    						.authId(Role.USER.getValue())
+//    						.authId(Role.USER.getValue())
     						.build();
-
     	Users result = usersRepository.save(users);
-    	
     	System.out.println("users : " + result);
-    	
-    	
     }
 	
 	
@@ -86,7 +77,7 @@ class LogInTest {
     	String loginEmail = "abcdefg@naver.com";
     	String password = "abcdefg!@#1";
 
-    	LogInForm signInForm = LogInForm.builder()
+    	UsersDto.LogIn signInForm = UsersDto.LogIn.builder()
     									  .loginEmail(loginEmail)
     									  .password(password)
     									  .build();
@@ -97,8 +88,6 @@ class LogInTest {
 				)
 			.andExpect(status().isOk())
 			.andDo(print());
-    	
-    	
     }
     
 
