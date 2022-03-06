@@ -72,7 +72,7 @@ public class UsersService {
 		jwtTokenProvider.setHeaderAccessToken(response, accessToken);
 		jwtTokenProvider.setHeaderRefreshToken(response, refreshToken);
 		JwtDto.AccessToken jwtAceessToken = JwtDto.AccessToken.builder()
-												  	  .accesToken(accessToken)
+												  	  .accessToken(accessToken)
 								  	  				  .build();
 		JwtDto.RefreshToken jwtRefreshToken = JwtDto.RefreshToken.builder()
 																  .id(usersInfo.getId())

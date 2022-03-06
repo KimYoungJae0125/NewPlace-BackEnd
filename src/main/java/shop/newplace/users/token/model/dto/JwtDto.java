@@ -14,7 +14,7 @@ public class JwtDto {
 	public static class AccessToken{
 		private Long id;
 		
-		private String accesToken;
+		private String accessToken;
 	}
 	
 	@Getter
