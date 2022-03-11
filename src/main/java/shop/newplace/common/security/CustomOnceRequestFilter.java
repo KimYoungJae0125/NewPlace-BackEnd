@@ -1,4 +1,4 @@
-package shop.newplace.users.token;
+package shop.newplace.common.security;
 
 import java.io.IOException;
 
@@ -12,10 +12,11 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import shop.newplace.users.token.JwtTokenProvider;
 
 @Slf4j
 @RequiredArgsConstructor
-public class JwtBeforeFilter extends OncePerRequestFilter {
+public class CustomOnceRequestFilter extends OncePerRequestFilter {
 
 	private final JwtTokenProvider jwtTokenProvider;
 	
@@ -25,13 +26,13 @@ public class JwtBeforeFilter extends OncePerRequestFilter {
 		System.out.println(request.getRequestURI());
 		if(!request.getRequestURI().contains("/users")) {
 			String accessToken = jwtTokenProvider.resolveAccessToken(request);
-//			String refreshToken = jwtTokenProvider.resolveRefreshToken(request);
+			String refreshToken = jwtTokenProvider.resolveRefreshToken(request);
 			if(accessToken != null && jwtTokenProvider.validateToken(accessToken)) {
 				//AccessToken 유효
 				this.setAuthentication(accessToken);
 			}
-			String userId = jwtTokenProvider.getUserIdByToken(accessToken);
-			String refreshToken = jwtTokenProvider.resolveRefreshToken(Long.valueOf(userId));
+			String userId = jwtTokenProvider.getUserIdByToken(refreshToken);
+//			String refreshToken = jwtTokenProvider.resolveRefreshToken(Long.valueOf(userId));
 			if(!jwtTokenProvider.validateToken(accessToken) && refreshToken != null) {
 				//AccessToken은 만료 RefreshToken은 존재
 				if(jwtTokenProvider.validateToken(refreshToken) && jwtTokenProvider.existsRefreshTokenByUserId(Long.valueOf(userId))) {
@@ -43,6 +44,7 @@ public class JwtBeforeFilter extends OncePerRequestFilter {
 			}
 			
 		}
+		System.out.println("권한찾아보기 : " + SecurityContextHolder.getContext().getAuthentication());
 		filterChain.doFilter(request, response);
 	}
 	
