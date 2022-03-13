@@ -1,4 +1,4 @@
-package shop.newplace.common.advice.exception;
+package shop.newplace.users.advice.exception;
 
 import org.springframework.security.authentication.LockedException;
 
