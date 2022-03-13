@@ -7,13 +7,13 @@ import java.util.Date;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -21,9 +21,9 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import shop.newplace.common.redis.RedisService;
 import shop.newplace.common.security.CustomUserDetails;
 import shop.newplace.common.security.CustomUserDetailsService;
+import shop.newplace.common.util.RedisUtil;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -38,7 +38,7 @@ public class JwtTokenProvider {
 	
 	private final CustomUserDetailsService customUserDetailsService;
 	
-	private final RedisService redisService;
+	private final RedisUtil redisService;
 	
 	private String type = "bearer ";
 	
@@ -79,16 +79,14 @@ public class JwtTokenProvider {
 	}
 	
 	public String getUserIdByToken(String token) {
-		return parserJwts(token)
-				.getBody()
+		return parserJwtsBody(token)
 				.getSubject();
 	}
 
 	public String getLoginEmailByToken(String token) {
-		return parserJwts(token)
-				.getBody()
-				.get("loginEmail")
-				.toString();
+			return parserJwtsBody(token)
+					.get("loginEmail")
+					.toString();
 	}
 	
 	public String resolveAccessToken(HttpServletRequest request) {
@@ -138,6 +136,14 @@ public class JwtTokenProvider {
 	
 	private Jws<Claims> parserJwts(String token) {
 		return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token);
+	}
+	
+	private Claims parserJwtsBody(String token) {
+//		if(validateToken(token)) {
+			return parserJwts(token).getBody();
+//		} else {
+//			throw new NotFoundUsersException("토큰없음" , "");
+//		}
 	}
 	
 	
