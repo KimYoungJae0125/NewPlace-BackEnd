@@ -4,6 +4,7 @@ package shop.newplace.users.signUp;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.List;
@@ -23,11 +24,12 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import shop.newplace.common.constant.Role;
+import shop.newplace.common.util.CipherUtil;
+import shop.newplace.users.model.dto.ProfilesDto;
 import shop.newplace.users.model.dto.UsersDto;
 import shop.newplace.users.model.entity.Users;
 import shop.newplace.users.model.repository.UsersRepository;
-import shop.newplace.common.constant.Role;
-import shop.newplace.common.util.CipherUtil;
 
 @SpringBootTest(properties = "classpath:application-test.yml")
 @AutoConfigureMockMvc
@@ -74,6 +76,7 @@ class SignUpTest {
 									.mainPhoneNumber(mainPhoneNumber)
 									.bankId(bankId)
 									.accountNumber(accountNumber)
+									.emailVerified(true)
 									.build();
     }
     
@@ -197,7 +200,8 @@ class SignUpTest {
     			  .setPasswordVerified(null)
     			  .setMainPhoneNumber(null)
     			  .setBankId(null)
-    			  .setAccountNumber(null);
+    			  .setAccountNumber(null)
+    			  .setEmailVerified(false);
     	
     	mockMvc.perform(post("/users")
     			.contentType(MediaType.APPLICATION_JSON)
@@ -218,14 +222,35 @@ class SignUpTest {
     	mockMvc.perform(post("/users")
     			.contentType(MediaType.APPLICATION_JSON)
     			.content(content)
-    			);
+    			)
+    			.andExpect(status().isOk());
     	System.out.println("중복 가입");
     	mockMvc.perform(post("/users")
     			.contentType(MediaType.APPLICATION_JSON)
     			.content(content)
-    			);
+    			)
+	    		.andExpect(status().isBadRequest());
 
     	assertThat(1L, is(usersRepository.count()));
+    }
+    
+    @Test
+    void profileSignUpTest() throws Exception {
+    	System.out.println("profileSignUpTest");
+    	
+    	ProfilesDto.RequestSignUp profilesSignUp = ProfilesDto.RequestSignUp.builder()
+																			.nickName("테스터")
+																			.authId("2")
+																			.build();
+    	
+    	signUpForm.setProfilesSignUp(profilesSignUp);
+    	
+    	mockMvc.perform(post("/users")
+    			.contentType(MediaType.APPLICATION_JSON)
+    			.content(objectMapper.writeValueAsString(signUpForm))
+    			)
+    			.andExpect(status().isOk())
+    			.andDo(print());
     	
     }
 

@@ -1,7 +1,7 @@
 package shop.newplace.users.token;
 
-import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -23,18 +23,19 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.util.StringUtils;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import shop.newplace.common.security.CustomUserDetails;
+import shop.newplace.common.util.CipherUtil;
+import shop.newplace.common.util.RedisUtil;
 import shop.newplace.users.model.dto.UsersDto;
 import shop.newplace.users.model.entity.Users;
 import shop.newplace.users.model.repository.UsersRepository;
 import shop.newplace.users.service.UsersService;
 import shop.newplace.users.token.model.dto.JwtDto;
-import shop.newplace.common.redis.RedisService;
-import shop.newplace.common.security.CustomUserDetails;
-import shop.newplace.common.util.CipherUtil;
 
 @SpringBootTest(properties = "classpath:application-test.yml")
 @AutoConfigureMockMvc
@@ -58,7 +59,7 @@ public class TokenTest {
 	private UsersRepository usersRepository;
 	
 	@Autowired
-	private RedisService redisService;
+	private RedisUtil redisService;
 	
 	private String type = "bearer ";
 	
@@ -102,7 +103,11 @@ public class TokenTest {
     @DisplayName("AccessToken 확인")
 	@Test
 	void headerAccessToken() {
-		
+    	String [] test2 = {"USERS", "PARTNER"};
+		String anyAuthorities = StringUtils.arrayToDelimitedString(test2, "','ROLE_");
+		String test = "hasAnyRole('ROLE_" + anyAuthorities + "')";
+		System.out.println(test);
+    	
 		String accessToken = jwtTokenProvider.createAccessToken(result.getId().toString(), loginEmail, securityUsers.getAuthorities());
 		
 		request.addHeader("authorization", type + accessToken);

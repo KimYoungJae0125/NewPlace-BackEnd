@@ -18,9 +18,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import shop.newplace.users.model.dto.UsersDto;
-import shop.newplace.users.model.entity.Users;
 import shop.newplace.users.model.repository.UsersRepository;
-import shop.newplace.common.util.CipherUtil;
 
 @SpringBootTest(properties = "classpath:application-test.yml")
 @AutoConfigureMockMvc
@@ -41,41 +39,38 @@ class LogInTest {
 	@Autowired
 	ObjectMapper objectMapper;
 	
+	String loginEmail = "abcdefg@newPlace";
+	String name = "테스터";
+	String password = "abcdefg!@#1";
+	String mainPhoneNumber = "01012345678";
+	String bankId = "01";
+	String accountNumber = "12345678";
+	
+	
     @BeforeEach
     public void setup() throws Exception {
-    	String loginEmail = "abcdefg@naver.com";
-    	String name = "테스터";
-    	String password = "abcdefg!@#1";
-    	String mainPhoneNumber = "01012345678";
-    	String bankId = "01";
-    	String accountNumber = "12345678";
 
-    	password 		= 	passwordEncoder.encode(password);
-    	loginEmail 		= 	CipherUtil.Email.encrypt(loginEmail);
-    	name 			= 	CipherUtil.Name.encrypt(name);
-    	mainPhoneNumber = 	CipherUtil.Phone.encrypt(mainPhoneNumber);
-    	bankId 			= 	CipherUtil.BankId.encrypt(bankId);
-    	accountNumber 	= 	CipherUtil.AccountNumber.encrypt(accountNumber);
-    	
-    	Users users = Users.builder()
-    						.loginEmail(loginEmail)
-    						.name(name)
-    						.password(password)
-    						.bankId(bankId)
-    						.accountNumber(accountNumber)
-    						.mainPhoneNumber(mainPhoneNumber)
-//    						.authId(Role.USER.getValue())
-    						.build();
-    	Users result = usersRepository.save(users);
-    	System.out.println("users : " + result);
+    	UsersDto.RequestSignUp signUpForm = UsersDto.RequestSignUp.builder()
+																  .loginEmail(loginEmail)
+																  .password(password)
+																  .passwordVerified(password)
+																  .bankId(bankId)
+																  .accountNumber(accountNumber)
+																  .mainPhoneNumber(mainPhoneNumber)
+																  .name(name)
+																  .emailVerified(true)
+																  .build();
+    	mockMvc.perform(post("/users")
+    						.contentType(MediaType.APPLICATION_JSON)
+    						.content(objectMapper.writeValueAsString(signUpForm)))
+    			.andExpect(status().isOk())
+    			.andDo(print());
     }
 	
 	
     @DisplayName("정상 로그인 테스트")
     @Test
     void logInTest() throws Exception {
-    	String loginEmail = "abcdefg@naver.com";
-    	String password = "abcdefg!@#1";
 
     	UsersDto.RequestLogIn signInForm = UsersDto.RequestLogIn.builder()
     									  .loginEmail(loginEmail)
