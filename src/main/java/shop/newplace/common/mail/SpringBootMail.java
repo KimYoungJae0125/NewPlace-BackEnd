@@ -19,6 +19,7 @@ import org.thymeleaf.spring5.SpringTemplateEngine;
 
 import lombok.RequiredArgsConstructor;
 import shop.newplace.users.model.entity.Users;
+import shop.newplace.common.mail.model.dto.EmailDto;
 import shop.newplace.common.util.CipherUtil;
 
 @RequiredArgsConstructor
@@ -48,6 +49,7 @@ public class SpringBootMail {
 //		simpleMessage.setText(mailText);
 //		javaMailSender.send(simpleMessage);
 //	}
+/*	
 	@Async
 	public void sendEmailAuthenticationEmail(Users users, String emailAuthenticationUrl) {
 		Map<String, Object> thymeleafVariableMap = new HashMap<String, Object>();
@@ -58,23 +60,33 @@ public class SpringBootMail {
 		
 		javaMailSender.send(mimeMessage);
 	}
-	
+*/	
 	@Async
-	public void sendTemporaryPasswordEmail(Users users, String temporyPassword) {
+	public void sendEmailAuthenticationEmail(EmailDto.RequestEmailAuthentication emailDto) {
 		Map<String, Object> thymeleafVariableMap = new HashMap<String, Object>();
-		thymeleafVariableMap.put("temporaryPassword", temporyPassword);
-		thymeleafVariableMap.put("userName", CipherUtil.Name.decrypt(users.getName()));
-
-		MimeMessage mimeMessage = setMimeMessage(users, "임시 비밀번호 발송", thymeleafVariableMap, "temporaryPasswordEmail");
+		thymeleafVariableMap.put("certificationNumber", emailDto.getCertificationNumber());
+		
+		MimeMessage mimeMessage = setMimeMessage(emailDto.getLoginEmail(), "회원가입 이메일 인증", thymeleafVariableMap, "authenticationEmail");
 		
 		javaMailSender.send(mimeMessage);
 	}
 	
-	private MimeMessage setMimeMessage(Users users, String mailSubject, Map<String, Object> thymeleafVariableMap, String template) {
+	@Async
+	public void sendTemporaryPasswordEmail(String reciverEmail, String userName, String temporyPassword) {
+		Map<String, Object> thymeleafVariableMap = new HashMap<String, Object>();
+		thymeleafVariableMap.put("temporaryPassword", temporyPassword);
+		thymeleafVariableMap.put("userName", CipherUtil.Name.decrypt(userName));
+
+		MimeMessage mimeMessage = setMimeMessage(reciverEmail, "임시 비밀번호 발송", thymeleafVariableMap, "temporaryPasswordEmail");
+		
+		javaMailSender.send(mimeMessage);
+	}
+	
+	private MimeMessage setMimeMessage(String reciverEmail, String mailSubject, Map<String, Object> thymeleafVariableMap, String template) {
 		MimeMessage mimeMessage = javaMailSender.createMimeMessage();
 		try {
 			MimeMessageHelper mimeHelper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
-			mimeHelper.setTo(CipherUtil.Email.decrypt(users.getLoginEmail()));
+			mimeHelper.setTo(reciverEmail);
 			mimeHelper.setFrom(SENDER);
 			mimeHelper.setSubject(mailSubject);
 			mimeHelper.setText(setContext(thymeleafVariableMap, template), true);

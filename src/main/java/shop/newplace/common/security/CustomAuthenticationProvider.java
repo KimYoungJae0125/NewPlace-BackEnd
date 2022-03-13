@@ -9,13 +9,13 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import shop.newplace.users.advice.exception.DisabledUsersException;
+import shop.newplace.users.advice.exception.ExpiredPasswordException;
+import shop.newplace.users.advice.exception.ExpiredUsersException;
+import shop.newplace.users.advice.exception.LockedUsersException;
+import shop.newplace.users.advice.exception.NotMatchPasswordException;
 import shop.newplace.users.model.entity.Users;
 import shop.newplace.users.model.repository.UsersRepository;
-import shop.newplace.common.advice.exception.DisabledUsersException;
-import shop.newplace.common.advice.exception.ExpiredPasswordException;
-import shop.newplace.common.advice.exception.ExpiredUsersException;
-import shop.newplace.common.advice.exception.LockedUsersException;
-import shop.newplace.common.advice.exception.NotMatchPasswordException;
 
 @Component
 @RequiredArgsConstructor
