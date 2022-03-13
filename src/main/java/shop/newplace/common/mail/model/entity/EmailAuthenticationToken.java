@@ -34,6 +34,9 @@ public class EmailAuthenticationToken {
 	@Column
 	private Long userId;
 	
+	@Column
+	private String certificationNumber;
+	
 	@CreatedDate
 	@Column(updatable = false)
 	private LocalDateTime createDate;
@@ -43,10 +46,11 @@ public class EmailAuthenticationToken {
 	private LocalDateTime lastModifiedDate;
 	
 	@Builder
-	public EmailAuthenticationToken(LocalDateTime expirationDateTime, boolean expired, Long userId) {
+	public EmailAuthenticationToken(LocalDateTime expirationDateTime, boolean expired, Long userId, String certificationNumber) {
 		this.expirationDateTime = expirationDateTime;
 		this.expired = expired;
 		this.userId = userId;
+		this.certificationNumber = certificationNumber;
 	}
 	
 	public void useToken() {

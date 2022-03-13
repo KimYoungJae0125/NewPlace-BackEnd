@@ -2,7 +2,9 @@ package shop.newplace.common.mail.service;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.Random;
 import java.util.UUID;
+import java.util.stream.IntStream;
 
 import javax.transaction.Transactional;
 
@@ -10,19 +12,21 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import io.jsonwebtoken.lang.Assert;
 import lombok.RequiredArgsConstructor;
-import shop.newplace.users.model.entity.Users;
-import shop.newplace.users.model.repository.UsersRepository;
-import shop.newplace.common.advice.exception.NotFoundUsersException;
 import shop.newplace.common.mail.SpringBootMail;
+import shop.newplace.common.mail.model.dto.EmailDto;
 import shop.newplace.common.mail.model.entity.EmailAuthenticationToken;
 import shop.newplace.common.mail.model.repository.EmailRepository;
 import shop.newplace.common.util.CipherUtil;
+import shop.newplace.common.util.RedisUtil;
+import shop.newplace.users.advice.exception.NotFoundUsersException;
+import shop.newplace.users.model.entity.Users;
+import shop.newplace.users.model.repository.UsersRepository;
 
 @RequiredArgsConstructor
 @Service
 public class EmailService {
-	private final EmailRepository emailRepository;
 	
 	private final SpringBootMail springBootMail;
 	
@@ -30,8 +34,44 @@ public class EmailService {
 	
 	private final PasswordEncoder passwordEncoder;
 	
-	private static final long EMAIL_TOKEN_EXPIRATION_TIME_VALUE = 5L;
+	private final RedisUtil redisService;
 	
+	private static final long EMAIL_TOKEN_EXPIRATION_TIME_VALUE = 3L;
+	
+	
+	public EmailDto.ResponseInfo sendEmailAuthentication(String reciverEmail) {
+		StringBuffer certificationNumber = new StringBuffer();
+		IntStream.range(0, 6).forEach(i -> certificationNumber.append(new Random().ints(0, 9).findFirst().getAsInt()));
+		EmailDto.RequestEmailAuthentication emailDto = EmailDto.RequestEmailAuthentication.builder()
+																.loginEmail(reciverEmail)
+																.certificationNumber(certificationNumber.toString())
+																.expirationTime(EMAIL_TOKEN_EXPIRATION_TIME_VALUE)
+																.build();
+		redisService.setValues(emailDto);
+		springBootMail.sendEmailAuthenticationEmail(emailDto);
+		
+		return EmailDto.ResponseInfo.builder()
+									.certificationNumber(certificationNumber.toString())
+									.build();
+	}
+	
+	public EmailDto.ResponseInfo emailAuthentication(EmailDto.RequestEmailAuthentication emailDto) {
+		String redisCertificationNumber = redisService.getValues(emailDto.getLoginEmail());
+		boolean emailVerified = false;
+		if(redisCertificationNumber != null) {
+			emailVerified = redisCertificationNumber.equals(emailDto.getCertificationNumber());
+		}
+		return EmailDto.ResponseInfo.builder()
+									.emailVerified(emailVerified)
+									.build();
+		
+	}
+	
+/*
+ * 이메일 인증확인 메일 보내고 해당 인증 누를 경우 이메일 인증 가능 시스템 : 인증 확인 버튼 클릭에서 인증번호 방식으로 변경 되어 현재로선 주석 처리
+ * 
+ 	private final EmailRepository emailRepository;
+
 	@Transactional
 	public void sendEmailAuthentication(Users users, String reciverEmail) {
 		Optional<EmailAuthenticationToken> findToken = emailRepository.findByUserId(users.getId());
@@ -53,6 +93,7 @@ public class EmailService {
 					 	 .expirationDateTime(LocalDateTime.now().plusMinutes(EMAIL_TOKEN_EXPIRATION_TIME_VALUE)) 
 						 .userId(userId)
 						 .expired(false)
+						 .certificationNumber("")
 						 .build();
 	}
 
@@ -68,7 +109,7 @@ public class EmailService {
 		users.emailAuthentication();
 		usersRepository.save(users);
 	}
-	
+*/	
 	@Transactional
 	public void sendTemporaryPassword(String loginEmail) {
 		Users users = usersRepository.findByLoginEmail(CipherUtil.Email.encrypt(loginEmail))
@@ -77,7 +118,7 @@ public class EmailService {
 		temporaryPassword = temporaryPassword.substring(0, 10);
 		users.changePassword(passwordEncoder.encode(temporaryPassword));
 		usersRepository.save(users);
-		springBootMail.sendTemporaryPasswordEmail(users, temporaryPassword);
+		springBootMail.sendTemporaryPasswordEmail(loginEmail, users.getName(), temporaryPassword);
 	}
 	
 	
