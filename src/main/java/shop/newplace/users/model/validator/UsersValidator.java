@@ -32,7 +32,6 @@ public class UsersValidator {
 		@Override
 		public void validate(Object target, Errors errors) {
 			UsersDto.RequestSignUp usersSignUpForm = (UsersDto.RequestSignUp)target;
-			log.info("initBinder TEST");
 			String loginEmail = CipherUtil.Email.encrypt(usersSignUpForm.getLoginEmail());
 			if(userRepository.existsByLoginEmail(loginEmail)) {
 				errors.rejectValue("loginEmail", "invalid.loginEmail",

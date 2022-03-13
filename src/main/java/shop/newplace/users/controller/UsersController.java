@@ -37,7 +37,7 @@ public class UsersController {
 	
 	//알아보기
 	@InitBinder
-	public void signUpFormValidator(WebDataBinder webDataBinder) {
+	public void addUsersValidator(WebDataBinder webDataBinder) {
 		if(webDataBinder.getTarget() instanceof UsersDto.RequestSignUp) {
 			webDataBinder.addValidators(signUpValidator);
 		}
@@ -45,13 +45,6 @@ public class UsersController {
 			webDataBinder.addValidators(logInValidator);
 		}
 	}
-
-//	@InitBinder("logInForm")
-//	public void logInFormValidator(WebDataBinder webDataBinder) {
-//		System.out.println("로그인 작동?");
-//		webDataBinder.addValidators(logInFormValidator);
-//		System.out.println("로그인 작동?");
-//	}
 
 	@ApiOperation(value = "회원가입", notes = "새로운 사용자의 정보를 등록합니다.")
     @PostMapping

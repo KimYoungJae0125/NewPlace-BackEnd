@@ -1,5 +1,7 @@
 package shop.newplace.users.service;
 
+import java.util.Optional;
+
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 
@@ -10,17 +12,16 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import shop.newplace.common.security.CustomUserDetails;
+import shop.newplace.common.util.CipherUtil;
+import shop.newplace.common.util.RedisUtil;
+import shop.newplace.users.advice.exception.NotFoundUsersException;
 import shop.newplace.users.model.dto.ProfilesDto;
 import shop.newplace.users.model.dto.UsersDto;
 import shop.newplace.users.model.entity.Users;
 import shop.newplace.users.model.repository.UsersRepository;
 import shop.newplace.users.token.JwtTokenProvider;
 import shop.newplace.users.token.model.dto.JwtDto;
-import shop.newplace.common.advice.exception.NotFoundUsersException;
-import shop.newplace.common.mail.service.EmailService;
-import shop.newplace.common.redis.RedisService;
-import shop.newplace.common.security.CustomUserDetails;
-import shop.newplace.common.util.CipherUtil;
 
 @Slf4j
 @Service
@@ -35,14 +36,13 @@ public class UsersService {
 	
 	private final JwtTokenProvider jwtTokenProvider;
 	
-	private final RedisService redisService;
-	
-	private final EmailService emailAuthenticationService;
+	private final RedisUtil redisService;
 	
 	private final ProfilesService profilesService;
 	
 	@Transactional
 	public void signUp(UsersDto.RequestSignUp usersSignUpForm) {
+		String name = usersSignUpForm.getName();
 		usersSignUpForm
 			.setName(CipherUtil.Name.encrypt(usersSignUpForm.getName()))
 			.setLoginEmail(CipherUtil.Email.encrypt(usersSignUpForm.getLoginEmail()))
@@ -51,12 +51,19 @@ public class UsersService {
 			.setBankId(CipherUtil.BankId.encrypt(usersSignUpForm.getBankId()))
 			.setAccountNumber(CipherUtil.AccountNumber.encrypt(usersSignUpForm.getAccountNumber()));
 		Users users = usersRepository.save(modelMapper.map(usersSignUpForm, Users.class));
-		emailAuthenticationService.sendEmailAuthentication(users, usersSignUpForm.getLoginEmail());
-		ProfilesDto.RequestSignUp profiles = ProfilesDto.RequestSignUp.builder()
-														.userId(users.getId())
-														.users(users)
-														.nickName("프로필")
-														.build();
+		ProfilesDto.RequestSignUp profiles = new ProfilesDto.RequestSignUp();
+		if(usersSignUpForm.getProfilesSignUp() == null) {
+			profiles = ProfilesDto.RequestSignUp.builder()
+												.userId(users.getId())
+												.users(users)
+												.nickName(name)
+												.build();
+		} else {
+			profiles = usersSignUpForm.getProfilesSignUp()
+									  .setUserId(users.getId())
+									  .setUsers(users)
+									  .setNickName(Optional.ofNullable(usersSignUpForm.getProfilesSignUp().getNickName()).orElse(name));
+		}
 		profilesService.profileSignUp(profiles);
 	}
 	

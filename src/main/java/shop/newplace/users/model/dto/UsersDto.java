@@ -1,5 +1,6 @@
 package shop.newplace.users.model.dto;
 
+import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
@@ -57,22 +58,11 @@ public class UsersDto {
 		    @NotBlank(message = "전화번호는 필수 입력 값입니다.")
 		    @Pattern(regexp = "^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$", message = "전화번호 형식에 맞지 않습니다.")
 		    private String mainPhoneNumber;
-
-			private String test;
 		    
-//		    @JsonIgnore
-//		    @Builder.Default
-//		    private Set<String> roles = new HashSet<String>();
-		//    
-//		    public SignUpForm setRoles(String authId) {
-//		    	roles.add(authId);
-//		    	return this;
-//		    }
-		//    
-//		    public SignUpForm setRoles(Set<String> roles) {
-//		    	this.roles = roles;
-//		    	return this;
-//		    }
+		    @AssertTrue(message = "이메일 인증을 해주세요.")
+		    private boolean emailVerified;
+
+			private ProfilesDto.RequestSignUp profilesSignUp;
 	}
 	
 	@Getter
