@@ -1,18 +1,14 @@
 package shop.newplace.common.mail.model.validator;
 
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import shop.newplace.common.advice.exception.ValidFailureException;
-import shop.newplace.common.mail.model.dto.EmailDto;
-import shop.newplace.common.security.CustomAuthenticationProvider;
+import shop.newplace.common.mail.model.dto.EmailRequestDto;
 import shop.newplace.common.util.CipherUtil;
-import shop.newplace.users.model.dto.UsersDto;
 import shop.newplace.users.model.repository.UsersRepository;
 
 
@@ -26,12 +22,12 @@ public class EmailValidator {
 		
 		@Override
 		public boolean supports(Class<?> clazz) {
-			return clazz.isAssignableFrom(EmailDto.RequestEmailAuthentication.class);
+			return clazz.isAssignableFrom(EmailRequestDto.EmailAuthentication.class);
 		}
 		
 		@Override
 		public void validate(Object target, Errors errors) {
-			EmailDto.RequestEmailAuthentication emailDto = (EmailDto.RequestEmailAuthentication)target;
+			EmailRequestDto.EmailAuthentication emailDto = (EmailRequestDto.EmailAuthentication)target;
 			String loginEmail = CipherUtil.Email.encrypt(emailDto.getLoginEmail());
 			if(userRepository.existsByLoginEmail(loginEmail)) {
 				errors.rejectValue("loginEmail", "invalid.loginEmail",
@@ -52,12 +48,12 @@ public class EmailValidator {
 
 		@Override
 		public boolean supports(Class<?> clazz) {
-			return clazz.isAssignableFrom(EmailDto.RequestTemporyPassword.class);
+			return clazz.isAssignableFrom(EmailRequestDto.TemporyPassword.class);
 		}
 		
 		@Override
 		public void validate(Object target, Errors errors) {
-			EmailDto.RequestTemporyPassword emailDto = (EmailDto.RequestTemporyPassword)target;
+			EmailRequestDto.TemporyPassword emailDto = (EmailRequestDto.TemporyPassword)target;
 			String loginEmail = CipherUtil.Email.encrypt(emailDto.getLoginEmail());
 			if(!userRepository.existsByLoginEmail(loginEmail)) {
 				errors.rejectValue("loginEmail", "invalid.loginEmail",

@@ -1,12 +1,10 @@
 package shop.newplace.common.util;
 
 import java.time.Duration;
-
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
-
 import lombok.RequiredArgsConstructor;
-import shop.newplace.common.mail.model.dto.EmailDto;
+import shop.newplace.common.mail.model.dto.EmailRequestDto;
 import shop.newplace.users.token.model.dto.JwtDto;
 
 @Service
@@ -62,7 +60,7 @@ public class RedisUtil {
 	 * set certificationNumber
 	 * @param emailDto : { loginEmail : 현재 회원가입하는 사용자의 이메일, certificationNumber : 인증번호, expirationTime : 인증번호 만료시간 }
 	 */
-	public void setValues(EmailDto.RequestEmailAuthentication emailDto) {
+	public void setValues(EmailRequestDto.EmailAuthentication emailDto) {
 		redisTemplate.opsForValue().set(CERTIFICATION_NUMBER_PREFIX + emailDto.getLoginEmail(), emailDto.getCertificationNumber(), Duration.ofMinutes(emailDto.getExpirationTime()));
 		
 	}
