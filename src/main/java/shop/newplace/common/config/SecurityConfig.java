@@ -25,7 +25,7 @@ import shop.newplace.common.security.CustomAuthenticationEntryPoint;
 import shop.newplace.common.security.CustomAuthenticationProvider;
 import shop.newplace.common.security.CustomOnceRequestFilter;
 import shop.newplace.common.security.CustomUserDetailsService;
-import shop.newplace.users.model.repository.UsersRepository;
+import shop.newplace.users.repository.UsersRepository;
 import shop.newplace.users.token.JwtTokenProvider;
 
 @Configuration

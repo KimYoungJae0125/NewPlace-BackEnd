@@ -39,7 +39,7 @@ import shop.newplace.common.util.RedisUtil;
 import shop.newplace.users.model.dto.ProfilesDto;
 import shop.newplace.users.model.dto.UsersDto;
 import shop.newplace.users.model.entity.Users;
-import shop.newplace.users.model.repository.UsersRepository;
+import shop.newplace.users.repository.UsersRepository;
 import shop.newplace.users.service.UsersService;
 import shop.newplace.users.token.JwtTokenProvider;
 import shop.newplace.users.token.model.dto.JwtDto;

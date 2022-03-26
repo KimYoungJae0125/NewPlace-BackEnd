@@ -1,28 +1,22 @@
 package shop.newplace.common.mail.service;
 
-import java.time.LocalDateTime;
-import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
 import java.util.stream.IntStream;
 
 import javax.transaction.Transactional;
 
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import io.jsonwebtoken.lang.Assert;
 import lombok.RequiredArgsConstructor;
 import shop.newplace.common.mail.SpringBootMail;
 import shop.newplace.common.mail.model.dto.EmailDto;
-import shop.newplace.common.mail.model.entity.EmailAuthenticationToken;
-import shop.newplace.common.mail.model.repository.EmailRepository;
 import shop.newplace.common.util.CipherUtil;
 import shop.newplace.common.util.RedisUtil;
-import shop.newplace.users.advice.exception.NotFoundUsersException;
+import shop.newplace.users.exception.NotFoundUsersException;
 import shop.newplace.users.model.entity.Users;
-import shop.newplace.users.model.repository.UsersRepository;
+import shop.newplace.users.repository.UsersRepository;
 
 @RequiredArgsConstructor
 @Service

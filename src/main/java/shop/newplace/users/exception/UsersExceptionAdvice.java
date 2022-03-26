@@ -1,24 +1,21 @@
-package shop.newplace.users.advice;
+package shop.newplace.users.exception;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import shop.newplace.users.advice.exception.DisabledUsersException;
-import shop.newplace.users.advice.exception.ExpiredPasswordException;
-import shop.newplace.users.advice.exception.ExpiredUsersException;
-import shop.newplace.users.advice.exception.LockedUsersException;
-import shop.newplace.users.advice.exception.NotFoundUsersException;
-import shop.newplace.users.advice.exception.NotMatchPasswordException;
+import shop.newplace.users.exception.DisabledUsersException;
+import shop.newplace.users.exception.ExpiredPasswordException;
+import shop.newplace.users.exception.ExpiredUsersException;
+import shop.newplace.users.exception.LockedUsersException;
+import shop.newplace.users.exception.NotFoundUsersException;
+import shop.newplace.users.exception.NotMatchPasswordException;
 import shop.newplace.users.controller.ProfilesController;
 import shop.newplace.users.controller.UsersController;
-import shop.newplace.common.advice.exception.ValidFailureException;
 import shop.newplace.common.response.ResponseMessage;
 import shop.newplace.common.response.ResponseMessage.ErrorFiled;
 

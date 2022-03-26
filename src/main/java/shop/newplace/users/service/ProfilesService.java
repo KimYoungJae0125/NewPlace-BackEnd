@@ -11,8 +11,8 @@ import lombok.RequiredArgsConstructor;
 import shop.newplace.users.model.dto.ProfilesDto;
 import shop.newplace.users.model.entity.Profiles;
 import shop.newplace.users.model.entity.Users;
-import shop.newplace.users.model.repository.ProfilesRepository;
-import shop.newplace.users.model.repository.UsersRepository;
+import shop.newplace.users.repository.ProfilesRepository;
+import shop.newplace.users.repository.UsersRepository;
 import shop.newplace.common.constant.Role;
 import shop.newplace.common.util.CipherUtil;
 

@@ -1,4 +1,4 @@
-package shop.newplace.common.advice.exception;
+package shop.newplace.common.exception;
 
 import org.springframework.validation.BindingResult;
 

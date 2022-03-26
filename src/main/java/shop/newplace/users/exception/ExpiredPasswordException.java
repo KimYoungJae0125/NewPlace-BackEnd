@@ -1,4 +1,4 @@
-package shop.newplace.users.advice.exception;
+package shop.newplace.users.exception;
 
 import org.springframework.security.authentication.CredentialsExpiredException;
 

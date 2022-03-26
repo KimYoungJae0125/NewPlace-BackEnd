@@ -1,4 +1,4 @@
-package shop.newplace.users.model.repository;
+package shop.newplace.users.repository;
 
 import java.util.List;
 import java.util.Optional;

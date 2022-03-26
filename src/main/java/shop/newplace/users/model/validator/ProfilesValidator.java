@@ -8,9 +8,9 @@ import org.springframework.validation.Validator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import shop.newplace.users.model.dto.ProfilesDto;
-import shop.newplace.users.model.repository.ProfilesRepository;
-import shop.newplace.users.model.repository.UsersRepository;
-import shop.newplace.common.advice.exception.ValidFailureException;
+import shop.newplace.users.repository.ProfilesRepository;
+import shop.newplace.users.repository.UsersRepository;
+import shop.newplace.common.exception.ValidFailureException;
 
 
 @Slf4j

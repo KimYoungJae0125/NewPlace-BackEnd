@@ -15,11 +15,11 @@ import lombok.extern.slf4j.Slf4j;
 import shop.newplace.common.security.CustomUserDetails;
 import shop.newplace.common.util.CipherUtil;
 import shop.newplace.common.util.RedisUtil;
-import shop.newplace.users.advice.exception.NotFoundUsersException;
+import shop.newplace.users.exception.NotFoundUsersException;
 import shop.newplace.users.model.dto.ProfilesDto;
 import shop.newplace.users.model.dto.UsersDto;
 import shop.newplace.users.model.entity.Users;
-import shop.newplace.users.model.repository.UsersRepository;
+import shop.newplace.users.repository.UsersRepository;
 import shop.newplace.users.token.JwtTokenProvider;
 import shop.newplace.users.token.model.dto.JwtDto;
 

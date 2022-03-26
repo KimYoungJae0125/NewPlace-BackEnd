@@ -1,4 +1,4 @@
-package shop.newplace.common.advice;
+package shop.newplace.common.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import shop.newplace.common.advice.exception.ValidFailureException;
 import shop.newplace.common.response.ResponseMessage;
 
 @RestControllerAdvice

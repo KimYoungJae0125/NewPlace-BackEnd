@@ -1,6 +1,5 @@
 package shop.newplace.common.mail.model.validator;
 
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
@@ -8,12 +7,10 @@ import org.springframework.validation.Validator;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import shop.newplace.common.advice.exception.ValidFailureException;
+import shop.newplace.common.exception.ValidFailureException;
 import shop.newplace.common.mail.model.dto.EmailDto;
-import shop.newplace.common.security.CustomAuthenticationProvider;
 import shop.newplace.common.util.CipherUtil;
-import shop.newplace.users.model.dto.UsersDto;
-import shop.newplace.users.model.repository.UsersRepository;
+import shop.newplace.users.repository.UsersRepository;
 
 
 @Slf4j
