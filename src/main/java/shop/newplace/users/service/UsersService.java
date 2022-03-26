@@ -1,23 +1,21 @@
 package shop.newplace.users.service;
 
 import java.util.Optional;
-
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import shop.newplace.common.security.CustomUserDetails;
 import shop.newplace.common.util.CipherUtil;
 import shop.newplace.common.util.RedisUtil;
 import shop.newplace.users.advice.exception.NotFoundUsersException;
-import shop.newplace.users.model.dto.ProfilesDto;
-import shop.newplace.users.model.dto.UsersDto;
+import shop.newplace.users.model.dto.ProfilesRequestDto;
+import shop.newplace.users.model.dto.UsersRequestDto;
+import shop.newplace.users.model.dto.UsersResponseDto;
 import shop.newplace.users.model.entity.Users;
 import shop.newplace.users.model.repository.UsersRepository;
 import shop.newplace.users.token.JwtTokenProvider;
@@ -41,7 +39,7 @@ public class UsersService {
 	private final ProfilesService profilesService;
 	
 	@Transactional
-	public void signUp(UsersDto.RequestSignUp usersSignUpForm) {
+	public void signUp(UsersRequestDto.SignUp usersSignUpForm) {
 		String name = usersSignUpForm.getName();
 		usersSignUpForm
 			.setName(CipherUtil.Name.encrypt(usersSignUpForm.getName()))
@@ -51,9 +49,9 @@ public class UsersService {
 			.setBankId(CipherUtil.BankId.encrypt(usersSignUpForm.getBankId()))
 			.setAccountNumber(CipherUtil.AccountNumber.encrypt(usersSignUpForm.getAccountNumber()));
 		Users users = usersRepository.save(modelMapper.map(usersSignUpForm, Users.class));
-		ProfilesDto.RequestSignUp profiles = new ProfilesDto.RequestSignUp();
+		ProfilesRequestDto.SignUp profiles = new ProfilesRequestDto.SignUp();
 		if(usersSignUpForm.getProfilesSignUp() == null) {
-			profiles = ProfilesDto.RequestSignUp.builder()
+			profiles = ProfilesRequestDto.SignUp.builder()
 												.userId(users.getId())
 												.users(users)
 												.nickName(name)
@@ -90,10 +88,10 @@ public class UsersService {
 		return jwtAceessToken;
 	}
 
-	public UsersDto.ResponseInfo getUserInfo(Long userId) {
+	public UsersResponseDto.Info getUserInfo(Long userId) {
 		Users usersInfo = usersRepository.findById(userId)
 							   .orElseThrow(() -> new NotFoundUsersException("해당 유저는 존재하지 않습니다", "userId : " + userId) );
-		return UsersDto.ResponseInfo.builder()
+		return UsersResponseDto.Info.builder()
 							.userId(usersInfo.getId())
 							.loginEmail(CipherUtil.Email.decrypt(usersInfo.getLoginEmail()))
 							.name(CipherUtil.Name.decrypt(usersInfo.getName()))
