@@ -40,7 +40,6 @@ dependencies {
     testImplementation 'org.springframework.kafka:spring-kafka-test'
     testImplementation 'org.springframework.security:spring-security-test'
 
-    
     /* Property Security */
     implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.4'
     implementation 'org.bouncycastle:bcprov-jdk15on:1.70'
@@ -49,6 +48,7 @@ dependencies {
 	/* Redis DB */    
     implementation 'org.springframework.boot:spring-boot-starter-data-redis:2.6.3'
     implementation 'org.springframework.session:spring-session-data-redis:2.6.1'
+    implementation ('it.ozimov:embedded-redis:0.7.3') {exclude group: "org.slf4j", module: "slf4j-simple" }
 
 	/* H2 DB */
     runtimeOnly 'com.h2database:h2'
