@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
+<<<<<<< HEAD
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +12,14 @@ import shop.newplace.users.model.dto.ProfilesDto;
 import shop.newplace.users.repository.ProfilesRepository;
 import shop.newplace.users.repository.UsersRepository;
 import shop.newplace.common.exception.ValidFailureException;
+=======
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import shop.newplace.common.advice.exception.ValidFailureException;
+import shop.newplace.users.model.dto.ProfilesRequestDto;
+import shop.newplace.users.model.repository.ProfilesRepository;
+import shop.newplace.users.model.repository.UsersRepository;
+>>>>>>> pre/feature/2022-03-06_signup
 
 
 @Slf4j
@@ -25,12 +34,12 @@ public class ProfilesValidator {
 
 		@Override
 			public boolean supports(Class<?> clazz) {
-				return clazz.isAssignableFrom(ProfilesDto.RequestSignUp.class);
+				return clazz.isAssignableFrom(ProfilesRequestDto.SignUp.class);
 			}
 		
 		@Override
 		public void validate(Object target, Errors errors) {
-			ProfilesDto.RequestSignUp profileSignUpForm = (ProfilesDto.RequestSignUp) target;
+			ProfilesRequestDto.SignUp profileSignUpForm = (ProfilesRequestDto.SignUp) target;
 			Long userId = profileSignUpForm.getUserId();
 			
 			if(!usersRepository.existsById(userId)) {

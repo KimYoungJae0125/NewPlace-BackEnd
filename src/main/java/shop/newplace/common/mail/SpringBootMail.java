@@ -3,10 +3,15 @@ package shop.newplace.common.mail;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+<<<<<<< HEAD
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
+=======
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+>>>>>>> pre/feature/2022-03-06_signup
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
@@ -16,10 +21,15 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring5.SpringTemplateEngine;
+<<<<<<< HEAD
 
 import lombok.RequiredArgsConstructor;
 import shop.newplace.users.model.entity.Users;
 import shop.newplace.common.mail.model.dto.EmailDto;
+=======
+import lombok.RequiredArgsConstructor;
+import shop.newplace.common.mail.model.dto.EmailRequestDto;
+>>>>>>> pre/feature/2022-03-06_signup
 import shop.newplace.common.util.CipherUtil;
 
 @RequiredArgsConstructor
@@ -62,7 +72,7 @@ public class SpringBootMail {
 	}
 */	
 	@Async
-	public void sendEmailAuthenticationEmail(EmailDto.RequestEmailAuthentication emailDto) {
+	public void sendEmailAuthenticationEmail(EmailRequestDto.EmailAuthentication emailDto) {
 		Map<String, Object> thymeleafVariableMap = new HashMap<String, Object>();
 		thymeleafVariableMap.put("certificationNumber", emailDto.getCertificationNumber());
 		

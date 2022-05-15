@@ -3,7 +3,10 @@ package shop.newplace.users.logIn;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+<<<<<<< HEAD
 
+=======
+>>>>>>> pre/feature/2022-03-06_signup
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,11 +17,17 @@ import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+<<<<<<< HEAD
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import shop.newplace.users.model.dto.UsersDto;
 import shop.newplace.users.repository.UsersRepository;
+=======
+import com.fasterxml.jackson.databind.ObjectMapper;
+import shop.newplace.users.model.dto.UsersRequestDto;
+import shop.newplace.users.model.repository.UsersRepository;
+>>>>>>> pre/feature/2022-03-06_signup
 
 @SpringBootTest(properties = "classpath:application-test.yml")
 @AutoConfigureMockMvc
@@ -50,7 +59,11 @@ class LogInTest {
     @BeforeEach
     public void setup() throws Exception {
 
+<<<<<<< HEAD
     	UsersDto.RequestSignUp signUpForm = UsersDto.RequestSignUp.builder()
+=======
+    	UsersRequestDto.SignUp signUpForm = UsersRequestDto.SignUp.builder()
+>>>>>>> pre/feature/2022-03-06_signup
 																  .loginEmail(loginEmail)
 																  .password(password)
 																  .passwordVerified(password)
@@ -72,10 +85,17 @@ class LogInTest {
     @Test
     void logInTest() throws Exception {
 
+<<<<<<< HEAD
     	UsersDto.RequestLogIn signInForm = UsersDto.RequestLogIn.builder()
     									  .loginEmail(loginEmail)
     									  .password(password)
     									  .build();
+=======
+    	UsersRequestDto.LogIn signInForm = UsersRequestDto.LogIn.builder()
+                            									.loginEmail(loginEmail)
+                            									.password(password)
+                            									.build();
+>>>>>>> pre/feature/2022-03-06_signup
     	
     	mockMvc.perform(post("/users/login")
     			.contentType(MediaType.APPLICATION_JSON)

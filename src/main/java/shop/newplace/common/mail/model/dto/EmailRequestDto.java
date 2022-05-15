@@ -3,32 +3,19 @@ package shop.newplace.common.mail.model.dto;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
-
 import org.hibernate.validator.constraints.Length;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
-import shop.newplace.users.model.dto.UsersDto;
 
-public class EmailDto {
-	
-	@Getter
-	@Builder @AllArgsConstructor @NoArgsConstructor
-	public static class ResponseInfo {
-		
-		private String certificationNumber;
-		
-		private boolean emailVerified;
-	}
+public class EmailRequestDto {
 	
 	@Getter
 	@Setter
 	@Builder @AllArgsConstructor @NoArgsConstructor
-	public static class RequestEmailAuthentication {
+	public static class EmailAuthentication {
 		
 	    @NotBlank(message = "이메일은 필수 입력 값입니다.")
 	    @Email(message = "이메일 형식에 맞지 않습니다.")
@@ -43,7 +30,7 @@ public class EmailDto {
 	
 	@Getter
 	@Builder @AllArgsConstructor @NoArgsConstructor
-	public static class RequestTemporyPassword {
+	public static class TemporyPassword {
 		
 	    @NotBlank(message = "이메일은 필수 입력 값입니다.")
 	    @Email(message = "이메일 형식에 맞지 않습니다.")
