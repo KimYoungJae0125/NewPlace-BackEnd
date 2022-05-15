@@ -17,12 +17,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import shop.newplace.common.constant.Role;
-<<<<<<< HEAD
-import shop.newplace.users.model.dto.UsersDto;
-=======
 import shop.newplace.users.model.dto.UsersRequestDto;
->>>>>>> pre/feature/2022-03-06_signup
+
 
 @SpringBootTest(properties = "classpath:application-test.yml")
 @AutoConfigureMockMvc
@@ -63,22 +59,14 @@ class CorsTest {
 //    void unSet() {
 //    }
 	
-<<<<<<< HEAD
-	UsersDto.RequestSignUp signUpForm;
-=======
 	UsersRequestDto.SignUp signUpForm;
->>>>>>> pre/feature/2022-03-06_signup
 	
 	
     @DisplayName("CORS 테스트")
     @Test
     void corsTest() throws Exception {
     	
-<<<<<<< HEAD
-    	signUpForm = UsersDto.RequestSignUp.builder()
-=======
     	signUpForm = UsersRequestDto.SignUp.builder()
->>>>>>> pre/feature/2022-03-06_signup
 				.name(name)
 				.loginEmail(loginEmail)
 				.password(password)

@@ -1,19 +1,12 @@
 package shop.newplace.common.util;
 
 import java.time.Duration;
-<<<<<<< HEAD
 
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import lombok.RequiredArgsConstructor;
-import shop.newplace.common.mail.model.dto.EmailDto;
-=======
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import shop.newplace.common.mail.model.dto.EmailRequestDto;
->>>>>>> pre/feature/2022-03-06_signup
 import shop.newplace.users.token.model.dto.JwtDto;
 
 @Service

@@ -1,42 +1,26 @@
 package shop.newplace.users.service;
 
 import java.util.Optional;
-<<<<<<< HEAD
 
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 
-=======
-import javax.servlet.http.HttpServletResponse;
-import javax.transaction.Transactional;
->>>>>>> pre/feature/2022-03-06_signup
 import org.modelmapper.ModelMapper;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-<<<<<<< HEAD
 
-=======
->>>>>>> pre/feature/2022-03-06_signup
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import shop.newplace.common.security.CustomUserDetails;
 import shop.newplace.common.util.CipherUtil;
 import shop.newplace.common.util.RedisUtil;
-<<<<<<< HEAD
 import shop.newplace.users.exception.NotFoundUsersException;
-import shop.newplace.users.model.dto.ProfilesDto;
-import shop.newplace.users.model.dto.UsersDto;
-import shop.newplace.users.model.entity.Users;
-import shop.newplace.users.repository.UsersRepository;
-=======
-import shop.newplace.users.advice.exception.NotFoundUsersException;
 import shop.newplace.users.model.dto.ProfilesRequestDto;
 import shop.newplace.users.model.dto.UsersRequestDto;
 import shop.newplace.users.model.dto.UsersResponseDto;
 import shop.newplace.users.model.entity.Users;
-import shop.newplace.users.model.repository.UsersRepository;
->>>>>>> pre/feature/2022-03-06_signup
+import shop.newplace.users.repository.UsersRepository;
 import shop.newplace.users.token.JwtTokenProvider;
 import shop.newplace.users.token.model.dto.JwtDto;
 
@@ -59,7 +43,6 @@ public class UsersService {
 	
 	@Transactional
 	public void signUp(UsersRequestDto.SignUp usersSignUpForm) {
->>>>>>> pre/feature/2022-03-06_signup
 		String name = usersSignUpForm.getName();
 		usersSignUpForm
 			.setName(CipherUtil.Name.encrypt(usersSignUpForm.getName()))
@@ -112,7 +95,6 @@ public class UsersService {
 		Users usersInfo = usersRepository.findById(userId)
 							   .orElseThrow(() -> new NotFoundUsersException("해당 유저는 존재하지 않습니다", "userId : " + userId) );
 		return UsersResponseDto.Info.builder()
->>>>>>> pre/feature/2022-03-06_signup
 							.userId(usersInfo.getId())
 							.loginEmail(CipherUtil.Email.decrypt(usersInfo.getLoginEmail()))
 							.name(CipherUtil.Name.decrypt(usersInfo.getName()))

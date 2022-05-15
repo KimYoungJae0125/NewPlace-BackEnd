@@ -4,17 +4,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-<<<<<<< HEAD
 
 import java.util.Map;
 import java.util.Random;
 import java.util.stream.IntStream;
 
-=======
-import java.util.Map;
-import java.util.Random;
-import java.util.stream.IntStream;
->>>>>>> pre/feature/2022-03-06_signup
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,22 +19,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-<<<<<<< HEAD
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import shop.newplace.common.mail.model.dto.EmailDto;
-import shop.newplace.common.util.CipherUtil;
-import shop.newplace.users.model.entity.Users;
-import shop.newplace.users.repository.UsersRepository;
-=======
-import com.fasterxml.jackson.databind.ObjectMapper;
 import shop.newplace.common.mail.model.dto.EmailRequestDto;
 import shop.newplace.common.mail.model.dto.EmailResponseDto;
 import shop.newplace.common.util.CipherUtil;
 import shop.newplace.users.model.entity.Users;
-import shop.newplace.users.model.repository.UsersRepository;
->>>>>>> pre/feature/2022-03-06_signup
+import shop.newplace.users.repository.UsersRepository;
 
 @SpringBootTest(properties = "classpath:application-test.yml")
 @AutoConfigureMockMvc
@@ -95,11 +81,7 @@ class EmailTest {
     	System.out.println("emailAuthenticationTest");
     	
 		
-<<<<<<< HEAD
-    	EmailDto.RequestEmailAuthentication emailDto = EmailDto.RequestEmailAuthentication.builder()
-=======
     	EmailRequestDto.EmailAuthentication emailDto = EmailRequestDto.EmailAuthentication.builder()
->>>>>>> pre/feature/2022-03-06_signup
 				  .loginEmail(loginEmail)
 				  .build();
 
@@ -111,11 +93,7 @@ class EmailTest {
 							    	 .andDo(print())
 							    	 .andReturn();
     	Object responseData = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Map.class).get("data");
-<<<<<<< HEAD
-    	EmailDto.ResponseInfo emailInfo = objectMapper.readValue(objectMapper.writeValueAsString(responseData), EmailDto.ResponseInfo.class) ;
-=======
     	EmailResponseDto.Info emailInfo = objectMapper.readValue(objectMapper.writeValueAsString(responseData), EmailResponseDto.Info.class) ;
->>>>>>> pre/feature/2022-03-06_signup
     	emailDto.setCertificationNumber(emailInfo.getCertificationNumber());
 
     	mockMvc.perform(get("/email/authentication")
@@ -133,11 +111,7 @@ class EmailTest {
     void failEmailAuthenticationTest() throws Exception {
     	String certificationNumber = certificationNumber();
 
-<<<<<<< HEAD
-    	EmailDto.RequestEmailAuthentication emailDto = EmailDto.RequestEmailAuthentication.builder()
-=======
     	EmailRequestDto.EmailAuthentication emailDto = EmailRequestDto.EmailAuthentication.builder()
->>>>>>> pre/feature/2022-03-06_signup
     									  .loginEmail(loginEmail)
     									  .certificationNumber(certificationNumber)
     									  .build();
@@ -159,11 +133,7 @@ class EmailTest {
     @Test
     void failEmailParamter() throws Exception {
     	
-<<<<<<< HEAD
-    	EmailDto.RequestEmailAuthentication emailDto = EmailDto.RequestEmailAuthentication.builder().loginEmail("").build();
-=======
     	EmailRequestDto.EmailAuthentication emailDto = EmailRequestDto.EmailAuthentication.builder().loginEmail("").build();
->>>>>>> pre/feature/2022-03-06_signup
     	
     	mockMvc.perform(get("/email/authentication")
     			.contentType(MediaType.APPLICATION_JSON)

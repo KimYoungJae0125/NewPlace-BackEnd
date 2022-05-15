@@ -10,7 +10,7 @@ import redis.embedded.RedisServer;
 
 @RequiredArgsConstructor
 @Configuration
-@Profile("local")
+@Profile({"local", "test"})
 public class EmbeddedRedisConfig {
 
     private final RedisProperties redisProperties;

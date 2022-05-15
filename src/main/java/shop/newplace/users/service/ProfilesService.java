@@ -1,34 +1,20 @@
 package shop.newplace.users.service;
 
 import java.util.Optional;
-<<<<<<< HEAD
 
 import javax.transaction.Transactional;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import lombok.RequiredArgsConstructor;
-import shop.newplace.users.model.dto.ProfilesDto;
-import shop.newplace.users.model.entity.Profiles;
-import shop.newplace.users.model.entity.Users;
-import shop.newplace.users.repository.ProfilesRepository;
-import shop.newplace.users.repository.UsersRepository;
-import shop.newplace.common.constant.Role;
-import shop.newplace.common.util.CipherUtil;
-=======
-import javax.transaction.Transactional;
-import org.modelmapper.ModelMapper;
-import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import shop.newplace.common.constant.Role;
 import shop.newplace.common.util.CipherUtil;
 import shop.newplace.users.model.dto.ProfilesRequestDto;
 import shop.newplace.users.model.entity.Profiles;
 import shop.newplace.users.model.entity.Users;
-import shop.newplace.users.model.repository.ProfilesRepository;
-import shop.newplace.users.model.repository.UsersRepository;
->>>>>>> pre/feature/2022-03-06_signup
+import shop.newplace.users.repository.ProfilesRepository;
+import shop.newplace.users.repository.UsersRepository;
 
 @Service
 @RequiredArgsConstructor

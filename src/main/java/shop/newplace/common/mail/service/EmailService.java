@@ -3,35 +3,21 @@ package shop.newplace.common.mail.service;
 import java.util.Random;
 import java.util.UUID;
 import java.util.stream.IntStream;
-<<<<<<< HEAD
 
 import javax.transaction.Transactional;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import lombok.RequiredArgsConstructor;
-import shop.newplace.common.mail.SpringBootMail;
-import shop.newplace.common.mail.model.dto.EmailDto;
-import shop.newplace.common.util.CipherUtil;
-import shop.newplace.common.util.RedisUtil;
-import shop.newplace.users.exception.NotFoundUsersException;
-import shop.newplace.users.model.entity.Users;
-import shop.newplace.users.repository.UsersRepository;
-=======
-import javax.transaction.Transactional;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import shop.newplace.common.mail.SpringBootMail;
 import shop.newplace.common.mail.model.dto.EmailRequestDto;
 import shop.newplace.common.mail.model.dto.EmailResponseDto;
 import shop.newplace.common.util.CipherUtil;
 import shop.newplace.common.util.RedisUtil;
-import shop.newplace.users.advice.exception.NotFoundUsersException;
+import shop.newplace.users.exception.NotFoundUsersException;
 import shop.newplace.users.model.entity.Users;
-import shop.newplace.users.model.repository.UsersRepository;
->>>>>>> pre/feature/2022-03-06_signup
+import shop.newplace.users.repository.UsersRepository;
 
 @RequiredArgsConstructor
 @Service

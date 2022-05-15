@@ -4,18 +4,12 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-<<<<<<< HEAD
 
-=======
->>>>>>> pre/feature/2022-03-06_signup
 import java.util.Base64;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-<<<<<<< HEAD
 
-=======
->>>>>>> pre/feature/2022-03-06_signup
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -30,25 +24,16 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.util.StringUtils;
-<<<<<<< HEAD
 
-=======
->>>>>>> pre/feature/2022-03-06_signup
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import shop.newplace.common.security.CustomUserDetails;
 import shop.newplace.common.util.CipherUtil;
 import shop.newplace.common.util.RedisUtil;
-<<<<<<< HEAD
-import shop.newplace.users.model.dto.UsersDto;
-import shop.newplace.users.model.entity.Users;
-import shop.newplace.users.repository.UsersRepository;
-=======
 import shop.newplace.users.model.dto.UsersRequestDto;
 import shop.newplace.users.model.entity.Users;
-import shop.newplace.users.model.repository.UsersRepository;
->>>>>>> pre/feature/2022-03-06_signup
+import shop.newplace.users.repository.UsersRepository;
 import shop.newplace.users.service.UsersService;
 import shop.newplace.users.token.model.dto.JwtDto;
 
@@ -91,16 +76,6 @@ public class TokenTest {
     	String mainPhoneNumber = "01012345678";
     	String bankId = "01";
     	String accountNumber = "12345678";
-<<<<<<< HEAD
-    	UsersDto.RequestSignUp userSignUp = UsersDto.RequestSignUp.builder()
-    									.loginEmail(loginEmail)
-    									.name(name)
-    									.password(password)
-    									.mainPhoneNumber(mainPhoneNumber)
-    									.bankId(bankId)
-    									.accountNumber(accountNumber)
-    									.build();
-=======
     	UsersRequestDto.SignUp userSignUp = UsersRequestDto.SignUp.builder()
                             									  .loginEmail(loginEmail)
                             									  .name(name)
@@ -109,7 +84,6 @@ public class TokenTest {
                             									  .bankId(bankId)
                             									  .accountNumber(accountNumber)
                             									  .build();
->>>>>>> pre/feature/2022-03-06_signup
     	usersService.signUp(userSignUp);	
     	result = usersRepository.findByLoginEmail(CipherUtil.Email.encrypt(loginEmail)).get();
     	

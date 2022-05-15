@@ -2,10 +2,7 @@ package shop.newplace.users.controller;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-<<<<<<< HEAD
 
-=======
->>>>>>> pre/feature/2022-03-06_signup
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -17,16 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-<<<<<<< HEAD
 
-import io.swagger.annotations.ApiOperation;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import shop.newplace.users.model.dto.UsersDto;
-import shop.newplace.users.model.validator.UsersValidator;
-import shop.newplace.users.service.UsersService;
-import shop.newplace.common.response.ResponseMessage;
-=======
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +22,6 @@ import shop.newplace.common.response.ResponseMessage;
 import shop.newplace.users.model.dto.UsersRequestDto;
 import shop.newplace.users.model.validator.UsersValidator;
 import shop.newplace.users.service.UsersService;
->>>>>>> pre/feature/2022-03-06_signup
 
 @Slf4j // 기본 log 찍을 수 있는 객체
 @RestController

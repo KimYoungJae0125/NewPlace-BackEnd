@@ -1,10 +1,7 @@
 package shop.newplace.users.controller;
 
 import javax.validation.Valid;
-<<<<<<< HEAD
 
-=======
->>>>>>> pre/feature/2022-03-06_signup
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,16 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-<<<<<<< HEAD
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import shop.newplace.users.model.dto.ProfilesDto;
-import shop.newplace.users.model.entity.Profiles;
-import shop.newplace.users.model.validator.ProfilesValidator;
-import shop.newplace.users.service.ProfilesService;
-import shop.newplace.common.response.ResponseMessage;
-=======
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import shop.newplace.common.response.ResponseMessage;
@@ -29,7 +17,6 @@ import shop.newplace.users.model.dto.ProfilesRequestDto;
 import shop.newplace.users.model.entity.Profiles;
 import shop.newplace.users.model.validator.ProfilesValidator;
 import shop.newplace.users.service.ProfilesService;
->>>>>>> pre/feature/2022-03-06_signup
 
 @Slf4j
 @RestController

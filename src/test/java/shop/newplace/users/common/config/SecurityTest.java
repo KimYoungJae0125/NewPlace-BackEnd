@@ -6,10 +6,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-<<<<<<< HEAD
 
-=======
->>>>>>> pre/feature/2022-03-06_signup
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,20 +29,9 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
-<<<<<<< HEAD
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import shop.newplace.common.security.CustomUserDetailsService;
-import shop.newplace.common.security.CustomOnceRequestFilter;
-import shop.newplace.common.util.CipherUtil;
-import shop.newplace.common.util.RedisUtil;
-import shop.newplace.users.model.dto.ProfilesDto;
-import shop.newplace.users.model.dto.UsersDto;
-import shop.newplace.users.model.entity.Users;
-import shop.newplace.users.repository.UsersRepository;
-=======
-import com.fasterxml.jackson.databind.ObjectMapper;
 import shop.newplace.common.security.CustomOnceRequestFilter;
 import shop.newplace.common.security.CustomUserDetailsService;
 import shop.newplace.common.util.CipherUtil;
@@ -53,8 +39,7 @@ import shop.newplace.common.util.RedisUtil;
 import shop.newplace.users.model.dto.ProfilesRequestDto;
 import shop.newplace.users.model.dto.UsersRequestDto;
 import shop.newplace.users.model.entity.Users;
-import shop.newplace.users.model.repository.UsersRepository;
->>>>>>> pre/feature/2022-03-06_signup
+import shop.newplace.users.repository.UsersRepository;
 import shop.newplace.users.service.UsersService;
 import shop.newplace.users.token.JwtTokenProvider;
 import shop.newplace.users.token.model.dto.JwtDto;
@@ -118,21 +103,12 @@ class SecurityTest {
 	
     @BeforeAll
     public void setup() throws Exception {
-<<<<<<< HEAD
-    	ProfilesDto.RequestSignUp profilesSignUp = ProfilesDto.RequestSignUp.builder()
-				.nickName("테스터")
-				.authId("2")
-				.build();
-    	
-    	UsersDto.RequestSignUp signUpForm = UsersDto.RequestSignUp.builder()
-=======
     	ProfilesRequestDto.SignUp profilesSignUp = ProfilesRequestDto.SignUp.builder()
                                                             				.nickName("테스터")
                                                             				.authId("2")
                                                             				.build();
     	
     	UsersRequestDto.SignUp signUpForm = UsersRequestDto.SignUp.builder()
->>>>>>> pre/feature/2022-03-06_signup
 																.name(name)
 																.loginEmail(loginEmail)
 																.password(password)
@@ -161,11 +137,7 @@ class SecurityTest {
     void logInTest() throws Exception {
     	result = usersRepository.findByLoginEmail(CipherUtil.Email.encrypt(loginEmail)).get();
     	
-<<<<<<< HEAD
-    	UsersDto.RequestLogIn loginForm = UsersDto.RequestLogIn.builder()
-=======
     	UsersRequestDto.LogIn loginForm = UsersRequestDto.LogIn.builder()
->>>>>>> pre/feature/2022-03-06_signup
     											.loginEmail(loginEmail)
     											.password(password)
     											.build();

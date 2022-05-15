@@ -6,24 +6,14 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
-<<<<<<< HEAD
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import shop.newplace.users.model.dto.UsersDto;
-import shop.newplace.users.repository.UsersRepository;
 import shop.newplace.common.exception.ValidFailureException;
 import shop.newplace.common.security.CustomAuthenticationProvider;
 import shop.newplace.common.util.CipherUtil;
-=======
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import shop.newplace.common.advice.exception.ValidFailureException;
-import shop.newplace.common.security.CustomAuthenticationProvider;
-import shop.newplace.common.util.CipherUtil;
 import shop.newplace.users.model.dto.UsersRequestDto;
-import shop.newplace.users.model.repository.UsersRepository;
->>>>>>> pre/feature/2022-03-06_signup
+import shop.newplace.users.repository.UsersRepository;
 
 
 @Slf4j
@@ -36,20 +26,12 @@ public class UsersValidator {
 		
 		@Override
 		public boolean supports(Class<?> clazz) {
-<<<<<<< HEAD
-			return clazz.isAssignableFrom(UsersDto.RequestSignUp.class);
-=======
 			return clazz.isAssignableFrom(UsersRequestDto.SignUp.class);
->>>>>>> pre/feature/2022-03-06_signup
 		}
 		
 		@Override
 		public void validate(Object target, Errors errors) {
-<<<<<<< HEAD
-			UsersDto.RequestSignUp usersSignUpForm = (UsersDto.RequestSignUp)target;
-=======
 			UsersRequestDto.SignUp usersSignUpForm = (UsersRequestDto.SignUp)target;
->>>>>>> pre/feature/2022-03-06_signup
 			String loginEmail = CipherUtil.Email.encrypt(usersSignUpForm.getLoginEmail());
 			if(userRepository.existsByLoginEmail(loginEmail)) {
 				errors.rejectValue("loginEmail", "invalid.loginEmail",
@@ -74,11 +56,7 @@ public class UsersValidator {
 		
 		@Override
 		public boolean supports(Class<?> clazz) {
-<<<<<<< HEAD
-			return clazz.isAssignableFrom(UsersDto.RequestLogIn.class);
-=======
 			return clazz.isAssignableFrom(UsersRequestDto.LogIn.class);
->>>>>>> pre/feature/2022-03-06_signup
 		}
 		
 		@Override
@@ -91,11 +69,7 @@ public class UsersValidator {
 //			customAuthenticationProvider.authenticate(new UsernamePasswordAuthenticationToken(loginForm.getLoginEmail(), loginForm.getPassword()));
 		}
 		
-<<<<<<< HEAD
-		public Authentication authentication(UsersDto.RequestLogIn logInForm) {
-=======
 		public Authentication authentication(UsersRequestDto.LogIn logInForm) {
->>>>>>> pre/feature/2022-03-06_signup
 			return customAuthenticationProvider.authenticate(new UsernamePasswordAuthenticationToken(logInForm.getLoginEmail(), logInForm.getPassword()));
 		}
 

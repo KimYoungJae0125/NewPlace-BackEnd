@@ -6,13 +6,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-<<<<<<< HEAD
 
 import java.util.List;
 
-=======
-import java.util.List;
->>>>>>> pre/feature/2022-03-06_signup
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -23,29 +19,17 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-<<<<<<< HEAD
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import shop.newplace.common.constant.Role;
-import shop.newplace.common.util.CipherUtil;
-import shop.newplace.users.model.dto.ProfilesDto;
-import shop.newplace.users.model.dto.UsersDto;
-import shop.newplace.users.model.entity.Users;
-import shop.newplace.users.repository.UsersRepository;
-=======
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.PropertyAccessor;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import shop.newplace.common.constant.Role;
 import shop.newplace.common.util.CipherUtil;
 import shop.newplace.users.model.dto.ProfilesRequestDto;
 import shop.newplace.users.model.dto.UsersRequestDto;
 import shop.newplace.users.model.entity.Users;
-import shop.newplace.users.model.repository.UsersRepository;
->>>>>>> pre/feature/2022-03-06_signup
+import shop.newplace.users.repository.UsersRepository;
 
 @SpringBootTest(properties = "classpath:application-test.yml")
 @AutoConfigureMockMvc
@@ -73,11 +57,7 @@ class SignUpTest {
 	String accountNumber = "12345678";
 	String authId = Role.USER.getValue();
 	
-<<<<<<< HEAD
-	UsersDto.RequestSignUp signUpForm;
-=======
 	UsersRequestDto.SignUp signUpForm;
->>>>>>> pre/feature/2022-03-06_signup
 	
     @BeforeEach
     void setup() {
@@ -88,18 +68,6 @@ class SignUpTest {
 //    				   .alwaysDo(print())
 //    				   .build();
     	System.out.println("========================================테스트 시작========================================");
-<<<<<<< HEAD
-    	signUpForm = UsersDto.RequestSignUp.builder()
-									.name(name)
-									.loginEmail(loginEmail)
-									.password(password)
-									.passwordVerified(password)
-									.mainPhoneNumber(mainPhoneNumber)
-									.bankId(bankId)
-									.accountNumber(accountNumber)
-									.emailVerified(true)
-									.build();
-=======
     	signUpForm = UsersRequestDto.SignUp.builder()
         								   .name(name)
         								   .loginEmail(loginEmail)
@@ -110,7 +78,6 @@ class SignUpTest {
         								   .accountNumber(accountNumber)
         								   .emailVerified(true)
         								   .build();
->>>>>>> pre/feature/2022-03-06_signup
     }
     
     @AfterEach
@@ -271,11 +238,7 @@ class SignUpTest {
     void profileSignUpTest() throws Exception {
     	System.out.println("profileSignUpTest");
     	
-<<<<<<< HEAD
-    	ProfilesDto.RequestSignUp profilesSignUp = ProfilesDto.RequestSignUp.builder()
-=======
     	ProfilesRequestDto.SignUp profilesSignUp = ProfilesRequestDto.SignUp.builder()
->>>>>>> pre/feature/2022-03-06_signup
 																			.nickName("테스터")
 																			.authId("2")
 																			.build();
