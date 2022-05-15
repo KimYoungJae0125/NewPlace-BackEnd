@@ -35,3 +35,10 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### securit yml ###
+*-dev.yml
+*-local.yml
+*-prod.yml
+*-stg.yml
+*-test.yml
