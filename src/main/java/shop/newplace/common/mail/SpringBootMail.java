@@ -18,8 +18,7 @@ import org.thymeleaf.context.Context;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 
 import lombok.RequiredArgsConstructor;
-import shop.newplace.users.model.entity.Users;
-import shop.newplace.common.mail.model.dto.EmailDto;
+import shop.newplace.common.mail.model.dto.EmailRequestDto;
 import shop.newplace.common.util.CipherUtil;
 
 @RequiredArgsConstructor
@@ -62,7 +61,7 @@ public class SpringBootMail {
 	}
 */	
 	@Async
-	public void sendEmailAuthenticationEmail(EmailDto.RequestEmailAuthentication emailDto) {
+	public void sendEmailAuthenticationEmail(EmailRequestDto.EmailAuthentication emailDto) {
 		Map<String, Object> thymeleafVariableMap = new HashMap<String, Object>();
 		thymeleafVariableMap.put("certificationNumber", emailDto.getCertificationNumber());
 		

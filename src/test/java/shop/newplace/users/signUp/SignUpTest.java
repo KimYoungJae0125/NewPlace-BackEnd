@@ -26,8 +26,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import shop.newplace.common.constant.Role;
 import shop.newplace.common.util.CipherUtil;
-import shop.newplace.users.model.dto.ProfilesDto;
-import shop.newplace.users.model.dto.UsersDto;
+import shop.newplace.users.model.dto.ProfilesRequestDto;
+import shop.newplace.users.model.dto.UsersRequestDto;
 import shop.newplace.users.model.entity.Users;
 import shop.newplace.users.repository.UsersRepository;
 
@@ -57,7 +57,7 @@ class SignUpTest {
 	String accountNumber = "12345678";
 	String authId = Role.USER.getValue();
 	
-	UsersDto.RequestSignUp signUpForm;
+	UsersRequestDto.SignUp signUpForm;
 	
     @BeforeEach
     void setup() {
@@ -68,16 +68,16 @@ class SignUpTest {
 //    				   .alwaysDo(print())
 //    				   .build();
     	System.out.println("========================================테스트 시작========================================");
-    	signUpForm = UsersDto.RequestSignUp.builder()
-									.name(name)
-									.loginEmail(loginEmail)
-									.password(password)
-									.passwordVerified(password)
-									.mainPhoneNumber(mainPhoneNumber)
-									.bankId(bankId)
-									.accountNumber(accountNumber)
-									.emailVerified(true)
-									.build();
+    	signUpForm = UsersRequestDto.SignUp.builder()
+        								   .name(name)
+        								   .loginEmail(loginEmail)
+        								   .password(password)
+        								   .passwordVerified(password)
+        								   .mainPhoneNumber(mainPhoneNumber)
+        								   .bankId(bankId)
+        								   .accountNumber(accountNumber)
+        								   .emailVerified(true)
+        								   .build();
     }
     
     @AfterEach
@@ -238,7 +238,7 @@ class SignUpTest {
     void profileSignUpTest() throws Exception {
     	System.out.println("profileSignUpTest");
     	
-    	ProfilesDto.RequestSignUp profilesSignUp = ProfilesDto.RequestSignUp.builder()
+    	ProfilesRequestDto.SignUp profilesSignUp = ProfilesRequestDto.SignUp.builder()
 																			.nickName("테스터")
 																			.authId("2")
 																			.build();

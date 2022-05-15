@@ -8,13 +8,13 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
-import shop.newplace.users.model.dto.ProfilesDto;
+import shop.newplace.common.constant.Role;
+import shop.newplace.common.util.CipherUtil;
+import shop.newplace.users.model.dto.ProfilesRequestDto;
 import shop.newplace.users.model.entity.Profiles;
 import shop.newplace.users.model.entity.Users;
 import shop.newplace.users.repository.ProfilesRepository;
 import shop.newplace.users.repository.UsersRepository;
-import shop.newplace.common.constant.Role;
-import shop.newplace.common.util.CipherUtil;
 
 @Service
 @RequiredArgsConstructor
@@ -27,7 +27,7 @@ public class ProfilesService {
 	private final ModelMapper modelMapper;
 
 	@Transactional
-	public Profiles profileSignUp(ProfilesDto.RequestSignUp profileSignUpForm) {
+	public Profiles profileSignUp(ProfilesRequestDto.SignUp profileSignUpForm) {
 		Users users = usersRepository.findById(profileSignUpForm.getUserId()).get();
 		profileSignUpForm
 			.setUsers(users)

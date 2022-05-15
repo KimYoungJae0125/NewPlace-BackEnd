@@ -17,7 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import shop.newplace.users.model.dto.UsersDto;
+import shop.newplace.users.model.dto.UsersRequestDto;
 import shop.newplace.users.repository.UsersRepository;
 
 @SpringBootTest(properties = "classpath:application-test.yml")
@@ -50,7 +50,7 @@ class LogInTest {
     @BeforeEach
     public void setup() throws Exception {
 
-    	UsersDto.RequestSignUp signUpForm = UsersDto.RequestSignUp.builder()
+    	UsersRequestDto.SignUp signUpForm = UsersRequestDto.SignUp.builder()
 																  .loginEmail(loginEmail)
 																  .password(password)
 																  .passwordVerified(password)
@@ -72,10 +72,10 @@ class LogInTest {
     @Test
     void logInTest() throws Exception {
 
-    	UsersDto.RequestLogIn signInForm = UsersDto.RequestLogIn.builder()
-    									  .loginEmail(loginEmail)
-    									  .password(password)
-    									  .build();
+    	UsersRequestDto.LogIn signInForm = UsersRequestDto.LogIn.builder()
+                            									.loginEmail(loginEmail)
+                            									.password(password)
+                            									.build();
     	
     	mockMvc.perform(post("/users/login")
     			.contentType(MediaType.APPLICATION_JSON)

@@ -1,18 +1,23 @@
 version: "3"
 services:
    redis:
-     image: redis:alpine
-     command: redis-server --requirepass newPlace123 --port 6379
+     image: redis
+#     command: redis-server --requirepass newPlace123
+     command: redis-server
      container_name: redis_boot
      hostname: redis_boot
      ports: 
         - 6379:6379
-     restart: always
+#     restart: always
    springbootapp:
       container_name: web_server
+      image: newplace-backend
       build: .
       ports:
          - 8080:8080
       depends_on: 
          - redis
-      restart: always
+#      restart: always
+
+## docker-compose up
+## reids image가 없으면 docker pull redis

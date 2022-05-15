@@ -32,12 +32,12 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import shop.newplace.common.security.CustomUserDetailsService;
 import shop.newplace.common.security.CustomOnceRequestFilter;
+import shop.newplace.common.security.CustomUserDetailsService;
 import shop.newplace.common.util.CipherUtil;
 import shop.newplace.common.util.RedisUtil;
-import shop.newplace.users.model.dto.ProfilesDto;
-import shop.newplace.users.model.dto.UsersDto;
+import shop.newplace.users.model.dto.ProfilesRequestDto;
+import shop.newplace.users.model.dto.UsersRequestDto;
 import shop.newplace.users.model.entity.Users;
 import shop.newplace.users.repository.UsersRepository;
 import shop.newplace.users.service.UsersService;
@@ -103,12 +103,12 @@ class SecurityTest {
 	
     @BeforeAll
     public void setup() throws Exception {
-    	ProfilesDto.RequestSignUp profilesSignUp = ProfilesDto.RequestSignUp.builder()
-				.nickName("테스터")
-				.authId("2")
-				.build();
+    	ProfilesRequestDto.SignUp profilesSignUp = ProfilesRequestDto.SignUp.builder()
+                                                            				.nickName("테스터")
+                                                            				.authId("2")
+                                                            				.build();
     	
-    	UsersDto.RequestSignUp signUpForm = UsersDto.RequestSignUp.builder()
+    	UsersRequestDto.SignUp signUpForm = UsersRequestDto.SignUp.builder()
 																.name(name)
 																.loginEmail(loginEmail)
 																.password(password)
@@ -137,7 +137,7 @@ class SecurityTest {
     void logInTest() throws Exception {
     	result = usersRepository.findByLoginEmail(CipherUtil.Email.encrypt(loginEmail)).get();
     	
-    	UsersDto.RequestLogIn loginForm = UsersDto.RequestLogIn.builder()
+    	UsersRequestDto.LogIn loginForm = UsersRequestDto.LogIn.builder()
     											.loginEmail(loginEmail)
     											.password(password)
     											.build();

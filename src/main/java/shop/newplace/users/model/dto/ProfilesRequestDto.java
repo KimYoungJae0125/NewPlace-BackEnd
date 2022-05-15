@@ -12,25 +12,13 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import shop.newplace.users.model.entity.Users;
 
-public class ProfilesDto {
-	
-	@Getter
-	@Builder @AllArgsConstructor @NoArgsConstructor
-	public static class ResponseInfo{
-		private String email;
-		private String nickName;
-		private String introduction;
-		private String bankId;
-		private String accountNumber;
-		private String phoneNumber;
-		private String authId;
-	}
+public class ProfilesRequestDto {
 	
 	@Getter
 	@Setter
 	@Builder @AllArgsConstructor @NoArgsConstructor
 	@Accessors(chain = true)
-	public static class RequestSignUp{
+	public static class SignUp{
 		private Long userId;
 		
 		private Users users;

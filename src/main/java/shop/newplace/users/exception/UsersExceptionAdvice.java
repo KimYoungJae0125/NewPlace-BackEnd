@@ -8,16 +8,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import shop.newplace.users.exception.DisabledUsersException;
-import shop.newplace.users.exception.ExpiredPasswordException;
-import shop.newplace.users.exception.ExpiredUsersException;
-import shop.newplace.users.exception.LockedUsersException;
-import shop.newplace.users.exception.NotFoundUsersException;
-import shop.newplace.users.exception.NotMatchPasswordException;
-import shop.newplace.users.controller.ProfilesController;
-import shop.newplace.users.controller.UsersController;
 import shop.newplace.common.response.ResponseMessage;
 import shop.newplace.common.response.ResponseMessage.ErrorFiled;
+import shop.newplace.users.controller.ProfilesController;
+import shop.newplace.users.controller.UsersController;
 
 @RestControllerAdvice(basePackageClasses = {UsersController.class, ProfilesController.class})
 public class UsersExceptionAdvice {

@@ -7,10 +7,10 @@ import org.springframework.validation.Validator;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import shop.newplace.users.model.dto.ProfilesDto;
+import shop.newplace.common.exception.ValidFailureException;
+import shop.newplace.users.model.dto.ProfilesRequestDto;
 import shop.newplace.users.repository.ProfilesRepository;
 import shop.newplace.users.repository.UsersRepository;
-import shop.newplace.common.exception.ValidFailureException;
 
 
 @Slf4j
@@ -25,12 +25,12 @@ public class ProfilesValidator {
 
 		@Override
 			public boolean supports(Class<?> clazz) {
-				return clazz.isAssignableFrom(ProfilesDto.RequestSignUp.class);
+				return clazz.isAssignableFrom(ProfilesRequestDto.SignUp.class);
 			}
 		
 		@Override
 		public void validate(Object target, Errors errors) {
-			ProfilesDto.RequestSignUp profileSignUpForm = (ProfilesDto.RequestSignUp) target;
+			ProfilesRequestDto.SignUp profileSignUpForm = (ProfilesRequestDto.SignUp) target;
 			Long userId = profileSignUpForm.getUserId();
 			
 			if(!usersRepository.existsById(userId)) {

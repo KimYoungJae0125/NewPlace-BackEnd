@@ -9,11 +9,11 @@ import org.springframework.validation.Validator;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import shop.newplace.users.model.dto.UsersDto;
-import shop.newplace.users.repository.UsersRepository;
 import shop.newplace.common.exception.ValidFailureException;
 import shop.newplace.common.security.CustomAuthenticationProvider;
 import shop.newplace.common.util.CipherUtil;
+import shop.newplace.users.model.dto.UsersRequestDto;
+import shop.newplace.users.repository.UsersRepository;
 
 
 @Slf4j
@@ -26,12 +26,12 @@ public class UsersValidator {
 		
 		@Override
 		public boolean supports(Class<?> clazz) {
-			return clazz.isAssignableFrom(UsersDto.RequestSignUp.class);
+			return clazz.isAssignableFrom(UsersRequestDto.SignUp.class);
 		}
 		
 		@Override
 		public void validate(Object target, Errors errors) {
-			UsersDto.RequestSignUp usersSignUpForm = (UsersDto.RequestSignUp)target;
+			UsersRequestDto.SignUp usersSignUpForm = (UsersRequestDto.SignUp)target;
 			String loginEmail = CipherUtil.Email.encrypt(usersSignUpForm.getLoginEmail());
 			if(userRepository.existsByLoginEmail(loginEmail)) {
 				errors.rejectValue("loginEmail", "invalid.loginEmail",
@@ -56,7 +56,7 @@ public class UsersValidator {
 		
 		@Override
 		public boolean supports(Class<?> clazz) {
-			return clazz.isAssignableFrom(UsersDto.RequestLogIn.class);
+			return clazz.isAssignableFrom(UsersRequestDto.LogIn.class);
 		}
 		
 		@Override
@@ -69,7 +69,7 @@ public class UsersValidator {
 //			customAuthenticationProvider.authenticate(new UsernamePasswordAuthenticationToken(loginForm.getLoginEmail(), loginForm.getPassword()));
 		}
 		
-		public Authentication authentication(UsersDto.RequestLogIn logInForm) {
+		public Authentication authentication(UsersRequestDto.LogIn logInForm) {
 			return customAuthenticationProvider.authenticate(new UsernamePasswordAuthenticationToken(logInForm.getLoginEmail(), logInForm.getPassword()));
 		}
 

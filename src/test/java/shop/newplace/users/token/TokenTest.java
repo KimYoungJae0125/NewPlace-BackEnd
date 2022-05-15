@@ -31,7 +31,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import shop.newplace.common.security.CustomUserDetails;
 import shop.newplace.common.util.CipherUtil;
 import shop.newplace.common.util.RedisUtil;
-import shop.newplace.users.model.dto.UsersDto;
+import shop.newplace.users.model.dto.UsersRequestDto;
 import shop.newplace.users.model.entity.Users;
 import shop.newplace.users.repository.UsersRepository;
 import shop.newplace.users.service.UsersService;
@@ -76,14 +76,14 @@ public class TokenTest {
     	String mainPhoneNumber = "01012345678";
     	String bankId = "01";
     	String accountNumber = "12345678";
-    	UsersDto.RequestSignUp userSignUp = UsersDto.RequestSignUp.builder()
-    									.loginEmail(loginEmail)
-    									.name(name)
-    									.password(password)
-    									.mainPhoneNumber(mainPhoneNumber)
-    									.bankId(bankId)
-    									.accountNumber(accountNumber)
-    									.build();
+    	UsersRequestDto.SignUp userSignUp = UsersRequestDto.SignUp.builder()
+                            									  .loginEmail(loginEmail)
+                            									  .name(name)
+                            									  .password(password)
+                            									  .mainPhoneNumber(mainPhoneNumber)
+                            									  .bankId(bankId)
+                            									  .accountNumber(accountNumber)
+                            									  .build();
     	usersService.signUp(userSignUp);	
     	result = usersRepository.findByLoginEmail(CipherUtil.Email.encrypt(loginEmail)).get();
     	

@@ -11,7 +11,8 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import shop.newplace.common.mail.SpringBootMail;
-import shop.newplace.common.mail.model.dto.EmailDto;
+import shop.newplace.common.mail.model.dto.EmailRequestDto;
+import shop.newplace.common.mail.model.dto.EmailResponseDto;
 import shop.newplace.common.util.CipherUtil;
 import shop.newplace.common.util.RedisUtil;
 import shop.newplace.users.exception.NotFoundUsersException;
@@ -33,10 +34,10 @@ public class EmailService {
 	private static final long EMAIL_TOKEN_EXPIRATION_TIME_VALUE = 3L;
 	
 	
-	public EmailDto.ResponseInfo sendEmailAuthentication(String reciverEmail) {
+	public EmailResponseDto.Info sendEmailAuthentication(String reciverEmail) {
 		StringBuffer certificationNumber = new StringBuffer();
 		IntStream.range(0, 6).forEach(i -> certificationNumber.append(new Random().ints(0, 9).findFirst().getAsInt()));
-		EmailDto.RequestEmailAuthentication emailDto = EmailDto.RequestEmailAuthentication.builder()
+		EmailRequestDto.EmailAuthentication emailDto = EmailRequestDto.EmailAuthentication.builder()
 																.loginEmail(reciverEmail)
 																.certificationNumber(certificationNumber.toString())
 																.expirationTime(EMAIL_TOKEN_EXPIRATION_TIME_VALUE)
@@ -44,18 +45,18 @@ public class EmailService {
 		redisService.setValues(emailDto);
 		springBootMail.sendEmailAuthenticationEmail(emailDto);
 		
-		return EmailDto.ResponseInfo.builder()
+		return EmailResponseDto.Info.builder()
 									.certificationNumber(certificationNumber.toString())
 									.build();
 	}
 	
-	public EmailDto.ResponseInfo emailAuthentication(EmailDto.RequestEmailAuthentication emailDto) {
+	public EmailResponseDto.Info emailAuthentication(EmailRequestDto.EmailAuthentication emailDto) {
 		String redisCertificationNumber = redisService.getValues(emailDto.getLoginEmail());
 		boolean emailVerified = false;
 		if(redisCertificationNumber != null) {
 			emailVerified = redisCertificationNumber.equals(emailDto.getCertificationNumber());
 		}
-		return EmailDto.ResponseInfo.builder()
+		return EmailResponseDto.Info.builder()
 									.emailVerified(emailVerified)
 									.build();
 		

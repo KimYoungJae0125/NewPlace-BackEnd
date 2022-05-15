@@ -18,10 +18,10 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import shop.newplace.users.model.dto.UsersDto;
+import shop.newplace.common.response.ResponseMessage;
+import shop.newplace.users.model.dto.UsersRequestDto;
 import shop.newplace.users.model.validator.UsersValidator;
 import shop.newplace.users.service.UsersService;
-import shop.newplace.common.response.ResponseMessage;
 
 @Slf4j // 기본 log 찍을 수 있는 객체
 @RestController
@@ -38,24 +38,24 @@ public class UsersController {
 	//알아보기
 	@InitBinder
 	public void addUsersValidator(WebDataBinder webDataBinder) {
-		if(webDataBinder.getTarget() instanceof UsersDto.RequestSignUp) {
+		if(webDataBinder.getTarget() instanceof UsersRequestDto.SignUp) {
 			webDataBinder.addValidators(signUpValidator);
 		}
-		if(webDataBinder.getTarget() instanceof UsersDto.RequestLogIn) {
+		if(webDataBinder.getTarget() instanceof UsersRequestDto.LogIn) {
 			webDataBinder.addValidators(logInValidator);
 		}
 	}
 
 	@ApiOperation(value = "회원가입", notes = "새로운 사용자의 정보를 등록합니다.")
     @PostMapping
-    public ResponseEntity createSignUp(@Valid @RequestBody UsersDto.RequestSignUp signUpForm) {
+    public ResponseEntity createSignUp(@Valid @RequestBody UsersRequestDto.SignUp signUpForm) {
     	usersService.signUp(signUpForm);
         return ResponseEntity.ok().body(ResponseMessage.OK(HttpStatus.CREATED.value(), HttpStatus.CREATED.getReasonPhrase(), "회원가입에 성공하였습니다."));
     }
 
 	@ApiOperation(value = "로그인", notes = "로그인합니다.")
     @PostMapping("/login")
-    public ResponseEntity goLogin(@Valid @RequestBody UsersDto.RequestLogIn logInForm, HttpServletResponse response) {
+    public ResponseEntity goLogin(@Valid @RequestBody UsersRequestDto.LogIn logInForm, HttpServletResponse response) {
 		Authentication authentication = logInValidator.authentication(logInForm);
     	return ResponseEntity.ok().body(ResponseMessage.OK(HttpStatus.CREATED.value(), HttpStatus.CREATED.getReasonPhrase(), "로그인 성공하였습니다.", usersService.logIn(authentication, response)));
     }
