@@ -1,0 +1,15 @@
+#H2로 로칼 테스트용 설정 
+spring:
+  profiles:
+    default: local
+
+#AWS DB를 이용해서 개발 테스트 할 때 해당 설정 해제
+#spring:
+#  profiles:
+#    default: dev
+
+
+#실 배포 할 때는 해당 설정 해제
+#spring:
+#  profiles:
+#    default: prod
