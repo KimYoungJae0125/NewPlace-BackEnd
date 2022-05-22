@@ -1,0 +1,31 @@
+= SignUp API
+signup-api-docs
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+:sectlinks:
+
+ifndef::snippets[]
+:snippets: ./build/generated-snippets
+endif::[]
+
+== 회원가입 API
+
+=== POST
+
+==== curl
+include::{snippets}/user/signup/curl-request.adoc[]
+
+==== Request Sample
+include::{snippets}/user/signup/http-request.adoc[]
+
+==== Request Field
+include::{snippets}/user/signup/request-fields.adoc[]
+
+==== Response Sample
+include::{snippets}/user/signup/http-response.adoc[]
+
+==== Response Fields
+include::{snippets}/user/signup/response-fields.adoc[]

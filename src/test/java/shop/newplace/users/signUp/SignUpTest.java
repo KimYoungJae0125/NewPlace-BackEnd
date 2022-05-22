@@ -3,9 +3,16 @@ package shop.newplace.users.signUp;
 //import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.subsectionWithPath;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static shop.newplace.common.config.RestDocsConfiguration.getDocumentRequest;
+import static shop.newplace.common.config.RestDocsConfiguration.getDocumentResponse;
 
 import java.util.List;
 
@@ -14,9 +21,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -35,6 +44,7 @@ import shop.newplace.users.repository.UsersRepository;
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 //@RequiredArgsConstructor	//test는 Autowired로
+@AutoConfigureRestDocs
 class SignUpTest {
 
 	@Autowired
@@ -96,7 +106,31 @@ class SignUpTest {
 			    			.contentType(MediaType.APPLICATION_JSON)
 			    			.content(objectMapper.writeValueAsString(signUpForm))
     						)
-    					.andExpect(status().isOk());
+    					.andExpect(status().isOk())
+    					.andDo(document("user/signup"
+			    			 		, getDocumentRequest()
+			    			 		, getDocumentResponse()
+			    			 		, requestFields(
+					    					 fieldWithPath("loginEmail").type(JsonFieldType.STRING).description("로그인 사용 이메일")
+					    				   , fieldWithPath("name").type(JsonFieldType.STRING).description("사용자 이름")
+					    				   , fieldWithPath("password").type(JsonFieldType.STRING).description("비밀번호")
+					    				   , fieldWithPath("passwordVerified").type(JsonFieldType.STRING).description("비밀번호 확인")
+					    				   , fieldWithPath("mainPhoneNumber").type(JsonFieldType.STRING).description("사용자 전화번호")
+					    				   , fieldWithPath("bankId").type(JsonFieldType.STRING).description("은행코드")
+					    				   , fieldWithPath("accountNumber").type(JsonFieldType.STRING).description("계좌번호")
+					    				   , fieldWithPath("emailVerified").type(JsonFieldType.BOOLEAN).description("이메일 인증 확인")
+					    				   , fieldWithPath("profilesSignUp").type(JsonFieldType.NULL).description("프로필")
+					    					 ),
+					    			 responseFields(
+					    					 fieldWithPath("transactionTime").type(JsonFieldType.STRING).description("트랜잭션이 일어난 시간")
+					    				   , fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드")
+					    				   , fieldWithPath("responseMessage").type(JsonFieldType.STRING).description("반환 메시지")
+					    				   , fieldWithPath("description").type(JsonFieldType.STRING).description("설명")
+					    				   , fieldWithPath("data").type(JsonFieldType.NULL).description("프로필")
+					    				   , fieldWithPath("errors").type(JsonFieldType.NULL).description("에러 메시지")
+					    					 )
+					    			 )
+    							);
 //    					.andDo(print());
     	
     	List<Users> usersList = usersRepository.findAll();

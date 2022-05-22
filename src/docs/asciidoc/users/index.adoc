@@ -1,0 +1,14 @@
+= 회원 관련 API
+notification-api-docs
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+:sectlinks:
+
+== POST
+=== link:post.html[회원가입]
+
+== POST(/login)
+=== link:login.html[로그인]

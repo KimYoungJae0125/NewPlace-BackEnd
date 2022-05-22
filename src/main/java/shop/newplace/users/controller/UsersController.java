@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import shop.newplace.common.response.ResponseMessage;
@@ -46,14 +45,12 @@ public class UsersController {
 		}
 	}
 
-	@ApiOperation(value = "회원가입", notes = "새로운 사용자의 정보를 등록합니다.")
     @PostMapping
     public ResponseEntity createSignUp(@Valid @RequestBody UsersRequestDto.SignUp signUpForm) {
     	usersService.signUp(signUpForm);
         return ResponseEntity.ok().body(ResponseMessage.OK(HttpStatus.CREATED.value(), HttpStatus.CREATED.getReasonPhrase(), "회원가입에 성공하였습니다."));
     }
 
-	@ApiOperation(value = "로그인", notes = "로그인합니다.")
     @PostMapping("/login")
     public ResponseEntity goLogin(@Valid @RequestBody UsersRequestDto.LogIn logInForm, HttpServletResponse response) {
 		Authentication authentication = logInValidator.authentication(logInForm);

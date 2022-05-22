@@ -50,9 +50,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	private final String[] ANT_MATCHERS = {
 											  "/h2-console/**"
-											, "/swagger-ui/**"
-											, "/swagger-resources/**"
-											, "/v3/api-docs/**"
+											, "/docs/**"
 											, "/email/**"
 //											, "/jwt/**"
 											};
