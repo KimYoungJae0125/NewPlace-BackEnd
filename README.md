@@ -14,8 +14,8 @@
   - Redis
   - H2
 - Framework
-  - SpringBoot 2.5.7
-  - SpringSecurity
+  - Spring Boot 2.5.7
+  - Spring Security
   - JPA
 - library
   - lombok
@@ -27,11 +27,11 @@
 - Container
   - docker
 - SMTP
-  - SpringBootMail
+  - Spring Boot Mail
 - TemplateEngine
   - thymeleaf
 - APIDoc
-  - Swagger
+  - Spring Rest Docs
 - Token
   - JWT
 - Test

@@ -1,0 +1,31 @@
+= Login API
+login-api-docs
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+:sectlinks:
+
+ifndef::snippets[]
+:snippets: ./build/generated-snippets
+endif::[]
+
+== 로그인 API
+
+=== Post(/login)
+
+==== curl
+include::{snippets}/user/signup/curl-request.adoc[]
+
+==== Request Sample
+include::{snippets}/user/login/http-request.adoc[]
+
+==== Request Field
+include::{snippets}/user/login/request-fields.adoc[]
+
+==== Response Sample
+include::{snippets}/user/login/http-response.adoc[]
+
+==== Response Fields
+include::{snippets}/user/login/response-fields.adoc[]

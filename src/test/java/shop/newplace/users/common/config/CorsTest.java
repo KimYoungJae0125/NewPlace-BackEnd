@@ -2,6 +2,7 @@ package shop.newplace.users.common.config;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -64,6 +65,7 @@ class CorsTest {
 	
     @DisplayName("CORS 테스트")
     @Test
+    @Disabled
     void corsTest() throws Exception {
     	
     	signUpForm = UsersRequestDto.SignUp.builder()

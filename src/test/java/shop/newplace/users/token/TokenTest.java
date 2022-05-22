@@ -12,6 +12,7 @@ import java.util.Set;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -144,6 +145,7 @@ public class TokenTest {
 	
     @DisplayName("AccessToken은 만료 됐으나 RefreshToken 존재")
     @Test
+    @Disabled
     void expirationAccessTokenButExistenceRefershToken() {
     	String expirationAccessToken = expirationToken();
     	assertThat(jwtTokenProvider.validateToken(expirationAccessToken), is(false));
