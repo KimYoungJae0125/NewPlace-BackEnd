@@ -14,6 +14,8 @@ public class EmailResponseDto {
 		private String certificationNumber;
 		
 		private boolean emailVerified;
+		
+		private Long expirationTime;
 	}
 	
 }

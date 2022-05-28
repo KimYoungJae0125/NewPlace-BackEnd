@@ -1,0 +1,31 @@
+= Email API
+email-api-docs
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+:sectlinks:
+
+ifndef::snippets[]
+:snippets: ./build/generated-snippets
+endif::[]
+
+== 틀린 인증번호
+
+=== Get
+
+==== curl
+include::{snippets}/email/fail/wrong-certification-number/get/curl-request.adoc[]
+
+==== Request Sample
+include::{snippets}/email/fail/wrong-certification-number/get/http-request.adoc[]
+
+==== Request Field
+include::{snippets}/email/fail/wrong-certification-number/get/request-fields.adoc[]
+
+==== Response Sample
+include::{snippets}/email/fail/wrong-certification-number/get/http-response.adoc[]
+
+==== Response Fields
+include::{snippets}/email/fail/wrong-certification-number/get/response-fields.adoc[]
