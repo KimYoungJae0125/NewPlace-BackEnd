@@ -1,5 +1,5 @@
 = 회원 관련 API
-notification-api-docs
+users-api-docs
 :doctype: book
 :icons: font
 :source-highlighter: highlightjs
@@ -8,7 +8,7 @@ notification-api-docs
 :sectlinks:
 
 == POST
-=== link:post.html[회원가입]
+=== link:success/post.html[회원가입]
 
 == POST(/login)
-=== link:login.html[로그인]
+=== link:success/login.html[로그인]
