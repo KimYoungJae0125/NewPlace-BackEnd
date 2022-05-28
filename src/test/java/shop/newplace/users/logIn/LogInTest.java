@@ -1,6 +1,5 @@
 package shop.newplace.users.logIn;
 
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
@@ -8,8 +7,6 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.subsecti
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static shop.newplace.common.config.RestDocsConfiguration.getDocumentRequest;
-import static shop.newplace.common.config.RestDocsConfiguration.getDocumentResponse;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -20,13 +17,15 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.restdocs.payload.RequestFieldsSnippet;
+import org.springframework.restdocs.payload.ResponseFieldsSnippet;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import shop.newplace.common.utils.APIDocument;
 import shop.newplace.users.model.dto.UsersRequestDto;
 import shop.newplace.users.repository.UsersRepository;
 
@@ -46,6 +45,8 @@ class LogInTest {
     
 	@Autowired
     private UsersRepository usersRepository;
+	
+	private APIDocument apidocument = new APIDocument();
     
 	@Autowired
 	ObjectMapper objectMapper;
@@ -81,41 +82,24 @@ class LogInTest {
 	
     @DisplayName("정상 로그인 테스트")
     @Test
-    void logInTest() throws Exception {
+    void successLogInTest() throws Exception {
+    	
+    	Success success = new Success();
 
     	UsersRequestDto.LogIn signInForm = UsersRequestDto.LogIn.builder()
                             									.loginEmail(loginEmail)
                             									.password(password)
                             									.build();
     	
-    	ResultActions resultActions = mockMvc.perform(post("/users/login")
+    	mockMvc.perform(post("/users/login")
 					    			.contentType(MediaType.APPLICATION_JSON)
 					    			.content(objectMapper.writeValueAsString(signInForm))
-									);
+									)
+    								.andExpect(status().isOk())
+    								.andDo(apidocument.createAPIDocument("user/login", success.PostRequest(), success.PostResponse()));
 //								.andExpect(status().isOk())
 //								.andDo(print());
 
-    	resultActions.andExpect(status().isOk())
-//			    	 .andExpect(jsonPath("title").value("title"))
-//			    	 .andExpect(jsonPath("body").value("body"))
-//			    	 .andExpect(jsonPath("views").value(0))
-			    	 .andDo(document("user/login"
-			    			 		, getDocumentRequest()
-			    			 		, getDocumentResponse()
-			    			 		, requestFields(
-					    					 fieldWithPath("loginEmail").type(JsonFieldType.STRING).description("로그인 사용 이메일")
-					    				   , fieldWithPath("password").type(JsonFieldType.STRING).description("비밀번호")
-					    					 ),
-					    			 responseFields(
-					    					 fieldWithPath("transactionTime").type(JsonFieldType.STRING).description("트랜잭션이 일어난 시간")
-					    				   , fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드")
-					    				   , fieldWithPath("responseMessage").type(JsonFieldType.STRING).description("반환 메시지")
-					    				   , fieldWithPath("description").type(JsonFieldType.STRING).description("설명")
-					    				   , subsectionWithPath("data").type(JsonFieldType.OBJECT).description("액세스토큰")
-					    				   , fieldWithPath("errors").type(JsonFieldType.NULL).description("에러")
-					    					 )
-				    			 )
-			    			);
     	
     }
     
@@ -167,6 +151,25 @@ class LogInTest {
 //    	return signUpForm;
 //    }
     
+    private class Success {
+
+    	private RequestFieldsSnippet PostRequest() {
+        	return requestFields(
+					 fieldWithPath("loginEmail").type(JsonFieldType.STRING).description("로그인 사용 이메일")
+  				   , fieldWithPath("password").type(JsonFieldType.STRING).description("비밀번호")
+    		);
+        }
+        private ResponseFieldsSnippet PostResponse() {
+        	return responseFields(
+					 fieldWithPath("transactionTime").type(JsonFieldType.STRING).description("트랜잭션이 일어난 시간")
+  				   , fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드")
+  				   , fieldWithPath("responseMessage").type(JsonFieldType.STRING).description("반환 메시지")
+  				   , fieldWithPath("description").type(JsonFieldType.STRING).description("설명")
+  				   , subsectionWithPath("data").type(JsonFieldType.OBJECT).description("액세스토큰")
+  				   , fieldWithPath("errors").type(JsonFieldType.NULL).description("에러")
+    		);
+        }
+    }
 
 
 }

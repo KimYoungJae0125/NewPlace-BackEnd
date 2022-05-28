@@ -3,16 +3,12 @@ package shop.newplace.users.signUp;
 //import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
-import static org.springframework.restdocs.payload.PayloadDocumentation.subsectionWithPath;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static shop.newplace.common.config.RestDocsConfiguration.getDocumentRequest;
-import static shop.newplace.common.config.RestDocsConfiguration.getDocumentResponse;
 
 import java.util.List;
 
@@ -26,6 +22,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.restdocs.payload.RequestFieldsSnippet;
+import org.springframework.restdocs.payload.ResponseFieldsSnippet;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -35,6 +33,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import shop.newplace.common.constant.Role;
 import shop.newplace.common.util.CipherUtil;
+import shop.newplace.common.utils.APIDocument;
 import shop.newplace.users.model.dto.ProfilesRequestDto;
 import shop.newplace.users.model.dto.UsersRequestDto;
 import shop.newplace.users.model.entity.Users;
@@ -55,9 +54,8 @@ class SignUpTest {
 	
 	@Autowired
 	ObjectMapper objectMapper;
-	
-//	@Autowired
-//	private WebApplicationContext context;
+
+	private APIDocument apidocument = new APIDocument();
 
 	String loginEmail = "uni0125@nplace.dooray.com";
 	String name = "테스터";
@@ -102,35 +100,14 @@ class SignUpTest {
     void signupNormalTest() throws Exception {
     	System.out.println("signupNormalTest");
     	
+    	Success success = new Success();
+    	
     	mockMvc.perform(post("/users")
 			    			.contentType(MediaType.APPLICATION_JSON)
 			    			.content(objectMapper.writeValueAsString(signUpForm))
     						)
     					.andExpect(status().isOk())
-    					.andDo(document("user/signup"
-			    			 		, getDocumentRequest()
-			    			 		, getDocumentResponse()
-			    			 		, requestFields(
-					    					 fieldWithPath("loginEmail").type(JsonFieldType.STRING).description("로그인 사용 이메일")
-					    				   , fieldWithPath("name").type(JsonFieldType.STRING).description("사용자 이름")
-					    				   , fieldWithPath("password").type(JsonFieldType.STRING).description("비밀번호")
-					    				   , fieldWithPath("passwordVerified").type(JsonFieldType.STRING).description("비밀번호 확인")
-					    				   , fieldWithPath("mainPhoneNumber").type(JsonFieldType.STRING).description("사용자 전화번호")
-					    				   , fieldWithPath("bankId").type(JsonFieldType.STRING).description("은행코드")
-					    				   , fieldWithPath("accountNumber").type(JsonFieldType.STRING).description("계좌번호")
-					    				   , fieldWithPath("emailVerified").type(JsonFieldType.BOOLEAN).description("이메일 인증 확인")
-					    				   , fieldWithPath("profilesSignUp").type(JsonFieldType.NULL).description("프로필")
-					    					 ),
-					    			 responseFields(
-					    					 fieldWithPath("transactionTime").type(JsonFieldType.STRING).description("트랜잭션이 일어난 시간")
-					    				   , fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드")
-					    				   , fieldWithPath("responseMessage").type(JsonFieldType.STRING).description("반환 메시지")
-					    				   , fieldWithPath("description").type(JsonFieldType.STRING).description("설명")
-					    				   , fieldWithPath("data").type(JsonFieldType.NULL).description("프로필")
-					    				   , fieldWithPath("errors").type(JsonFieldType.NULL).description("에러 메시지")
-					    					 )
-					    			 )
-    							);
+    					.andDo(apidocument.createAPIDocument("user/signup", success.PostRequest(), success.PostResponse()));
 //    					.andDo(print());
     	
     	List<Users> usersList = usersRepository.findAll();
@@ -286,6 +263,33 @@ class SignUpTest {
     			.andExpect(status().isOk())
     			.andDo(print());
     	
+    }
+    
+    private class Success {
+    	
+        private RequestFieldsSnippet PostRequest() {
+        	return requestFields(
+					 fieldWithPath("loginEmail").type(JsonFieldType.STRING).description("로그인 사용 이메일")
+  				   , fieldWithPath("name").type(JsonFieldType.STRING).description("사용자 이름")
+  				   , fieldWithPath("password").type(JsonFieldType.STRING).description("비밀번호")
+  				   , fieldWithPath("passwordVerified").type(JsonFieldType.STRING).description("비밀번호 확인")
+  				   , fieldWithPath("mainPhoneNumber").type(JsonFieldType.STRING).description("사용자 전화번호")
+  				   , fieldWithPath("bankId").type(JsonFieldType.STRING).description("은행코드")
+  				   , fieldWithPath("accountNumber").type(JsonFieldType.STRING).description("계좌번호")
+  				   , fieldWithPath("emailVerified").type(JsonFieldType.BOOLEAN).description("이메일 인증 확인")
+  				   , fieldWithPath("profilesSignUp").type(JsonFieldType.NULL).description("프로필")
+        	);
+        }
+        private ResponseFieldsSnippet PostResponse() {
+        	return responseFields(
+					 fieldWithPath("transactionTime").type(JsonFieldType.STRING).description("트랜잭션이 일어난 시간")
+  				   , fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드")
+  				   , fieldWithPath("responseMessage").type(JsonFieldType.STRING).description("반환 메시지")
+  				   , fieldWithPath("description").type(JsonFieldType.STRING).description("설명")
+  				   , fieldWithPath("data").type(JsonFieldType.NULL).description("프로필")
+  				   , fieldWithPath("errors").type(JsonFieldType.NULL).description("에러 메시지")
+        	);
+        }
     }
 
 }
