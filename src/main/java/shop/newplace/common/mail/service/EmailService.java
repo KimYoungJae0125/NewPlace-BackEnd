@@ -47,6 +47,7 @@ public class EmailService {
 		
 		return EmailResponseDto.Info.builder()
 									.certificationNumber(certificationNumber.toString())
+									.expirationTime(EMAIL_TOKEN_EXPIRATION_TIME_VALUE)
 									.build();
 	}
 	

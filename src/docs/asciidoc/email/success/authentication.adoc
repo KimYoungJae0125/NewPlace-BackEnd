@@ -1,0 +1,49 @@
+= Email API
+email-api-docs
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+:sectlinks:
+
+ifndef::snippets[]
+:snippets: ./build/generated-snippets
+endif::[]
+
+== 이메일 인증 API
+
+=== Get
+
+==== curl
+include::{snippets}/email/success/authentication/get/curl-request.adoc[]
+
+==== Request Sample
+include::{snippets}/email/success/authentication/get/http-request.adoc[]
+
+==== Request Field
+include::{snippets}/email/success/authentication/get/request-fields.adoc[]
+
+==== Response Sample
+include::{snippets}/email/success/authentication/get/http-response.adoc[]
+
+==== Response Fields
+include::{snippets}/email/success/authentication/get/response-fields.adoc[]
+
+
+=== Post
+
+==== curl
+include::{snippets}/email/success/authentication/post/curl-request.adoc[]
+
+==== Request Sample
+include::{snippets}/email/success/authentication/post/http-request.adoc[]
+
+==== Request Field
+include::{snippets}/email/success/authentication/post/request-fields.adoc[]
+
+==== Response Sample
+include::{snippets}/email/success/authentication/post/http-response.adoc[]
+
+==== Response Fields
+include::{snippets}/email/success/authentication/post/response-fields.adoc[]

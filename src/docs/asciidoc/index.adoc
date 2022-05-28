@@ -9,3 +9,5 @@ notification-api-docs
 
 
 == link:users/index.html[회원 관련 API]
+
+== link:email/index.html[이메일 관련 API]

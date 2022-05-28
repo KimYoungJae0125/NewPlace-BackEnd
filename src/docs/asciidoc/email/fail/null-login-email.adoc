@@ -1,0 +1,31 @@
+= Email API
+email-api-docs
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+:sectlinks:
+
+ifndef::snippets[]
+:snippets: ./build/generated-snippets
+endif::[]
+
+== 이메일 데이터 없음
+
+=== Get
+
+==== curl
+include::{snippets}/email/fail/null-login-email/get/curl-request.adoc[]
+
+==== Request Sample
+include::{snippets}/email/fail/null-login-email/get/http-request.adoc[]
+
+==== Request Field
+include::{snippets}/email/fail/null-login-email/get/request-fields.adoc[]
+
+==== Response Sample
+include::{snippets}/email/fail/null-login-email/get/http-response.adoc[]
+
+==== Response Fields
+include::{snippets}/email/fail/null-login-email/get/response-fields.adoc[]

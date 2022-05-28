@@ -1,0 +1,17 @@
+= 이메일 관련 API
+email-api-docs
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+:sectlinks:
+
+== 이메일 인증
+=== link:success/authentication.html[이메일 인증]
+
+== 틀린 인증번호
+=== link:fail/wrong-certification-number.html[틀린 인증번호]
+
+== 이메일 데이터 없음
+=== link:fail/null-login-email.html[이메일 데이터 없음]
