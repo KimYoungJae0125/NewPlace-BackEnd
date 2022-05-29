@@ -8,7 +8,7 @@ import org.springframework.restdocs.payload.RequestFieldsSnippet;
 import org.springframework.restdocs.payload.ResponseFieldsSnippet;
 import org.springframework.test.web.servlet.ResultHandler;
 
-public class APIDocument {
+public class APIDocumentUtils {
 	
 	public ResultHandler createAPIDocument(String documentPath, RequestFieldsSnippet requestFieldsSnippet, ResponseFieldsSnippet responseFieldsSnippet) {
 		return document(documentPath
