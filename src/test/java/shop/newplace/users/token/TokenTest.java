@@ -29,6 +29,8 @@ import org.springframework.util.StringUtils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import shop.newplace.common.model.dto.JwtTestDto;
+import shop.newplace.common.model.dto.UsersTestDto;
 import shop.newplace.common.security.CustomUserDetails;
 import shop.newplace.common.util.CipherUtil;
 import shop.newplace.common.util.RedisUtil;
@@ -68,25 +70,18 @@ public class TokenTest {
 	
 	private CustomUserDetails securityUsers;
 	
-	private String loginEmail = "tokenTest@email.com";
+	private UsersTestDto usersTestDto = new UsersTestDto();	
+	
+	private JwtTestDto jwtTestDto = new JwtTestDto();
+	
+	UsersRequestDto.SignUp userSignUp;
 	
 	@BeforeAll
 	void setUp() {
-    	String name = "테스터";
-    	String password = "abcdefg!@#1";
-    	String mainPhoneNumber = "01012345678";
-    	String bankId = "01";
-    	String accountNumber = "12345678";
-    	UsersRequestDto.SignUp userSignUp = UsersRequestDto.SignUp.builder()
-                            									  .loginEmail(loginEmail)
-                            									  .name(name)
-                            									  .password(password)
-                            									  .mainPhoneNumber(mainPhoneNumber)
-                            									  .bankId(bankId)
-                            									  .accountNumber(accountNumber)
-                            									  .build();
+    	userSignUp = usersTestDto.createSignUpForm();
+
     	usersService.signUp(userSignUp);	
-    	result = usersRepository.findByLoginEmail(CipherUtil.Email.encrypt(loginEmail)).get();
+    	result = usersRepository.findByLoginEmail(userSignUp.getLoginEmail()).get();
     	
 		Set<String> roles = new HashSet<String>();
 		roles.add("1");
@@ -109,7 +104,7 @@ public class TokenTest {
 		String test = "hasAnyRole('ROLE_" + anyAuthorities + "')";
 		System.out.println(test);
     	
-		String accessToken = jwtTokenProvider.createAccessToken(result.getId().toString(), loginEmail, securityUsers.getAuthorities());
+		String accessToken = jwtTokenProvider.createAccessToken(result.getId().toString(), CipherUtil.Email.decrypt(userSignUp.getLoginEmail()), securityUsers.getAuthorities());
 		
 		request.addHeader("authorization", type + accessToken);
 		String requestHeaderToken = jwtTokenProvider.resolveAccessToken(request);
@@ -128,11 +123,7 @@ public class TokenTest {
 	@Test
 	void headerRefreshToken() {
 		String refreshToken = jwtTokenProvider.createRefreshToken(result.getId().toString(), securityUsers.getAuthorities());
-		JwtDto.RefreshToken jwtRefreshToken = JwtDto.RefreshToken.builder()
-																  .id(result.getId())
-																  .expirationTime(100L * 60 * 60 * 24 * 7)
-																  .refreshToken(refreshToken)
-																  .build();
+		JwtDto.RefreshToken jwtRefreshToken = jwtTestDto.createRefreshToken(result.getId(), refreshToken);
 		
 		redisService.setValues(jwtRefreshToken);
 		assertThat(jwtTokenProvider.validateToken(refreshToken), is(true));
@@ -151,11 +142,7 @@ public class TokenTest {
     	assertThat(jwtTokenProvider.validateToken(expirationAccessToken), is(false));
     	assertThat(jwtTokenProvider.validateToken(expirationAccessToken), is(not(nullValue())));
 		String refreshToken = jwtTokenProvider.createRefreshToken(result.getId().toString(), securityUsers.getAuthorities());
-		JwtDto.RefreshToken jwtRefreshToken = JwtDto.RefreshToken.builder()
-																  .id(result.getId())
-																  .expirationTime(100L * 60 * 60 * 24 * 7)
-																  .refreshToken(refreshToken)
-																  .build();
+		JwtDto.RefreshToken jwtRefreshToken = jwtTestDto.createRefreshToken(result.getId(), refreshToken);
 		
 		redisService.setValues(jwtRefreshToken);
 		System.out.println("만료 토큰 : " + expirationAccessToken);
@@ -172,7 +159,7 @@ public class TokenTest {
     	String SECRET_KEY = Base64.getEncoder().encodeToString("spring.jwt.secret".getBytes());
 
 		Claims claims = Jwts.claims().setSubject(String.valueOf(result.getId()));
-		claims.put("loginEmail", loginEmail);
+		claims.put("loginEmail", userSignUp.getLoginEmail());
 		Date now = new Date();
 		
 		return Jwts.builder()

@@ -32,9 +32,10 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import shop.newplace.common.model.dto.JwtTestDto;
+import shop.newplace.common.model.dto.UsersTestDto;
 import shop.newplace.common.security.CustomOnceRequestFilter;
 import shop.newplace.common.security.CustomUserDetailsService;
-import shop.newplace.common.util.CipherUtil;
 import shop.newplace.common.util.RedisUtil;
 import shop.newplace.users.model.dto.ProfilesRequestDto;
 import shop.newplace.users.model.dto.UsersRequestDto;
@@ -66,8 +67,6 @@ class SecurityTest {
 	private UsersRepository usersRepository;
 
 	private String type = "bearer ";
-	
-	private Users result;
 
 	@Autowired
 	private CustomUserDetailsService customUserDetailsService;
@@ -84,12 +83,14 @@ class SecurityTest {
 	@Autowired
 	private JwtTokenProvider jwtTokenProvider;
 	
-	String loginEmail = "tokenTest@email.com";
-	String name = "테스터";
-	String password = "abcdefg!@#1";
-	String mainPhoneNumber = "01012345678";
-	String bankId = "01";
-	String accountNumber = "12345678";
+	private UsersTestDto usersTestDto = new UsersTestDto();
+	
+	private JwtTestDto jwtTestDto = new JwtTestDto();
+
+	
+	ProfilesRequestDto.SignUp profilesSignUp;
+	
+	UsersRequestDto.SignUp signUpForm;
 	
 	@BeforeEach
 	public void setUpEach(WebApplicationContext applicationContext) {
@@ -103,20 +104,8 @@ class SecurityTest {
 	
     @BeforeAll
     public void setup() throws Exception {
-    	ProfilesRequestDto.SignUp profilesSignUp = ProfilesRequestDto.SignUp.builder()
-                                                            				.nickName("테스터")
-                                                            				.authId("2")
-                                                            				.build();
-    	
-    	UsersRequestDto.SignUp signUpForm = UsersRequestDto.SignUp.builder()
-																.name(name)
-																.loginEmail(loginEmail)
-																.password(password)
-																.mainPhoneNumber(mainPhoneNumber)
-																.bankId(bankId)
-																.accountNumber(accountNumber)
-																.profilesSignUp(profilesSignUp)
-																.build();
+    	signUpForm = usersTestDto.createSignUpFormByProfilesSignUp();
+
     	usersService.signUp(signUpForm);
     	
     }
@@ -134,13 +123,10 @@ class SecurityTest {
     //SecurityContextHolder에 정보가 입력 됨
 //    @WithMockUser(username = "abcdefg@naver.com", roles = {"USER"})
     @Transactional(readOnly = true)
-    void logInTest() throws Exception {
-    	result = usersRepository.findByLoginEmail(CipherUtil.Email.encrypt(loginEmail)).get();
+    void roleUserTest() throws Exception {
+    	Users result = usersRepository.findByLoginEmail(signUpForm.getLoginEmail()).get();
     	
-    	UsersRequestDto.LogIn loginForm = UsersRequestDto.LogIn.builder()
-    											.loginEmail(loginEmail)
-    											.password(password)
-    											.build();
+    	UsersRequestDto.LogIn loginForm = usersTestDto.createLogInForm();
     	
     	mockMvc.perform(post("/users/login")
     			.contentType(MediaType.APPLICATION_JSON)
@@ -159,11 +145,7 @@ class SecurityTest {
 //		SecurityContextHolder.getContext().setAuthentication(jwtTokenProvider.getAuthentication(requestHeaderToken));
 		
 //		 = jwtTokenProvider.createRefreshToken(result.getId().toString(), securityUsers.getAuthorities());
-		JwtDto.RefreshToken jwtRefreshToken = JwtDto.RefreshToken.builder()
-																  .id(result.getId())
-																  .expirationTime(100L * 60 * 60 * 24 * 7)
-																  .refreshToken(refreshToken)
-																  .build();
+		JwtDto.RefreshToken jwtRefreshToken = jwtTestDto.createRefreshToken(result.getId(), refreshToken);
 		
 		redisService.setValues(jwtRefreshToken);
 		

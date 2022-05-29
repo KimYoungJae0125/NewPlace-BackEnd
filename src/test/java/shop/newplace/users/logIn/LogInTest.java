@@ -1,9 +1,5 @@
 package shop.newplace.users.logIn;
 
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
-import static org.springframework.restdocs.payload.PayloadDocumentation.subsectionWithPath;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -16,18 +12,15 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.restdocs.payload.JsonFieldType;
-import org.springframework.restdocs.payload.RequestFieldsSnippet;
-import org.springframework.restdocs.payload.ResponseFieldsSnippet;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import shop.newplace.common.utils.APIDocument;
+import shop.newplace.common.model.dto.UsersTestDto;
+import shop.newplace.common.snippet.LogInTestSnippet;
+import shop.newplace.common.utils.APIDocumentUtils;
 import shop.newplace.users.model.dto.UsersRequestDto;
-import shop.newplace.users.repository.UsersRepository;
 
 @SpringBootTest(properties = "classpath:application-test.yml")
 @AutoConfigureMockMvc
@@ -40,38 +33,20 @@ class LogInTest {
 	@Autowired
     private MockMvc mockMvc;
     
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-    
-	@Autowired
-    private UsersRepository usersRepository;
+	private APIDocumentUtils apiDocumentUtils = new APIDocumentUtils();
+
+	private UsersTestDto usersTestDto = new UsersTestDto();
 	
-	private APIDocument apidocument = new APIDocument();
-    
+	private LogInTestSnippet logInTestSnippet = new LogInTestSnippet();
+	
 	@Autowired
 	ObjectMapper objectMapper;
-	
-	String loginEmail = "abcdefg@newPlace";
-	String name = "테스터";
-	String password = "abcdefg!@#1";
-	String mainPhoneNumber = "01012345678";
-	String bankId = "01";
-	String accountNumber = "12345678";
-	
 	
     @BeforeEach
     public void setup() throws Exception {
 
-    	UsersRequestDto.SignUp signUpForm = UsersRequestDto.SignUp.builder()
-																  .loginEmail(loginEmail)
-																  .password(password)
-																  .passwordVerified(password)
-																  .bankId(bankId)
-																  .accountNumber(accountNumber)
-																  .mainPhoneNumber(mainPhoneNumber)
-																  .name(name)
-																  .emailVerified(true)
-																  .build();
+    	UsersRequestDto.SignUp signUpForm = usersTestDto.createSignUpForm();
+    	
     	mockMvc.perform(post("/users")
     						.contentType(MediaType.APPLICATION_JSON)
     						.content(objectMapper.writeValueAsString(signUpForm)))
@@ -84,19 +59,14 @@ class LogInTest {
     @Test
     void successLogInTest() throws Exception {
     	
-    	Success success = new Success();
-
-    	UsersRequestDto.LogIn signInForm = UsersRequestDto.LogIn.builder()
-                            									.loginEmail(loginEmail)
-                            									.password(password)
-                            									.build();
+    	UsersRequestDto.LogIn logInForm = usersTestDto.createLogInForm();
     	
     	mockMvc.perform(post("/users/login")
 					    			.contentType(MediaType.APPLICATION_JSON)
-					    			.content(objectMapper.writeValueAsString(signInForm))
+					    			.content(objectMapper.writeValueAsString(logInForm))
 									)
     								.andExpect(status().isOk())
-    								.andDo(apidocument.createAPIDocument("user/login", success.PostRequest(), success.PostResponse()));
+    								.andDo(apiDocumentUtils.createAPIDocument("user/login", logInTestSnippet.SuccessPostRequest(), logInTestSnippet.SuccessPostResponse()));
 //								.andExpect(status().isOk())
 //								.andDo(print());
 
@@ -151,25 +121,6 @@ class LogInTest {
 //    	return signUpForm;
 //    }
     
-    private class Success {
-
-    	private RequestFieldsSnippet PostRequest() {
-        	return requestFields(
-					 fieldWithPath("loginEmail").type(JsonFieldType.STRING).description("로그인 사용 이메일")
-  				   , fieldWithPath("password").type(JsonFieldType.STRING).description("비밀번호")
-    		);
-        }
-        private ResponseFieldsSnippet PostResponse() {
-        	return responseFields(
-					 fieldWithPath("transactionTime").type(JsonFieldType.STRING).description("트랜잭션이 일어난 시간")
-  				   , fieldWithPath("statusCode").type(JsonFieldType.NUMBER).description("상태 코드")
-  				   , fieldWithPath("responseMessage").type(JsonFieldType.STRING).description("반환 메시지")
-  				   , fieldWithPath("description").type(JsonFieldType.STRING).description("설명")
-  				   , subsectionWithPath("data").type(JsonFieldType.OBJECT).description("액세스토큰")
-  				   , fieldWithPath("errors").type(JsonFieldType.NULL).description("에러")
-    		);
-        }
-    }
 
 
 }
