@@ -42,3 +42,6 @@ out/
 *-prod.yml
 *-stg.yml
 *-test.yml
+
+### APIDocs ###
+**/static/docs/**

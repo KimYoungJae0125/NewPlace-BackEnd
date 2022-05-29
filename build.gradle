@@ -41,6 +41,8 @@ dependencies {
     testImplementation 'org.springframework.batch:spring-batch-test'
     testImplementation 'org.springframework.kafka:spring-kafka-test'
     testImplementation 'org.springframework.security:spring-security-test'
+    testCompileOnly 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
 
     /* Property Security */
     implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.4'
