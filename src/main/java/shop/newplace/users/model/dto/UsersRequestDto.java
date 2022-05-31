@@ -27,7 +27,7 @@ public class UsersRequestDto {
 
 		    @NotBlank(message = "비밀번호는 필수 입력 값입니다.")
 		    @Length(min = 8)
-		    @Pattern(regexp = "^[A-Za-z0-9-_!@#$%^&*()]{8,}$", message = "비밀번호는 숫자, 영어, 특수문자 포함 8자리 이상으로 입력해주세요.")
+		    @Pattern(regexp = "(?=.*\\d)(?=.*[a-zA-Z])(?=.*[~!@#$%^&*()_-]).{8,}", message = "비밀번호는 숫자, 영어, 특수문자 포함 8자리 이상으로 입력해주세요.")
 		    private String password;
 
 		    @NotBlank(message = "비밀번호를 한 번 더 입력해주세요.")
