@@ -1,9 +1,10 @@
-package shop.newplace.users.logIn;
+package shop.newplace.integration.users;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,13 +15,16 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import shop.newplace.common.model.dto.UsersTestDto;
+import shop.newplace.common.model.dto.LogInTestDto;
+import shop.newplace.common.model.dto.SignUpTestDto;
 import shop.newplace.common.snippet.LogInTestSnippet;
 import shop.newplace.common.utils.APIDocumentUtils;
 import shop.newplace.users.model.dto.UsersRequestDto;
+import shop.newplace.users.repository.UsersRepository;
 
 @SpringBootTest(properties = "classpath:application-test.yml")
 @AutoConfigureMockMvc
@@ -32,10 +36,15 @@ class LogInTest {
 
 	@Autowired
     private MockMvc mockMvc;
+	
+	@Autowired
+    UsersRepository usersRepository;
     
 	private APIDocumentUtils apiDocumentUtils = new APIDocumentUtils();
 
-	private UsersTestDto usersTestDto = new UsersTestDto();
+	private SignUpTestDto signUpTestDto = new SignUpTestDto();
+	
+	private LogInTestDto logInTestDto = new LogInTestDto();
 	
 	private LogInTestSnippet logInTestSnippet = new LogInTestSnippet();
 	
@@ -44,8 +53,7 @@ class LogInTest {
 	
     @BeforeEach
     public void setup() throws Exception {
-
-    	UsersRequestDto.SignUp signUpForm = usersTestDto.createSignUpForm();
+    	UsersRequestDto.SignUp signUpForm = signUpTestDto.createSignUpForm();
     	
     	mockMvc.perform(post("/users")
     						.contentType(MediaType.APPLICATION_JSON)
@@ -54,21 +62,24 @@ class LogInTest {
     			.andDo(print());
     }
 	
+    @AfterEach
+    void unSet() {
+    	usersRepository.deleteAll();
+    }
 	
     @DisplayName("정상 로그인 테스트")
     @Test
     void successLogInTest() throws Exception {
+    	LogInTestSnippet.Success successSnippet = logInTestSnippet.new Success();
+    	UsersRequestDto.LogIn logInForm = logInTestDto.createLogInForm();
     	
-    	UsersRequestDto.LogIn logInForm = usersTestDto.createLogInForm();
-    	
-    	mockMvc.perform(post("/users/login")
+    	ResultActions resultActions = mockMvc.perform(post("/users/login")
 					    			.contentType(MediaType.APPLICATION_JSON)
 					    			.content(objectMapper.writeValueAsString(logInForm))
-									)
-    								.andExpect(status().isOk())
-    								.andDo(apiDocumentUtils.createAPIDocument("user/login", logInTestSnippet.SuccessPostRequest(), logInTestSnippet.SuccessPostResponse()));
-//								.andExpect(status().isOk())
-//								.andDo(print());
+									);
+    	
+    	resultActions.andExpect(status().isOk())
+				 	  .andDo(apiDocumentUtils.createAPIDocument("user/login", successSnippet.PostRequest(), successSnippet.PostResponse()));
 
     	
     }

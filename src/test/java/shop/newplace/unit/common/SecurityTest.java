@@ -1,4 +1,4 @@
-package shop.newplace.users.common.config;
+package shop.newplace.unit.common;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -33,7 +33,8 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import shop.newplace.common.model.dto.JwtTestDto;
-import shop.newplace.common.model.dto.UsersTestDto;
+import shop.newplace.common.model.dto.LogInTestDto;
+import shop.newplace.common.model.dto.SignUpTestDto;
 import shop.newplace.common.security.CustomOnceRequestFilter;
 import shop.newplace.common.security.CustomUserDetailsService;
 import shop.newplace.common.util.RedisUtil;
@@ -83,7 +84,9 @@ class SecurityTest {
 	@Autowired
 	private JwtTokenProvider jwtTokenProvider;
 	
-	private UsersTestDto usersTestDto = new UsersTestDto();
+	private SignUpTestDto signUpTestDto = new SignUpTestDto();
+
+	private LogInTestDto logInTestDto = new LogInTestDto();
 	
 	private JwtTestDto jwtTestDto = new JwtTestDto();
 
@@ -104,7 +107,7 @@ class SecurityTest {
 	
     @BeforeAll
     public void setup() throws Exception {
-    	signUpForm = usersTestDto.createSignUpFormByProfilesSignUp();
+    	signUpForm = signUpTestDto.createSignUpFormByProfilesSignUp();
 
     	usersService.signUp(signUpForm);
     	
@@ -126,7 +129,7 @@ class SecurityTest {
     void roleUserTest() throws Exception {
     	Users result = usersRepository.findByLoginEmail(signUpForm.getLoginEmail()).get();
     	
-    	UsersRequestDto.LogIn loginForm = usersTestDto.createLogInForm();
+    	UsersRequestDto.LogIn loginForm = logInTestDto.createLogInForm();
     	
     	mockMvc.perform(post("/users/login")
     			.contentType(MediaType.APPLICATION_JSON)
