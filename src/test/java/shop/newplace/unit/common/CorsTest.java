@@ -1,4 +1,4 @@
-package shop.newplace.users.common.config;
+package shop.newplace.unit.common;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 

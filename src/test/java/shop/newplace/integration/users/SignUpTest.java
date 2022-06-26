@@ -1,4 +1,4 @@
-package shop.newplace.users.signUp;
+package shop.newplace.integration.users;
 
 //import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -20,13 +20,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import shop.newplace.common.constant.Role;
-import shop.newplace.common.model.dto.UsersTestDto;
+import shop.newplace.common.model.dto.SignUpTestDto;
 import shop.newplace.common.snippet.SignUpTestSnippet;
 import shop.newplace.common.util.CipherUtil;
 import shop.newplace.common.utils.APIDocumentUtils;
@@ -52,9 +53,9 @@ class SignUpTest {
 
 	private APIDocumentUtils apiDocumentUtils = new APIDocumentUtils();
 	
-	private UsersTestDto usersTestDto = new UsersTestDto();
+	private SignUpTestDto signUpTestDto = new SignUpTestDto();
 	
-	private SignUpTestSnippet usersTestSnippet = new SignUpTestSnippet();
+	private SignUpTestSnippet signUpTestSnippet = new SignUpTestSnippet();
 
     @BeforeEach
     void setup() {
@@ -75,14 +76,15 @@ class SignUpTest {
     @Test
 //    @Disabled
     void signupNormalTest() throws Exception {
-    	UsersRequestDto.SignUp signUpForm = usersTestDto.createSignUpForm();
+    	SignUpTestSnippet.Success successSnippet = signUpTestSnippet.new Success();
+    	UsersRequestDto.SignUp signUpForm = signUpTestDto.createSignUpForm();
     	
-    	mockMvc.perform(post("/users")
+    	ResultActions result =  mockMvc.perform(post("/users")
 			    			.contentType(MediaType.APPLICATION_JSON)
 			    			.content(objectMapper.writeValueAsString(signUpForm))
     						)
     					.andExpect(status().isOk())
-    					.andDo(apiDocumentUtils.createAPIDocument("user/signup", usersTestSnippet.SuccessPostRequest(), usersTestSnippet.SuccessPostResponse()));
+    					.andDo(apiDocumentUtils.createAPIDocument("user/signup", successSnippet.PostRequest(), successSnippet.PostResponse()));
 //    					.andDo(print());
     	
     	List<Users> usersList = usersRepository.findAll();
@@ -96,8 +98,8 @@ class SignUpTest {
     @Test
 //    @Disabled
     void signupFailureTest() throws Exception {
-    	UsersRequestDto.SignUp signUpForm = usersTestDto.createSignUpForm();
-    	
+    	UsersRequestDto.SignUp signUpForm = signUpTestDto.createSignUpForm();
+
     	mockMvc.perform(post("/users")
     						.param("name", signUpForm.getName())
     						.param("loginEmail", signUpForm.getLoginEmail())
@@ -114,11 +116,11 @@ class SignUpTest {
     @Test
 //    @Disabled
     void signupValidEmailFailureTest() throws Exception {
-    	System.out.println("signUpValidEmailFailureTest");
+    	UsersRequestDto.SignUp signUpFormByWrongLoginEmail = signUpTestDto.createSignUpFormByWrongLoginEmail();
     	
     	mockMvc.perform(post("/users")
     			.contentType(MediaType.APPLICATION_JSON)
-    			.content(objectMapper.writeValueAsString(usersTestDto.createSignUpFormByWrongLoginEmail()))
+    			.content(objectMapper.writeValueAsString(signUpFormByWrongLoginEmail))
     			)
     	.andExpect(status().isBadRequest());
     	
@@ -128,10 +130,11 @@ class SignUpTest {
     @Test
 //    @Disabled
     void signupValidPasswordFailureTest() throws Exception {
+    	UsersRequestDto.SignUp signUpFormByWrongPassword = signUpTestDto.createSignUpFormByWrongPassword();
     	
     	mockMvc.perform(post("/users")
     			.contentType(MediaType.APPLICATION_JSON)
-    			.content(objectMapper.writeValueAsString(usersTestDto.createSignUpFormByWrongPassword()))
+    			.content(objectMapper.writeValueAsString(signUpFormByWrongPassword))
     			)
     	.andExpect(status().isBadRequest());
     }
@@ -140,10 +143,11 @@ class SignUpTest {
     @Test
 //    @Disabled
     void signupValidPasswordVerifiedFailureTest() throws Exception {
+    	UsersRequestDto.SignUp signUpFormByWrongPasswordVerified = signUpTestDto.createSignUpFormByWrongPasswordVerified();
     	
     	mockMvc.perform(post("/users")
     			.contentType(MediaType.APPLICATION_JSON)
-    			.content(objectMapper.writeValueAsString(usersTestDto.createSignUpFormByWrongPasswordVerified()))
+    			.content(objectMapper.writeValueAsString(signUpFormByWrongPasswordVerified))
     			)
     	.andExpect(status().isBadRequest());
     	
@@ -153,10 +157,11 @@ class SignUpTest {
     @Test
 //    @Disabled
     void signupValidPhoneFailureTest() throws Exception {
+    	UsersRequestDto.SignUp signUpFormByWrongMainPhoneNumber = signUpTestDto.createSignUpFormByWrongMainPhoneNumber();
     	
     	mockMvc.perform(post("/users")
     			.contentType(MediaType.APPLICATION_JSON)
-    			.content(objectMapper.writeValueAsString(usersTestDto.createSignUpFormByWrongMainPhoneNumber()))
+    			.content(objectMapper.writeValueAsString(signUpFormByWrongMainPhoneNumber))
     			)
     	.andExpect(status().isBadRequest());
     	
@@ -166,10 +171,11 @@ class SignUpTest {
     @Test
 //    @Disabled
     void signupValidNullFailureTest() throws Exception {
+    	UsersRequestDto.SignUp nullSignUpForm = signUpTestDto.createNullSignUpForm();
     	
     	mockMvc.perform(post("/users")
     			.contentType(MediaType.APPLICATION_JSON)
-    			.content(objectMapper.writeValueAsString(usersTestDto.createNullSignUpForm()))
+    			.content(objectMapper.writeValueAsString(nullSignUpForm))
     			)
     	.andExpect(status().isBadRequest());
     	
@@ -179,7 +185,7 @@ class SignUpTest {
     @Test
 //    @Disabled
     void emailReduplicationSignUpTest() throws Exception {
-    	UsersRequestDto.SignUp signUpForm = usersTestDto.createSignUpForm();
+    	UsersRequestDto.SignUp signUpForm = signUpTestDto.createSignUpForm();
     	
     	String content = objectMapper.writeValueAsString(signUpForm);
 
@@ -188,7 +194,7 @@ class SignUpTest {
     			.content(content)
     			)
     			.andExpect(status().isOk());
-    	System.out.println("중복 가입");
+
     	mockMvc.perform(post("/users")
     			.contentType(MediaType.APPLICATION_JSON)
     			.content(content)
@@ -200,10 +206,11 @@ class SignUpTest {
     
     @Test
     void profileSignUpTest() throws Exception {
+    	UsersRequestDto.SignUp signUpFormByProfilesSignUp = signUpTestDto.createSignUpFormByProfilesSignUp();
     	
     	mockMvc.perform(post("/users")
     			.contentType(MediaType.APPLICATION_JSON)
-    			.content(objectMapper.writeValueAsString(usersTestDto.createSignUpFormByProfilesSignUp()))
+    			.content(objectMapper.writeValueAsString(signUpFormByProfilesSignUp))
     			)
     			.andExpect(status().isOk())
     			.andDo(print());

@@ -1,4 +1,4 @@
-package shop.newplace.users.token;
+package shop.newplace.unit.token;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
@@ -30,7 +30,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import shop.newplace.common.model.dto.JwtTestDto;
-import shop.newplace.common.model.dto.UsersTestDto;
+import shop.newplace.common.model.dto.SignUpTestDto;
 import shop.newplace.common.security.CustomUserDetails;
 import shop.newplace.common.util.CipherUtil;
 import shop.newplace.common.util.RedisUtil;
@@ -38,6 +38,7 @@ import shop.newplace.users.model.dto.UsersRequestDto;
 import shop.newplace.users.model.entity.Users;
 import shop.newplace.users.repository.UsersRepository;
 import shop.newplace.users.service.UsersService;
+import shop.newplace.users.token.JwtTokenProvider;
 import shop.newplace.users.token.model.dto.JwtDto;
 
 @SpringBootTest(properties = "classpath:application-test.yml")
@@ -70,7 +71,7 @@ public class TokenTest {
 	
 	private CustomUserDetails securityUsers;
 	
-	private UsersTestDto usersTestDto = new UsersTestDto();	
+	private SignUpTestDto usersTestDto = new SignUpTestDto();	
 	
 	private JwtTestDto jwtTestDto = new JwtTestDto();
 	
